@@ -1,0 +1,3334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- 手机单文件版：由 tools/build-single.mjs 自动生成，请勿手改；改 js/css 后重新构建 -->
+<title>乡土调查员 · 《乡土中国》田野探究工作坊</title>
+  <meta name="description" content="以费孝通《乡土中国》整本书阅读为载体的跨学科人文地理探究平台：选章—驻村—访谈—空间语义分析—考察报告，离线引擎默认，可选接入大模型 API。"/>
+  <style>
+/* 乡土调查员 · 纸墨手记风（宣纸底 / 墨字 / 朱砂印；无渐变无 emoji） */
+:root {
+  --paper: #f4efe2;
+  --paper-2: #efe8d6;
+  --ink: #2f2a22;
+  --ink-2: #5a5245;
+  --ink-3: #8a7f6c;
+  --line: #c9bda2;
+  --cinnabar: #a4443a;
+  --cinnabar-2: #8c4a3c;
+  --green: #55663f;
+  --gold: #8a6d2f;
+  --shadow: 0 1px 0 rgba(90, 82, 69, .18), 0 6px 18px -10px rgba(60, 50, 30, .35);
+  --radius: 6px;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper);
+  color: var(--ink);
+  font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", "Songti SC", serif;
+  line-height: 1.75;
+  background-image: radial-gradient(rgba(120, 100, 60, .05) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+#app { max-width: 1020px; margin: 0 auto; padding: 18px 16px 60px; }
+a { color: var(--cinnabar); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3 { font-weight: 700; letter-spacing: .04em; }
+h1 { font-size: 26px; margin: 10px 0 6px; }
+h2 { font-size: 19px; margin: 26px 0 10px; padding-left: 10px; border-left: 4px solid var(--cinnabar); }
+h3 { font-size: 16px; margin: 8px 0; }
+p { margin: 8px 0; }
+.empty { color: var(--ink-3); padding: 26px 0; text-align: center; border: 1px dashed var(--line); border-radius: var(--radius); }
+.hint { color: var(--ink-3); font-size: 13px; }
+
+/* 首页 hero */
+.hero { text-align: center; padding: 34px 12px 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper-2); position: relative; box-shadow: var(--shadow); }
+.hero::after { content: "乡土"; position: absolute; right: 18px; top: 16px; width: 46px; height: 46px; line-height: 46px; text-align: center; color: #fff; background: var(--cinnabar); border-radius: 4px; font-size: 15px; letter-spacing: 2px; opacity: .92; transform: rotate(6deg); }
+.hero-badge { display: inline-block; border: 1px solid var(--line); background: #fff9; padding: 2px 12px; border-radius: 999px; font-size: 12px; color: var(--ink-2); margin-bottom: 10px; }
+.hero h1 { font-size: 40px; margin: 6px 0 0; letter-spacing: .18em; }
+.hero-sub { color: var(--ink-2); letter-spacing: .3em; margin: 4px 0 12px; }
+.hero-saying { font-size: 15px; color: var(--ink-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); display: inline-block; padding: 6px 18px; margin: 6px 0 14px; }
+.hero-stat { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 8px 0 14px; }
+.hero-nav { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+/* chips 与按钮 */
+.chip { display: inline-block; border: 1px solid var(--line); background: #fff8; border-radius: 999px; padding: 1px 10px; font-size: 12px; color: var(--ink-2); }
+.chip.big { font-size: 14px; padding: 3px 14px; }
+.chip.ok { border-color: var(--green); color: var(--green); }
+.chip.bad { border-color: var(--cinnabar); color: var(--cinnabar); }
+.chip.ghost { background: transparent; }
+.chip.sm { font-size: 11px; padding: 0 8px; }
+.btn { display: inline-block; border: 1px solid var(--ink-2); background: var(--paper-2); color: var(--ink); border-radius: var(--radius); padding: 6px 16px; font-size: 14px; cursor: pointer; font-family: inherit; letter-spacing: .05em; }
+.btn:hover { background: #fff; text-decoration: none; }
+.btn.primary { background: var(--cinnabar); border-color: var(--cinnabar); color: #fff; }
+.btn.primary:hover { background: #93372e; }
+.btn.ghost { background: transparent; }
+.btn.sm { padding: 2px 10px; font-size: 12px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* 章节/村落卡 */
+.sec-sub { color: var(--ink-2); font-size: 14px; margin-top: 0; }
+.chgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.chcard { display: flex; gap: 12px; border: 1px solid var(--line); background: #fff7; border-radius: var(--radius); padding: 12px; color: inherit; box-shadow: var(--shadow); }
+.chcard:hover { background: #fff; text-decoration: none; }
+.chcard.read { background: var(--paper-2); }
+.chno { flex: 0 0 auto; width: 40px; height: 40px; border: 1px solid var(--cinnabar); color: var(--cinnabar); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.chbody { min-width: 0; }
+.chtitle { font-weight: 700; font-size: 16px; }
+.chtheme { font-size: 12px; color: var(--cinnabar); border: 1px solid var(--cinnabar); padding: 0 6px; border-radius: 999px; margin-left: 4px; font-weight: 400; }
+.chblurb { font-size: 13px; color: var(--ink-2); margin: 4px 0; }
+.chmeta { display: flex; gap: 6px; flex-wrap: wrap; }
+.vilgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.vilcard { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; color: inherit; background: #fff7; box-shadow: var(--shadow); }
+.vilcard:hover { background: #fff; text-decoration: none; }
+.vilname { font-size: 18px; font-weight: 700; }
+.viltype { font-size: 12px; color: var(--ink-3); margin: 2px 0 6px; }
+.vilprog { font-size: 12px; color: var(--green); }
+
+/* 章节详情 */
+.crumb { margin: 8px 0; font-size: 13px; }
+.geo-chip { color: var(--gold); font-size: 13px; margin: 0; }
+.concgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.conc { border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: var(--radius); padding: 10px 12px; background: #fff7; }
+.conc-name { font-weight: 700; }
+.conc-def { font-size: 13px; color: var(--ink-2); }
+.excerpt { margin: 12px 0; padding: 12px 14px; border: 1px solid var(--line); border-left: 4px solid var(--cinnabar); background: #fff9; border-radius: var(--radius); }
+.extag { display: inline-block; font-size: 11px; color: #fff; background: var(--cinnabar); border-radius: 3px; padding: 0 6px; margin-right: 8px; vertical-align: 2px; }
+.tasks { padding-left: 20px; }
+.tasks .hint { margin-left: 6px; }
+.action-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+
+/* 村落 */
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 2px solid var(--line); margin: 14px 0; }
+.tabs a { padding: 6px 14px; color: var(--ink-2); border: 1px solid transparent; border-bottom: none; border-radius: 6px 6px 0 0; }
+.tabs a.on { background: var(--paper-2); border-color: var(--line); color: var(--ink); font-weight: 700; }
+.progress-chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+.gtab, .atab, .ctab { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff7; }
+.gtab th, .atab th, .ctab th, .gtab td, .atab td, .ctab td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+.gtab th, .atab th, .ctab th { background: var(--paper-2); width: 130px; white-space: nowrap; }
+.vmap { width: 100%; max-width: 640px; display: block; margin: 0 auto; border: 1px solid var(--line); border-radius: var(--radius); background: #fff7; box-shadow: var(--shadow); }
+.npcgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.npccard { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; background: #fff7; }
+.npc-name { font-weight: 700; font-size: 16px; }
+.npc-role { color: var(--cinnabar); font-size: 12px; margin: 2px 0 6px; }
+.npc-knows { font-size: 12px; color: var(--ink-2); margin-bottom: 8px; }
+.findlist .find { border: 1px dashed var(--line); border-radius: var(--radius); padding: 8px 12px; margin: 6px 0; color: var(--ink-3); }
+.findlist .find.on { border: 1px solid var(--gold); color: var(--ink); background: #fff9; }
+.findlist .find.on b { color: var(--gold); }
+
+/* 地图观察 */
+.mapwrap { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+@media (max-width: 760px) { .mapwrap { grid-template-columns: 1fr; } }
+.sidepanel { border: 1px solid var(--line); border-radius: var(--radius); background: #fff7; padding: 12px; min-height: 200px; box-shadow: var(--shadow); }
+.fnote { color: var(--ink-2); font-size: 14px; }
+.ask { margin: 10px 0 4px; font-size: 14px; }
+.opts { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+.opt { font-size: 14px; }
+.ask-result { margin-top: 8px; padding: 8px 10px; border-radius: var(--radius); font-size: 13px; }
+.ask-result.ok { border: 1px solid var(--green); color: var(--green); background: #f2f5ea; }
+.ask-result.bad { border: 1px solid var(--cinnabar); color: var(--cinnabar-2); background: #f7ece7; }
+.okline { color: var(--green); font-size: 13px; }
+.badline { color: var(--cinnabar-2); font-size: 13px; }
+.taggrid, .tagrow { display: flex; flex-wrap: wrap; gap: 8px; }
+.tagpick { border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: 13px; background: #fff8; cursor: pointer; }
+.tagpick.sm { font-size: 12px; padding: 2px 8px; }
+.tagpick input { vertical-align: -2px; }
+.tagfrom { color: var(--ink-3); font-size: 11px; margin-left: 4px; }
+svg .fm { cursor: pointer; outline: none; }
+svg .fm:focus text, svg .fm:hover text { fill: var(--cinnabar); }
+svg .fm.seen > g { opacity: .95; }
+svg .fm.seen text { fill: var(--green); }
+svg .fm.seen > g:first-child { filter: none; }
+svg .fm.seen circle:first-child, svg .fm.seen rect:first-child { stroke: var(--green); }
+
+/* 访谈 */
+.npctabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 12px; }
+.npctab { border: 1px solid var(--line); background: #fff8; border-radius: var(--radius); padding: 6px 12px; cursor: pointer; font-family: inherit; font-size: 14px; }
+.npctab span { display: block; font-size: 11px; color: var(--ink-3); }
+.npctab.on { border-color: var(--cinnabar); background: var(--paper-2); box-shadow: var(--shadow); }
+.modebadge { font-size: 12px; color: var(--ink-3); margin: 0; }
+.chatwrap { border: 1px solid var(--line); border-radius: var(--radius); background: #fff9; box-shadow: var(--shadow); }
+.chatlog { height: 340px; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.bub { max-width: 86%; }
+.bub .bub-text { padding: 10px 14px; border-radius: 10px; font-size: 15px; white-space: pre-wrap; }
+.bub.me { align-self: flex-end; }
+.bub.me .bub-text { background: var(--cinnabar); color: #fff; border-bottom-right-radius: 2px; }
+.bub.npc { align-self: flex-start; }
+.bub.npc .bub-text { background: var(--paper-2); border: 1px solid var(--line); border-bottom-left-radius: 2px; }
+.bub-sub { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+.ansmeta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+.chatbar { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--line); }
+.chatbar input { flex: 1; border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 12px; font-family: inherit; font-size: 15px; background: #fff; }
+.mat { border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 12px; margin: 8px 0; background: #fff7; }
+.mat-meta { font-size: 12px; color: var(--ink-2); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mat-text { font-size: 14px; margin-top: 4px; }
+
+/* 分析 */
+.score-ring { display: inline-flex; align-items: baseline; border: 2px solid var(--cinnabar); color: var(--cinnabar); border-radius: 50%; width: 72px; height: 72px; align-items: center; justify-content: center; font-size: 22px; }
+.score-ring small { font-size: 12px; margin-left: 2px; }
+.atab tr.ok td { background: #f2f5ea; }
+.atab td i { color: var(--ink-3); }
+.atab td:nth-child(4) { font-weight: 700; }
+
+/* 报告 */
+textarea#report-text { width: 100%; border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; font-family: inherit; font-size: 14px; line-height: 1.8; background: #fff9; }
+.gradebox { border: 1px solid var(--gold); border-radius: var(--radius); background: #fff9; padding: 12px 16px; margin-top: 12px; }
+.grade-score { font-size: 18px; color: var(--gold); font-weight: 700; }
+.reportpre { white-space: pre-wrap; font-family: inherit; border: 1px dashed var(--line); padding: 12px; border-radius: var(--radius); background: #fff9; max-height: 320px; overflow: auto; }
+.demo-note { border: 1px dashed var(--gold); color: var(--gold); background: #fff9; padding: 8px 12px; border-radius: var(--radius); font-size: 13px; }
+
+/* 教师端 */
+.kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 10px 0; }
+.kpi { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; text-align: center; background: #fff7; }
+.kpi b { font-size: 24px; color: var(--cinnabar); display: block; }
+.kpi span { font-size: 12px; color: var(--ink-2); }
+.atab td.mis { font-size: 12px; color: var(--ink-2); max-width: 280px; }
+.formrow { display: flex; gap: 10px; align-items: center; margin: 8px 0; }
+.formrow label { flex: 0 0 84px; font-size: 14px; color: var(--ink-2); }
+.formrow select, .formrow input { flex: 1; border: 1px solid var(--line); border-radius: var(--radius); padding: 7px 10px; font-family: inherit; background: #fff; max-width: 460px; }
+.task, .review { border: 1px solid var(--line); border-radius: var(--radius); background: #fff7; padding: 12px 16px; margin: 10px 0; box-shadow: var(--shadow); }
+.review-head { margin-bottom: 6px; }
+.verdict-in { flex: 1; border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 10px; font-family: inherit; min-width: 200px; }
+
+/* 成就 */
+.lvlbar { height: 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff8; overflow: hidden; }
+.lvl-fill { height: 100%; background: var(--cinnabar); }
+.achgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.ach { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 14px; color: var(--ink-3); background: #fff5; }
+.ach.on { border-color: var(--gold); color: var(--ink); background: #fff9; box-shadow: var(--shadow); }
+.ach-name { font-weight: 700; }
+.ach.on .ach-name { color: var(--gold); }
+.ach-desc { font-size: 12px; }
+
+/* 设置 */
+.promptcard { border: 1px solid var(--line); border-radius: var(--radius); background: #fff7; padding: 12px 16px; margin: 10px 0; }
+.prompt-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.promptpre { white-space: pre-wrap; font-family: "FangSong", "STFangsong", serif; font-size: 13px; border: 1px dashed var(--line); border-radius: var(--radius); padding: 10px; max-height: 220px; overflow: auto; background: #fff9; }
+.foot { text-align: center; color: var(--ink-3); font-size: 12px; margin-top: 40px; }
+
+/* toast */
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--paper); padding: 8px 20px; border-radius: 999px; font-size: 14px; opacity: 0; transition: all .3s; z-index: 99; pointer-events: none; max-width: 90vw; }
+.toast.on { opacity: .95; transform: translateX(-50%) translateY(0); }
+
+@media print { .toast, .btn { display: none; } }
+
+
+/* ============================================================
+ * 质感升级层（夜跑阶段A）：手绘田野手账风
+ * ============================================================ */
+
+/* hero 场景插画与手账元素 */
+.hero-scenewrap { position: relative; margin: 10px auto 4px; max-width: 560px; }
+.heroscene { width: 100%; display: block; filter: sepia(.08); }
+.hero-anno {
+  position: absolute; right: -6px; top: 6px;
+  font-family: "Kaiti SC", "KaiTi", "STKaiti", serif;
+  color: var(--cinnabar); font-size: 13px; line-height: 1.4;
+  writing-mode: vertical-rl; letter-spacing: .18em;
+  border-right: 1px solid var(--cinnabar);
+  padding: 6px 4px 6px 8px; opacity: .85;
+  background: rgba(244, 239, 226, .6);
+}
+.tapenote {
+  position: absolute; left: -8px; bottom: -6px;
+  background: rgba(138, 109, 47, .16);
+  border-left: 3px solid rgba(138, 109, 47, .5);
+  border-right: 3px solid rgba(138, 109, 47, .5);
+  color: var(--ink-2); font-size: 12px; padding: 3px 16px;
+  transform: rotate(-2.5deg); letter-spacing: .2em;
+}
+.hero-saying { margin-top: 16px; }
+
+/* 章节卡：纸纹 + 印章 + 微动效 */
+.chcard {
+  position: relative; overflow: hidden;
+  background-image: repeating-linear-gradient(0deg, transparent 0 26px, rgba(120, 100, 60, .06) 26px 27px);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.chcard:hover { transform: translateY(-3px); box-shadow: 0 2px 0 rgba(90, 82, 69, .18), 0 14px 26px -12px rgba(60, 50, 30, .45); text-decoration: none; }
+.chcard:hover .chno { transform: rotate(-2deg) scale(1.06); }
+.chno {
+  background: var(--cinnabar); color: #f7f1e1;
+  border: none; border-radius: 3px;
+  box-shadow: inset 0 0 0 1px rgba(255, 245, 225, .35), 0 2px 5px -2px rgba(120, 40, 30, .6);
+  transform: rotate(-3deg);
+  transition: transform .18s ease;
+  font-weight: 700;
+}
+.stamp-read {
+  position: absolute; top: 8px; right: 10px;
+  border: 2px solid var(--green); color: var(--green);
+  padding: 0 7px; font-size: 12px; letter-spacing: .3em;
+  transform: rotate(7deg); border-radius: 3px;
+  background: rgba(255, 255, 255, .4); opacity: .9;
+  font-weight: 700;
+}
+
+/* 村落卡：脊色 + 悬停 */
+.vilcard { position: relative; border-left: 5px solid var(--spine, #7a5a38); background-image: repeating-linear-gradient(0deg, transparent 0 26px, rgba(120, 100, 60, .06) 26px 27px); transition: transform .18s ease, box-shadow .18s ease; }
+.vilcard:hover { transform: translateY(-3px); box-shadow: 0 2px 0 rgba(90, 82, 69, .18), 0 14px 26px -12px rgba(60, 50, 30, .45); text-decoration: none; }
+.vilcard::after {
+  content: "村"; position: absolute; right: 10px; top: 10px;
+  width: 26px; height: 26px; line-height: 26px; text-align: center;
+  background: var(--spine, #7a5a38); color: #f7f1e1;
+  border-radius: 3px; font-size: 13px; transform: rotate(6deg);
+  opacity: .9;
+}
+
+/* 按钮微动效 */
+.btn { transition: transform .15s ease, box-shadow .15s ease, background .15s ease; }
+.btn.primary:hover { transform: translateY(-1px); box-shadow: 0 6px 14px -8px rgba(140, 40, 30, .7); }
+
+/* 地图图例（HTML，随图渲染） */
+.maplegend { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; margin: 8px auto 0; max-width: 640px; font-size: 12px; color: var(--ink-2); }
+.maplegend .lg { display: inline-flex; align-items: center; gap: 5px; }
+.maplegend .lg i { width: 12px; height: 12px; border-radius: 2px; border: 1px solid #3d3428; display: inline-block; }
+
+/* 标题手账感：双线尾饰 */
+.sec h2 { display: flex; align-items: center; gap: 10px; }
+.sec h2::after { content: ""; flex: 1; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); height: 3px; opacity: .7; }
+
+/* 表格斑马纹 */
+.atab tr:nth-child(even) td, .ctab tr:nth-child(even) td, .gtab tr:nth-child(even) td { background: rgba(255, 255, 255, .5); }
+
+/* ============================================================
+ * 移动端适配（≤760px）
+ * ============================================================ */
+@media (max-width: 760px) {
+  #app { padding: 12px 10px 50px; }
+  h1 { font-size: 21px; }
+  .hero { padding: 24px 10px 18px; }
+  .hero h1 { font-size: 30px; letter-spacing: .12em; }
+  .hero::after { width: 36px; height: 36px; line-height: 36px; font-size: 12px; right: 10px; top: 10px; }
+  .hero-anno { font-size: 11px; right: -2px; }
+  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; }
+  .tabs a { white-space: nowrap; flex: 0 0 auto; }
+  .gtab, .atab, .ctab { display: block; overflow-x: auto; white-space: nowrap; }
+  .chatlog { height: 300px; padding: 10px; }
+  .bub { max-width: 94%; }
+  .score-ring { width: 60px; height: 60px; font-size: 18px; }
+  .hero-nav { gap: 6px; }
+  .btn { padding: 6px 12px; font-size: 13px; }
+  .review .action-row { flex-direction: column; align-items: stretch; }
+  .verdict-in { min-width: 0; }
+  .kpi b { font-size: 20px; }
+  .reportpre { max-height: 220px; }
+}
+
+
+/* ============================================================
+ * 批注框与打印样式（夜跑阶段C · 方向一/方向六）
+ * ============================================================ */
+.notebox { margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 6px; }
+.notebox summary { font-size: 12px; color: var(--gold); cursor: pointer; user-select: none; }
+.notebox .note-text {
+  width: 100%; min-height: 64px; margin-top: 6px;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 8px 10px; font-family: "Kaiti SC", "KaiTi", "STFangsong", serif;
+  font-size: 14px; line-height: 1.7; background: #fffdf6; color: var(--ink);
+  resize: vertical;
+}
+details.notebox { margin: 8px 0 0; }
+
+/* 打印：只输出 #print-sheet */
+#print-sheet { display: none; }
+@media print {
+  body * { visibility: hidden !important; }
+  #print-sheet, #print-sheet * { visibility: visible !important; }
+  #print-sheet {
+    display: block !important; position: absolute; inset: 0 auto auto 0;
+    width: 100%; background: #fff; color: #111; padding: 24px;
+  }
+  #print-sheet h1 { font-size: 16pt; margin: 0 0 12px; border-bottom: 2px solid #333; padding-bottom: 6px; }
+  #print-sheet .ps-line {
+    white-space: pre-wrap; font-family: "Noto Serif SC", "SimSun", serif;
+    font-size: 12pt; line-height: 1.8; margin: 0 0 4px;
+    border: none; background: none; padding: 0;
+  }
+  .toast, .btn { display: none !important; }
+}
+
+</style>
+</head>
+<body>
+  <div id="app"><noscript>本站需要启用 JavaScript。</noscript></div>
+  <script>
+/* ============================================================
+ * 《乡土中国》数据层：14 章 × (导读 / 核心概念 / 原文节选 / 探究任务)
+ * 纪律：excerpts.text 必须逐字摘自 资料/底本合并/gx_*.txt（国学导航底本），
+ *       test/test.js 对每条节选做底本子串回归，失配即红。
+ * 节选标签 tag：a=开篇立论 b=经典喻证 c=空间/地理关联 d=结论句
+ * ============================================================ */
+(function (global) {
+  'use strict';
+
+  const CHAPTERS = [
+    {
+      id: 'c01', no: 1, title: '乡土本色', theme: '定居·熟人社会', village: 'v1',
+      geo: '聚落地理 · 聚落区位与形态',
+      blurb: '从基层上看去，中国社会是乡土性的——不流动的泥土长出熟人社会。',
+      guide: '全书开篇立论。"土气"不是贬义，而是"半身插入土里"的不流动：种地的人搬不动地，于是聚村而居、生于斯死于斯，长出一个没有陌生人的"熟悉"社会。本章是全部后续概念的地基——先记住"不流动"三个字。',
+      concepts: [
+        { id: 'c01a', name: '土气', def: '直接取资于土地、搬不动地的不流动状态，是乡土社会的底色。' },
+        { id: 'c01b', name: '聚村而居', def: '小农经营、水利合作、安全保卫、土地继承四因造成的中国农民聚居形态。' },
+        { id: 'c01c', name: '熟人社会', def: '生于斯、死于斯，每个孩子都在人家眼中看着长大的"熟悉"社会。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '从基层上看去，中国社会是乡土性的。' },
+        { tag: 'b', text: '农业和游牧或工业不同，它是直接取资于土地的。游牧的人可以逐水草而居，飘忽无定；做工业的人可以择地而居，迁移无碍；而种地的人却搬不动地，长在土里的庄稼行动不得，侍候庄稼的老农也因之象是半身插入了土里，土气是因为不流动而发生的。' },
+        { tag: 'c', text: '中国农民聚村而居的原因大致说来有下列几点：一、每家所耕的面积小，所谓小农经营，所以聚在一起住，住宅和农场不会距离得过分远。二、需要水利的地方，他们有合作的需要，在一起住，合作起来比较方便。三、为了安全，人多了容易保卫。四、土地平等继承的原则下，兄弟分别继承祖上的遗业，使人口在一地方一代一代的积起来，成为相当大的村落。' },
+        { tag: 'd', text: '乡土社会在地方性的限制下成了生于斯、死于斯的社会。常态的生活是终老是乡。假如在一个村子里的人都是这样的话，在人和人的关系上也就发生了一种特色，每个孩子都是在人家眼中看着长大的，在孩子眼里周围的人也是从小就看惯的。这是一个“熟悉”的社会，没有陌生人的社会。' },
+        { tag: 'd', text: '“我们大家是熟人，打个招呼就是了，还用得着多说么？”——这一类的话已经成了我们现代社会的阻碍。现代社会是个陌生人组成的社会，各人不知道各人的底细，所以得讲个明白；还要怕口说无凭，画个押，签个字。这样才发生法律。在乡土社会中法律是无从发生的。“这不是见外了么？”乡土社会里从熟悉得到信任。' }
+      ],
+      tasks: [
+        { q: '对照"聚村而居"的四条原因，在本村地图上各找一处空间证据（如：住宅紧挨农田＝小农经营）。', hint: '空间观察页可点要素取证。' },
+        { q: '问两位村民：哪些事"打个招呼就是了"，哪些事非立字据不可？把回答记进素材库。', hint: '访谈页有素材自动标注。' }
+      ]
+    },
+    {
+      id: 'c02', no: 2, title: '文字下乡', theme: '面对面·文字的限度', village: 'v4',
+      geo: '文化地理 · 文化传播与载体',
+      blurb: '乡下人不识字不是"愚"，是面对面的社群根本用不着文字。',
+      guide: '费孝通先拆"愚"字：城里孩子捉蚱蜢捉不过乡下孩子，可见不是智力问题，是"有没有机会学"的问题。再立一个反常识结论——乡土社会是面对面的社群，连语言都是不得已的工具，何况文字。观察你驻的村：哪里"必须写字"？',
+      concepts: [
+        { id: 'c02a', name: '愚非智力问题', def: '识字不识字并非愚不愚的标准，智力是学习的能力，乡下人缺的是机会与需要。' },
+        { id: 'c02b', name: '面对面的社群', def: '生活上互相合作的人天天见面，可用声气辨人，直接接触无需文字传情。' },
+        { id: 'c02c', name: '文字的限度', def: '文字是间接的象征工具，面对面时不但多余，还可能词不达意引起误会。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '乡下人在城里人眼睛里是“愚”的。' },
+        { tag: 'b', text: '智力是学习的能力。如果一个人没有机会学习，不论他有没有学习的能力还是学不到什么的。' },
+        { tag: 'c', text: '他们生活上互相合作的人都是天天见面的。在社会学上我们称之作Facetofacegroup，直译起来是面对面的社群。' },
+        { tag: 'b', text: '文字发生之初是“结绳记事”，需要结绳来记事是为了在空间和时间中人和人的接触发生了阻碍。' },
+        { tag: 'd', text: '这样说来，在乡土社会里不用文字绝不能说是“愚”的表现了。面对面的往来是直接接触，为什么舍此比较完善的语言而采取文字呢？' },
+        { tag: 'd', text: '语言本是用声音来表达的象征体系。' }
+      ],
+      tasks: [
+        { q: '访谈识字与不识字的村民各一位：一生中哪些场合"非用字不可"（地契、红白帖、账目）？', hint: '把两人的差别记进素材库。' },
+        { q: '在村里找三处"必须写字"的地方（村务栏、种子袋、门联），拍照式记录进报告。', hint: '报告页可引用素材。' }
+      ]
+    },
+    {
+      id: 'c03', no: 3, title: '再论文字下乡', theme: '时间阻隔·经验传承', village: 'v4',
+      geo: '文化地理 · 文化传承机制',
+      blurb: '不流动的乡土社会，祖辈的经验就是孙辈的剧本——一套戏文演到底。',
+      guide: '上章拆空间阻隔，这章拆时间阻隔：个人的今昔之隔靠记忆，社会的世代之隔靠象征体系。乡土社会世代黏着、反复重演"同一套戏文"，经验只需保存无需累积——所以"词"不能少，"文字"却可有可无。去村里验证：年轻人会不会说老话？',
+      concepts: [
+        { id: 'c03a', name: '时间阻隔', def: '个人的今昔之隔与社会的世代之隔，都要靠象征体系搭桥。' },
+        { id: 'c03b', name: '记忆桥梁', def: '词是最主要的桥梁，人的当前是靠记忆保留下来的"过去"的累积。' },
+        { id: 'c03c', name: '一套戏文', def: '历世不移的社会里，经验同一方式反复重演，只需保存不必累积。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '所谓时间上的阻隔有两方面，一方面是个人的今昔之隔，一方面是社会的世代之隔。' },
+        { tag: 'b', text: '人的当前是整个靠记忆所保留下来的“过去”的累积。' },
+        { tag: 'b', text: '在这关联中，词是最主要的桥梁。' },
+        { tag: 'd', text: '一切文化中不能没有“词”，可是不一定有“文字”。我这样说是因为我想说明的乡土社会，大体上，是没有“文字”的社会。' },
+        { tag: 'c', text: '同一戏台上演着同一的戏，这个班子里演员所需要记得的，也只有一套戏文。' }
+      ],
+      tasks: [
+        { q: '请最年长与最年轻的村民各讲一件农活的学法（插秧、嫁接、看云识天气），验证"同一套戏文"。', hint: '访谈页分别找老农与返乡青年。' },
+        { q: '收集本村"老话"三条，问年轻人还懂不懂——记录传承的断与不断。', hint: '可请教书先生解读。' }
+      ]
+    },
+    {
+      id: 'c04', no: 4, title: '差序格局', theme: '波纹·社会结构', village: 'v3',
+      geo: '人文地理 · 社会空间结构',
+      blurb: '西洋社会是捆柴，中国社会是丢石子——一圈圈推出去的波纹。',
+      guide: '全书最著名的概念。西洋团体格局像捆柴，界限分明；中国乡土社会像石子入水，以己为中心推出一圈圈波纹，愈推愈远、愈推愈薄。亲属如此，地缘也如此——街坊的范围依着中心势力厚薄而定。客家围屋的同心圆，就是这格局的立体模型。',
+      concepts: [
+        { id: 'c04a', name: '差序格局', def: '以己为中心、像石子投水推出波纹的社会结构，愈推愈远也愈推愈薄。' },
+        { id: 'c04b', name: '团体格局', def: '西洋社会像田里捆柴，团体界限分明，成员对团体的关系相同。' },
+        { id: 'c04c', name: '攀关系讲交情', def: '差序格局中伸缩自如的圈子：有势力人家街坊遍及全村，穷苦人家只有比邻两三家。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '在乡村工作者看来，中国乡下老最大的毛病是“私”。' },
+        { tag: 'b', text: '西洋的社会有些象我们在田里捆柴，几根稻草束成一把，几把束成一扎，几扎束成一捆，几捆束成一挑。' },
+        { tag: 'b', text: '我们的格局不是一捆一捆扎清楚的柴，而是好象把一块石头丢在水面上所发生的一圈圈推出去的波纹。每个人都是他社会影响所推出去的圈子的中心。被圈子的波纹所推及的就发生联系。' },
+        { tag: 'd', text: '在西洋社会里争的是权利，而在我们却是攀关系、讲交情。' },
+        { tag: 'd', text: '伦是什么呢？我的解释就是从自己推出去的和自己发生社会关系的那一群人里所发生的一轮轮波纹的差序。' }
+      ],
+      tasks: [
+        { q: '给自家画一张"波纹图"：最里圈、次圈、外圈各写五个人，标出每圈的"道德义务"差别。', hint: '可引用报告生成器。' },
+        { q: '问一次本村红白事的"帮忙圈"：谁必须来、谁可来可不来？对照"势力厚薄定圈子"。', hint: '村长与返乡青年视角不同。' }
+      ]
+    },
+    {
+      id: 'c05', no: 5, title: '系维着私人的道德', theme: '克己·私人道德网络', village: 'v2',
+      geo: '人文地理 · 地域文化与社会规范',
+      blurb: '差序格局里没有统一的"团体道德"，只有一根根绳子上的孝悌忠信。',
+      guide: '团体格局的道德挂在"神"与"权利"上；差序格局的道德从"己"出发，克己复礼是出发点，每根私人关系的绳子上系一种道德要素：亲子是孝弟，朋友是忠信。本章解释了为什么乡土社会"熟人的道德"压倒"公共的规则"——去问村民"什么人算好人"。',
+      concepts: [
+        { id: 'c05a', name: '克己复礼', def: '差序格局中道德体系的出发点，壹是皆以修身为本。' },
+        { id: 'c05b', name: '私人道德要素', def: '从己推出的每根私人联系各系一种道德：亲子为孝弟，朋友为忠信。' },
+        { id: 'c05c', name: '道德随格局而异', def: '道德观念的内容依该社会的格局决定，没有超乎私人关系的统一道德。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '中国乡土社会的基层机构是一种我所谓“差序格局”，是一个“一根根私人联系所构成的网络”。' },
+        { tag: 'b', text: '道德观念是在社会里生活的人自觉应当遵守社会行为规范的信念。' },
+        { tag: 'd', text: '在以自己作中心的社会关系网络中，最主要的自然是“克己复礼”，“壹是皆以修身为本。”——这是差序格局中道德体系的出发点。' },
+        { tag: 'b', text: '从己向外推以构成的社会范围是一根根私人联系，每根绳子被一种道德要素维持着。' },
+        { tag: 'b', text: '“孝弟也者其为仁之本欤。”' }
+      ],
+      tasks: [
+        { q: '问三位村民"什么样的人算好人"，把答案词与孝、悌、忠、信一一对照。', hint: '不同身份的村民答案会不同。' },
+        { q: '观察一次帮工或换工：谁帮谁、如何回报——看道德要素如何"拉住绳子"。', hint: '老农最清楚换工规矩。' }
+      ]
+    },
+    {
+      id: 'c06', no: 6, title: '家族', theme: '事业社群·小家族', village: 'v3',
+      geo: '聚落地理 · 家庭制度与代际结构',
+      blurb: '中国的家不是生育单位是事业单位——主轴在父子之间，不在夫妻之间。',
+      guide: '费孝通造了个新词"小家族"：中国的家沿父系单系扩大，结构上是氏族。它不限于生育，更担着政治、经济、宗教等功能——家的大小依事业大小而定。土楼里同居共灶的几百口人，就是这个事业社群的活标本。问一问：家里大事谁拍板？',
+      concepts: [
+        { id: 'c06a', name: '小家族', def: '中国的家沿父系单系扩大，结构上是氏族性的事业社群。' },
+        { id: 'c06b', name: '事业组织', def: '家的大小依着事业的大小而决定，政治、经济、宗教等功能都可由家族担负。' },
+        { id: 'c06c', name: '生育社群', def: '家庭在人类学上的基本界说：亲子所构成的、暂时的生育社群。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '比较确当的应该称中国乡土社会基本社群作“小家族”。' },
+        { tag: 'b', text: '家庭这概念在人类学上有明确的界说：这是个亲子所构成的生育社群。' },
+        { tag: 'c', text: '中国的家扩大的路线是单系的，就是只包括父系这一方面' },
+        { tag: 'b', text: '中国的家是一个事业组织，家的大小是依着事业的大小而决定。' },
+        { tag: 'd', text: '依人类学上的说法，氏族是一个事业组织，再扩大就可以成为一个部落。' }
+      ],
+      tasks: [
+        { q: '查本村祠堂、族田、公山的账目与分工由谁掌管，列出家族"事业清单"。', hint: '族长NPC知道全部账目。' },
+        { q: '问三户人家"家里大事谁拍板"：父子主轴还是夫妻主轴？', hint: '对照"纪律排斥私情"一章。' }
+      ]
+    },
+    {
+      id: 'c07', no: 7, title: '男女有别', theme: '感情定向·两性隔膜', village: 'v2',
+      geo: '文化地理 · 社会性别与空间',
+      blurb: '乡土社会怕激动：男女之间隔一层，是为求安定的制度安排。',
+      guide: '感情是破坏与创造的力量，激动改变关系；要稳定就靠"了解"而非"感情"。乡土社会是亚普罗式的（接受既成秩序），现代是浮士德式的（在冲突中创造）。"男女有别"于是成了制度：两性之间保持隔膜，社群靠同性组合运转。看看村里公共空间，男女各在哪片？',
+      concepts: [
+        { id: 'c07a', name: '感情定向', def: '个人发展感情的方向受文化规定，稳定的社会关系靠了解而非感情。' },
+        { id: 'c07b', name: '亚普罗式', def: '认定宇宙有完善秩序、人安于其位维持它——乡土社会的文化模式。' },
+        { id: 'c07c', name: '男女有别的隔膜', def: '两性间保持距离以避免激动，是社会为求安定作出的安排。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '我用感情定向一词来指一个人发展他感情的方向，而这方向却受着文化的规定' },
+        { tag: 'b', text: '感情的淡漠是稳定的社会关系的一种表示。' },
+        { tag: 'd', text: '稳定社会关系的力量，不是感情，而是了解。' },
+        { tag: 'b', text: '乡土社会是亚普罗式的，而现代社会是浮士德式的。' },
+        { tag: 'c', text: '乡土社会中阻碍着共同生活的人充分了解的却是个人生理上的差别。' }
+      ],
+      tasks: [
+        { q: '观察村里公共空间：戏坪、祠堂、田间、灶间，男女活动的分区在哪里？', hint: '绣娘与老农答案互补。' },
+        { q: '问媒人或长辈：说亲的规矩有哪些"避讳"？记录进素材库。', hint: '江南村的水路社交最典型。' }
+      ]
+    },
+    {
+      id: 'c08', no: 8, title: '礼治秩序', theme: '礼·传统·教化', village: 'v1',
+      geo: '文化地理 · 社会规范与秩序',
+      blurb: '礼不是文明礼貌，是社会公认合式的行为规范，靠传统维持。',
+      guide: '"人治"是个误称——礼治与法治的区别不在人与法，而在维持秩序的力量：法律靠国家权力，礼靠传统。传统是社会累积的经验，在变迁慢的社会里灵验有效，于是人们对它生出敬畏，"照办"成了习惯。村口老槐树下的规矩，就是活的礼治。',
+      concepts: [
+        { id: 'c08a', name: '礼', def: '社会公认合式的行为规范，按仪式做即是"礼"。' },
+        { id: 'c08b', name: '传统', def: '社会所累积的经验，是维持礼这种规范的力量，无需有形权力机构。' },
+        { id: 'c08c', name: '敬畏与灵验', def: '依照着做就有福、不依照会出毛病的信念，使传统获得主动服膺。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '法治其实是“人依法而治”，并非没有人的因素。' },
+        { tag: 'd', text: '礼是社会公认合式的行为规范。合于礼的就是说这些行为是做得对的，对是合式的意思。' },
+        { tag: 'b', text: '礼和法不相同的地方是维持规范的力量。法律是靠国家的权力来推行的。“国家”是指政治的权力，在现代国家没有形成前，部落也是政治权力。而礼却不需要这有形的权力机构来维持。维持礼这种规范的是传统。' },
+        { tag: 'b', text: '传统是社会所累积的经验。' },
+        { tag: 'd', text: '礼是按着仪式做的意思。礼字本来是从豊从示。豊是一种祭器，示是指一种仪式。' }
+      ],
+      tasks: [
+        { q: '找出一件"不用人罚、大家自觉照办"的老规矩，追问它是从谁那辈传下来的。', hint: '老支书能讲出规矩的来历。' },
+        { q: '完整观察一次祭祖或庙会：流程、分工、忌讳各是什么？', hint: '空间观察页有祠堂要素。' }
+      ]
+    },
+    {
+      id: 'c09', no: 9, title: '无讼', theme: '调解·教化优先', village: 'v1',
+      geo: '人文地理 · 基层治理',
+      blurb: '打官司是可羞的事，评理的公堂不在县衙在老槐树下。',
+      guide: '礼治社会假定人人知礼，打官司等于宣布有人"教化不够"。于是乡土社会发明了调解：会说话的乡绅把双方各骂一顿，"这简直是丢我们村子里脸的事！"——骂完就和解了。这是教育过程，不是判决过程。去问村里最近一次"评理"。',
+      concepts: [
+        { id: 'c09a', name: '无讼', def: '在礼治秩序中打官司是可羞之事，表示教化不够。' },
+        { id: 'c09b', name: '调解即教化', def: '乡村调解是教育过程，由乡绅长老依"应当"教训双方，令其和解。' },
+        { id: 'c09c', name: '评理', def: '调解的旧名词，主持人靠礼俗权威而非法律条文。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '在乡土社会里，一说起“讼师”，大家会联想到“挑拨是非”之类的恶行。' },
+        { tag: 'b', text: '讼师改称律师，更加大字在上；打官司改称起诉；包揽是非改称法律顾问——这套名词的改变正代表了社会性质的改变，也就是礼治社会变为法治社会。' },
+        { tag: 'd', text: '一个负责地方秩序的父母官，维持礼治秩序的理想手段是教化，而不是折狱。' },
+        { tag: 'b', text: '所谓礼治就是对传统规则的服膺。' },
+        { tag: 'd', text: '维持礼俗的力量不在身外的权力，而是在身内的良心。' },
+        { tag: 'c', text: '在乡村里所谓调解，其实是一种教育过程。' },
+        { tag: 'c', text: '调解是个新名词，旧名词是评理。' }
+      ],
+      tasks: [
+        { q: '问村里最近一次"评理"：谁主持？在哪里？怎么收场？', hint: '老槐树下听老支书讲。' },
+        { q: '问近十年村里有没有人打过官司、大家怎么看——观察观念的松动。', hint: '返乡青年会给你新答案。' }
+      ]
+    },
+    {
+      id: 'c10', no: 10, title: '无为政治', theme: '横暴权力·同意权力', village: 'v4',
+      geo: '政治地理 · 权力与国家',
+      blurb: '天高皇帝远：农业剩余撑不起横暴权力，乡土社会挂名专制实则无为。',
+      guide: '权力有两副面孔：从社会冲突发生的横暴权力（压迫、上下之别），从社会合作发生的同意权力（分工、权利义务）。农业剩余有限，横暴权力养不肥——皇权在历史经验里找到"无为"的生存价值；小农经济又让同意权力小到"关门"程度。于是基层实际是松弛的。',
+      concepts: [
+        { id: 'c10a', name: '横暴权力', def: '从社会冲突中发生，压迫性质的上下之别，是统治者维持支配的手段。' },
+        { id: 'c10b', name: '同意权力', def: '从社会分工与合作中发生，干涉与被干涉互为权利义务。' },
+        { id: 'c10c', name: '无为政治', def: '农业剩余有限、小农经济自给，使基层权力松弛微弱、挂名而无为。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '权力是维持这关系所必需的手段，它是压迫性质的，是上下之别。' },
+        { tag: 'b', text: '权力之所以引诱人，最主要的应当是经济利益。' },
+        { tag: 'c', text: '东方的农业平原正是帝国的领域，但是农业的帝国主义是虚弱的' },
+        { tag: 'd', text: '为了皇权自身的维持，在历史的经验中，找到了“无为”的生存价值，确立了无为政治的理想。' },
+        { tag: 'c', text: '乡土社会是个小农经济。在经济上每个农家，除了盐铁之外，必要时很可关门自给。' },
+        { tag: 'd', text: '在人民实际生活上看，是松弛和微弱的，是挂名的，是无为的。' }
+      ],
+      tasks: [
+        { q: '问老人："旧社会官府管到村里哪些事？"收粮？断案？修河？画出权力边界。', hint: '寨老记得赶场坝的旧章程。' },
+        { q: '收集带"官"字的地名（官道、官庄、官田），考它的来历。', hint: '银匠铺在官道旁。' }
+      ]
+    },
+    {
+      id: 'c11', no: 11, title: '长老统治', theme: '教化权力·长幼之序', village: 'v4',
+      geo: '人文地理 · 代际关系与权威',
+      blurb: '既非民主也非横暴：乡土社会的基层权力是教化性的，握在长者手里。',
+      guide: '横暴权力受经济限制，同意权力范围有限，基层真正管事的是什么权力？答案是教化权力：文化先于个人存在，被教化者没有选择机会——它既非民主又非专制。长幼之序点出它的效力：凡是比你年长的都可以是"师"。但文化一不稳定，教化权力就跟着缩小。',
+      concepts: [
+        { id: 'c11a', name: '教化权力', def: '发生于社会继替、既非同意又非横暴的爸爸式权力。' },
+        { id: 'c11b', name: '长幼之序', def: '年长者先经历过你的问题，故握有教化权力；亲属称谓里长幼是基本原则。' },
+        { id: 'c11c', name: '社会继替', def: '社会成员新陈代谢的过程，教化权力从中发生。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '这样发生的权力并非同意，又非横暴。' },
+        { tag: 'b', text: '文化和政治的区别是在这里：凡是被社会不成问题地加以接受的规范，是文化性的；当一个社会还没有共同接受一套规范，各种意见纷呈，求取临时解决办法的活动是政治。' },
+        { tag: 'b', text: '在变化很少的社会里，文化是稳定的，很少新的问题，生活是一套传统的办法。' },
+        { tag: 'd', text: '“苛政猛于虎”的政是横暴性的，“为政以德”的政是教化性的。“为民父母”是爸爸式权力的意思。' },
+        { tag: 'c', text: '凡是比自己年长的，他必定先发生过我现在发生的问题，他也就可以是我的“师”了。' },
+        { tag: 'd', text: '文化不稳定，传统的办法并不足以应付当前的问题时，教化权力必然跟着缩小' }
+      ],
+      tasks: [
+        { q: '问寨老（或族老）断事凭什么资格：年龄、辈分还是经验？', hint: '鼓楼下的 seats 有讲究。' },
+        { q: '举一件年轻人不服老规矩的实例，分析教化权力缩小的迹象。', hint: '返乡青年与歌师观点相左。' }
+      ]
+    },
+    {
+      id: 'c12', no: 12, title: '血缘和地缘', theme: '身份社会·契约社会', village: 'v2',
+      geo: '经济地理 · 市场与交换',
+      blurb: '血缘是身份社会的基础，地缘却是契约社会的基础——从人情到算账。',
+      guide: '血缘决定的权利义务不容选择，稳定社会里"地缘不过是血缘的投影"。亲密社群靠互欠人情维系，最怕算账、最怕清算——所以商业难在血亲间发生，"钱上往来"被推向集市与外乡人：地缘、契约、理性算计从血缘的缝隙里长出来。查查村里的外来户与集市。',
+      concepts: [
+        { id: 'c12a', name: '血缘继替', def: '权利义务依亲属关系决定，职业、身分、财富皆可血缘继替，不容个人选择。' },
+        { id: 'c12b', name: '地缘投影', def: '稳定社会中地缘是血缘的投影，血缘和地缘的合一是社区原始状态。' },
+        { id: 'c12c', name: '人情与契约', def: '亲密社群靠拖欠未了的人情团结，算账即生分；契约社会的基础在地缘。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '血缘的意思是人和人的权利和义务根据亲属关系来决定。' },
+        { tag: 'b', text: '父死子继：农人之子恒为农，商人之子恒为商——那是职业的血缘继替；贵人之子依旧贵——那是身分的血缘继替' },
+        { tag: 'b', text: '血缘所决定的社会地位不容个人选择。' },
+        { tag: 'c', text: '在稳定的社会中，地缘不过是血缘的投影，不分离的。“生于斯，死于斯”把人和地的因缘固定了。' },
+        { tag: 'd', text: '血缘和地缘的合一是社区的原始状态。' },
+        { tag: 'c', text: '我常在各地的村子里看到被称为“客边”“新客”“外村人”等的人物。' },
+        { tag: 'b', text: '亲密社群的团结性就倚赖于各分子间都相互的拖欠着未了的人情。' }
+      ],
+      tasks: [
+        { q: '查本村外来户：姓什么、几代迁来、凭什么算"自己人"？', hint: '船匠祖上就是"客边"。' },
+        { q: '做一次买卖观察：与亲戚交易能不能当场结清、讲不讲价？', hint: '河街市集与走亲路线分开看。' }
+      ]
+    },
+    {
+      id: 'c13', no: 13, title: '名实的分离', theme: '时势权力·注释', village: 'v2',
+      geo: '人文地理 · 社会变迁',
+      blurb: '表面无违、暗中改内容："注释"是乡土社会缓慢变迁的独特方式。',
+      guide: '第四种权力——时势权力——发生在激烈变迁中；乡土社会安定，最难出"英雄"，变迁靠"注释"完成：表面上承认传统的形式，内容却经注释而改变，结果名实分离、口是心非。找一件"说法没变、做法变了"的事，你就是给"注释"拍照的人。',
+      concepts: [
+        { id: 'c13a', name: '时势权力', def: '发生于激烈社会变迁中的第四种权力，最不发达于安定社会。' },
+        { id: 'c13b', name: '注释', def: '维持长老权力的形式而注入变动的内容，反对被时间冲淡而成注释。' },
+        { id: 'c13c', name: '名实分离', def: '注释引起名实之间极大的分离，表面无违而事实被歪曲。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '但是事实上完全静止的社会是不存在的，乡土社会不过比现代社会变得慢而已。' },
+        { tag: 'b', text: '社会继替是指人物在固定的社会结构中的流动；社会变迁却是指社会结构本身的变动。' },
+        { tag: 'b', text: '现在我又想提出第四种权力，这种权力发生在激烈的社会变迁过程之中。' },
+        { tag: 'c', text: '乡土社会，当它的社会结构能答复人们生活的需要时，是一个最容易安定的社会，因之它也是一个很少“领袖”和“英雄”的社会。' },
+        { tag: 'd', text: '注释是维持长老权力的形式而注入变动的内容。' },
+        { tag: 'd', text: '注释的变动方式可以引起名实之间极大的分离。' }
+      ],
+      tasks: [
+        { q: '找一件"说法没变、做法变了"的事（彩礼、葬仪、分家），给"注释"拍照存证。', hint: '绣娘手里的陪嫁花样变了。' },
+        { q: '问一位"新办法"提出者：老人是怎么接受的？谁改了口？', hint: '民宿主的生意就是活案例。' }
+      ]
+    },
+    {
+      id: 'c14', no: 14, title: '从欲望到需要', theme: '欲望·计划·理性', village: 'v3',
+      geo: '经济地理 · 农业决策与区域发展',
+      blurb: '乡土社会靠欲望行事恰合生存条件；现代社会先有需要、再做计划。',
+      guide: '全书收官。乡土社会里欲望经文化陶冶，"好吃"恰是"营养"——天工而非人力；环境一变，盲目试错代价高昂，人类于是走出乡土：先有"需要"，再讲"计划"。这是社会变迁的里程碑，也是乡村振兴要读透的一章：哪些账是老经验算的，哪些账要新算法？',
+      concepts: [
+        { id: 'c14a', name: '欲望', def: '文化事实而非生物事实，是人造下来教人这样想的，规定行为方向。' },
+        { id: 'c14b', name: '需要与计划', def: '现代社会中欲望不再做行为指导，发生"需要"，因之有"计划"。' },
+        { id: 'c14c', name: '文化陶冶的印合', def: '乡土社会中欲望经文化陶冶恰印合于生存条件，是天工而非人力。' }
+      ],
+      excerpts: [
+        { tag: 'a', text: '在乡土社会人可以靠欲望去行事，而在现代社会中欲望并不能做人们行为的指导了，发生“需要”，因之有“计划”。从欲望到需要是社会变迁中一个很重要的里程碑' },
+        { tag: 'b', text: '欲望规定了人类行为的方向' },
+        { tag: 'd', text: '欲望并非生物事实，而是文化事实。我说它是文化事实，意思是人造下来教人这样想的。' },
+        { tag: 'b', text: '譬如说，北方人有吃大蒜的欲望，并不是遗传的，而是从小养成的。' },
+        { tag: 'c', text: '自觉的欲望是文化的命令。' },
+        { tag: 'd', text: '在乡土社会中欲望经了文化的陶冶可以作为行为的指导，结果是印合于生存的条件。' }
+      ],
+      tasks: [
+        { q: '问三户农家为什么种这种作物/养这种牲畜——把"好吃""好卖""祖上传的"分类记账。', hint: '梯田上的老农与银匠答案不同。' },
+        { q: '找村里最近一次"有计划的工程"（修渠、大棚、迁市场），问这账是谁算的。', hint: '围屋理事会有分工表。' }
+      ]
+    }
+  ];
+
+  // 每日一句（均取自上述节选原文）
+  const SAYINGS = [
+    '从基层上看去，中国社会是乡土性的。',
+    '土气是因为不流动而发生的。',
+    '这是一个“熟悉”的社会，没有陌生人的社会。',
+    '在乡土社会里不用文字绝不能说是“愚”的表现了。',
+    '同一戏台上演着同一的戏，这个班子里演员所需要记得的，也只有一套戏文。',
+    '我们的格局不是一捆一捆扎清楚的柴，而是好象把一块石头丢在水面上所发生的一圈圈推出去的波纹。',
+    '在西洋社会里争的是权利，而在我们却是攀关系、讲交情。',
+    '从己向外推以构成的社会范围是一根根私人联系，每根绳子被一种道德要素维持着。',
+    '中国的家是一个事业组织，家的大小是依着事业的大小而决定。',
+    '稳定社会关系的力量，不是感情，而是了解。',
+    '礼是社会公认合式的行为规范。',
+    '维持礼俗的力量不在身外的权力，而是在身内的良心。',
+    '在乡村里所谓调解，其实是一种教育过程。',
+    '东方的农业平原正是帝国的领域，但是农业的帝国主义是虚弱的',
+    '“苛政猛于虎”的政是横暴性的，“为政以德”的政是教化性的。',
+    '血缘和地缘的合一是社区的原始状态。',
+    '注释是维持长老权力的形式而注入变动的内容。',
+    '欲望并非生物事实，而是文化事实。',
+    '在乡土社会中欲望经了文化的陶冶可以作为行为的指导，结果是印合于生存的条件。'
+  ];
+
+  const API = {
+    CHAPTERS: CHAPTERS,
+    SAYINGS: SAYINGS,
+    chapter(id) { return CHAPTERS.find(c => c.id === id) || null; },
+    concept(id) {
+      for (const c of CHAPTERS) {
+        const hit = c.concepts.find(x => x.id === id);
+        if (hit) return { chapter: c, concept: hit };
+      }
+      return null;
+    },
+    dailySaying(dateStr) {
+      if (!SAYINGS.length) return '';
+      const d = dateStr || new Date().toISOString().slice(0, 10);
+      let h = 0;
+      for (let i = 0; i < d.length; i++) h = (h * 31 + d.charCodeAt(i)) >>> 0;
+      return SAYINGS[h % SAYINGS.length];
+    },
+    chaptersOfVillage(vid) { return CHAPTERS.filter(c => c.village === vid); }
+  };
+
+  const root = (typeof window !== 'undefined') ? window : global;
+  root.XT_BOOK = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+  <script>
+/* 村落 v1：槐荫村（北方黄土村 · 渭北台塬）
+ * 空间要素含概念真值(truth)、观察选择题(ask)；NPC 规则 say 语料严禁出现概念学名（测试把关）。
+ * 对应章节：乡土本色 / 礼治秩序 / 无讼
+ */
+(function (global) {
+  'use strict';
+
+  const VILLAGE = {
+    id: 'v1', name: '槐荫村', type: '北方黄土村',
+    region: '黄土高原南部 · 渭北台塬',
+    chapters: ['c01', 'c08', 'c09'],
+    mapTheme: { ground: '#e8dcc3', hill: '#d9c69a', water: '#b9c8b1', accent: '#a4443a', roof: '#8a5a33' },
+    intro: '槐荫村坐落在渭北台塬的塬面上，背靠沟壑、面朝麦田，全村三百多口人，王姓占七成。窑洞沿塬边锢建，巷道成正交格网，村北高台上是王氏祠堂，村口一棵六百年老槐。塬上无河，吃水靠涝池与水窖，麦收时节全村都挤进打谷场。青年多往西安打工，柿子与花椒近年靠电商出山。',
+    geoFacts: {
+      landform: '黄土台塬，塬面平缓、四周沟壑深切',
+      climate: '温带季风，年降水约550毫米，七、八、九月占六成',
+      agriculture: '冬小麦—糜谷轮作，柿园、花椒园近年扩种',
+      livelihood: '旱作农 + 窑居 + 外出务工，农忙抢收靠换工互助',
+      transport: '西距官道五里，旧有骡马店，如今柏油路通镇'
+    },
+    features: [
+      {
+        id: 'f101', kind: 'hall', name: '王氏祠堂', x: 50, y: 20,
+        note: '祠堂踞村北高台，飞檐正对主巷，门前立碑，藏谱于阁。',
+        truth: ['c08a', 'c08b'],
+        analysis: '祠堂居最高处、正对主巷，是全村视线与仪式的中心：藏谱、祭祖、议族中大事都在此——这是以传统维持的礼治空间。',
+        ask: {
+          q: '祠堂为什么建在全村最高的北头高台上？',
+          options: ['纯属风水巧合', '抬头可见、敬祖收族，村中大事都在此议定', '只是为了防涝'],
+          answer: 1,
+          exp: '位置本身就是权力的表达：站在任何巷口都能望见祠堂，"敬祖收族"的礼治秩序被写在村落的天际线上。'
+        }
+      },
+      {
+        id: 'f102', kind: 'tree', name: '老槐树', x: 22, y: 58,
+        note: '六百年老槐，树冠如伞，树下盘盘碾盘，是天然的"议事厅"。',
+        truth: ['c09c', 'c11b'],
+        analysis: '老槐树下是评理之地：纠纷不上县衙，先在树下让长者评一句——调解即教化，权威来自长幼之序。',
+        ask: {
+          q: '老槐树下最常发生什么事？',
+          options: ['只是乘凉闲聊', '说理评事、调解纠纷，长者一句话基本了断', '摆摊赶集'],
+          answer: 1,
+          exp: '槐荫树下"评理"是礼治的日常运转：不成文的老规矩靠长者的脸面与良心维持。'
+        }
+      },
+      {
+        id: 'f103', kind: 'yard', name: '打谷场', x: 76, y: 46,
+        note: '塬东共用大场，石碾、麦秸垛、扬场的木锨散落其间。',
+        truth: ['c01c', 'c01b'],
+        analysis: '麦收抢时节，全场合用、换工互助——共用空间把"熟人"黏在一起，是不流动社会的合作设施。',
+        ask: {
+          q: '打谷场为什么全村共用？',
+          options: ['各家没场地', '麦收抢在雨前，熟人间换工互助才来得及', '公家闲置地'],
+          answer: 1,
+          exp: '共用打谷场是聚村而居的经济理由之一：抢农时的合作只有在天天见面的熟人中间才组织得起来。'
+        }
+      },
+      {
+        id: 'f104', kind: 'homes', name: '窑洞组团', x: 38, y: 52,
+        note: '塬边三片窑洞组团：西片多王姓，东片多李姓，同姓依祖窑向两侧接建。',
+        truth: ['c12a', 'c01b'],
+        analysis: '窑洞沿祖窑两侧接建、同姓成片——土地与宅基地随血缘继承，居住组团就是血缘继替的空间投影。',
+        ask: {
+          q: '为什么西边三条巷几乎都姓王？',
+          options: ['纯属巧合', '兄弟分家在祖窑旁接窑，一代代续成同姓组团', '当年生产队分配'],
+          answer: 1,
+          exp: '土地平等继承使人口一代代在同一地方积起来，同姓组团正是"血缘继替"写在地上的样子。'
+        }
+      },
+      {
+        id: 'f105', kind: 'pond', name: '涝池与水窖', x: 62, y: 74,
+        note: '塬面低洼处一泓涝池，家家院里旱窖蓄雨水，池沿石阶被磨得发亮。',
+        truth: ['c01b'],
+        analysis: '塬上水贵，涝池与水窖须全村出工共建共管——水利合作是聚村而居的又一条理由。',
+        ask: {
+          q: '涝池为什么修在低处、且必须全村出工？',
+          options: ['官府征工', '水往低处汇，蓄水工程单门独户干不成，是用水合作', '风水讲究'],
+          answer: 1,
+          exp: '旱塬上的水利工程把分散农户捆进合作：这是"需要水利的地方，合作起来比较方便"的实证。'
+        }
+      },
+      {
+        id: 'f106', kind: 'shrine', name: '土地庙', x: 30, y: 78,
+        note: '村西南小庙，供土地公婆，香灰满炉，庙墙嵌光绪年间重修碑。',
+        truth: ['c01a', 'c08b'],
+        analysis: '"土地"是乡间数量上占最高地位的神——对泥土的敬畏直接长出对土地神四季香火的仪式传统。',
+        ask: {
+          q: '为什么"土地神"是村里香火最旺的神？',
+          options: ['土地庙离得近', '乡下人的命根是土，土地神象征这份可贵的泥土', '其他庙年久失修'],
+          answer: 1,
+          exp: '庙里敬的是土：靠种地谋生的人把命根神格化，敬畏顺着传统一代代传下来。'
+        }
+      },
+      {
+        id: 'f107', kind: 'school', name: '村小学（私塾旧址）', x: 64, y: 33,
+        note: '祠堂东侧两进院落，先为私塾后作村小，如今只剩几十个学生。',
+        truth: ['c11a'],
+        analysis: '学堂紧挨祠堂：先生替社会陶炼合于老规矩的新分子，教化权力从家庭延伸到课桌。',
+        ask: {
+          q: '旧时私塾为什么设在祠堂旁？',
+          options: ['风水好', '读书与敬祖同属"教化"，先生是半个父母官', '祠堂地方大'],
+          answer: 1,
+          exp: '教化权力靠长幼之序运转：把孩子交给"先生"，与把孩子交给"祖训"，在空间上是同一件事。'
+        }
+      },
+      {
+        id: 'f108', kind: 'road', name: '官道与骡马店旧址', x: 17, y: 24,
+        note: '村西旧官道穿沟而过，骡马店只剩半堵土墙，如今柏油路替代。',
+        truth: ['c12c'],
+        analysis: '官道是陌生人通道：店里的交易一手交钱一手交货、当场算清——契约式的"生人"规矩只在村边发生。',
+        ask: {
+          q: '骡马店里的买卖与村里的互助有何不同？',
+          options: ['没有不同', '与生人交易当场算清、不留人情账', '更便宜'],
+          answer: 1,
+          exp: '熟人之间抹不开面子算账，与生人的交易才能当场结清——契约式的规矩被推到村落的边界上。'
+        }
+      },
+      {
+        id: 'f109', kind: 'kiln', name: '白家砖瓦窑', x: 70, y: 66,
+        note: '沟边坡地一座老窑，白家三代营生，农闲烧砖，农忙停火。',
+        truth: ['c06b'],
+        analysis: '烧窑是白家的"事业"：一门手艺养一家、传三代——家在这里是生计组织，大小随营生而定。',
+        ask: {
+          q: '白家的窑业说明了"家"的什么性质？',
+          options: ['家只是吃饭睡觉的地方', '家是事业组织，一门营生把三代人捆在一起', '家就是血缘称呼'],
+          answer: 1,
+          exp: '中国的家是一个事业组织：窑业大则家合力大，手艺随父子的主轴往下传。'
+        }
+      },
+      {
+        id: 'f110', kind: 'stove', name: '场院碾盘', x: 47, y: 64,
+        note: '巷口一盘废碾，白天晾晒，傍晚成了老汉们端碗说话的据点。',
+        truth: ['c01c'],
+        analysis: '碾盘是熟人社群的微缩舞台：谁家借了谁家一天碾子、谁欠谁一碗面——人情在闲坐中流转，无需记账。',
+        ask: {
+          q: '碾盘边"借了东西不用打条"靠什么？',
+          options: ['法律约束', '天天见面的熟悉与信任，规矩刻在心里', '没人较真'],
+          answer: 1,
+          exp: '乡土社会的信用从熟悉而来："打个招呼就是了"，规矩不在纸上而在彼此的眼皮底下。'
+        }
+      }
+    ],
+    finds: [
+      { id: 'fd101', name: '槐荫"评理台"', concept: 'c09c', desc: '老槐树下的碾盘与条石就是本村的"公堂"：评理不上衙门，教化代替判决——把无讼两个字演成了日常。' },
+      { id: 'fd102', name: '祠堂的"老规矩碑"', concept: 'c08a', desc: '祠堂门前碑刻族规数条，犯规者"罚戏一台、当众认错"——礼的强制不靠警察，靠脸面与仪式。' }
+    ],
+    npcs: [
+      {
+        id: 'n101', name: '王德昌', role: '老支书', age: 68, gender: 'm',
+        hello: '娃来咧？坐。俺退下来二十年咧，村里的事还是爱管个闲言碎语。你想问啥，慢慢问。',
+        persona: '语气慢、句尾带"咧""哩"，自称"俺"，爱讲"老辈人怎么怎么"，讲规矩时郑重其事。',
+        knows: '村史族谱、评理规矩、修涝池的旧账、谁家和谁家几辈子的交情',
+        blind: '电商行情、年轻人手机里的新玩意、外面的市场价',
+        rules: [
+          { kws: ['祠堂', '祖先', '祭祖', '族谱', '牌位'], concept: 'c08b', say: '祠堂里头供的是祖先的牌位。老辈人的规矩，一年两回大祭，排辈分、读谱、磕头，一样乱不得。这不是谁发明的章程，是一辈传一辈，传到俺手里，俺再传给娃们。', follow: ['为什么要"排辈分"？', '规矩是靠什么让人服的？'] },
+          { kws: ['评理', '调解', '纠纷', '吵架', '官司', '说和'], concept: 'c09c', say: '村里起了口角，先不上乡上。把两家叫到老槐树下，老辈人坐上首，各说各的理。长者评一句，脸皮薄的人自家就臊了——基本当场了事。打官司？那是撕破脸的事，俺在这一片几十年，没听说过几回。', follow: ['评理的人凭什么服众？', '评不服怎么办？'] },
+          { kws: ['打谷', '麦收', '换工', '帮工', '扬场'], concept: 'c01c', say: '麦收就十来天，雨说来就来。你家头场打完，不用喊，场上的老熟人自家就过来搭手。他家扬场你帮他掀连枷，都记不清谁帮谁多——反正明年他家也这么来。几辈子的交情，用不着谁记账。', follow: ['为什么不雇人干活？', '这种互助靠什么维持？'] },
+          { kws: ['分家', '继承', '宅基地', '接窑', '祖屋'], concept: 'c12a', say: '儿子成家，就在老窑旁边再锢一孔窑。地是祖上传下的，儿子接的不光是地方，是这份基业。老大接东窑老二接西窑，分单写好，请族老按个手印——就这么一代一代续下来的。', follow: ['女儿能继承吗？', '分家为什么要请族老？'] },
+          { kws: ['涝池', '水窖', '吃水', '井', '水利'], concept: 'c01b', say: '塬上水金贵。涝池是当年全村出工挖的，一家不出工，秋天分水就没他的份。水窖也是，请个箍窖匠，管全村的饭。单门独户，这些事一样都弄不成——聚在一搭，才好办事。', follow: ['出工怎么记？', '如果有人不出工呢？'] },
+          { kws: ['官府', '公家', '乡上', '干部', '政府', '官'], concept: 'c10c', say: '乡上的干部下来，也就催催粮、念念文件，喝碗水就走咧。村里的事——红事白事、地畔子纠纷——还是凭老规矩。山高皇帝远，皇帝也管不到俺的碾盘跟前来。', follow: ['官府不管，谁来管？', '什么事必须找官府？'] },
+          { kws: ['老槐', '槐树', '树下'], concept: 'c09b', say: '那棵老槐，俺爷爷的爷爷就在底下乘凉咧。村里人叫它"评理台"。树底下说的话，比乡上的公文还顶用——为啥？当面锣对面鼓，全村的眼睛都看着哩。', follow: ['树下的规矩有讲究吗？', '什么话能当众说？'] }
+        ],
+        fallback: [
+          '娃，你这话问得大了，俺一个种地的说不上来。你问点具体的——问窑、问地、问槐树底下的事，俺都能给你说道说道。',
+          '这个俺不懂哩。不过你既然来驻村，老支书给你个建议：白天去看场院和祠堂，天黑了来槐树下坐坐，啥都明白了。'
+        ]
+      },
+      {
+        id: 'n102', name: '秦守田', role: '老农', age: 72, gender: 'm',
+        hello: '外后生，地里的活刚歇下。想问啥就问，俺是个粗人，话丑理端。',
+        persona: '话糙理正，爱用农谚，句尾带"嘛""哩"，讲土地时口气像讲自家人。',
+        knows: '农时农谚、看云识天、各种土性、庙里香火、吃食的门道',
+        blind: '法律条文、识字文书、城里人的规矩',
+        rules: [
+          { kws: ['土地', '土', '地', '庄稼', '收成', '麦子'], concept: 'c01a', say: '咱这塬上的土，抓一把能闻见麦香哩。人一辈子就缠在这土里——走不脱，也不想走脱。爷辈葬在这，孙辈还得靠这吃饭。你们城里人说的"根"，就是这块土嘛。', follow: ['为什么不想离开土地？', '土地对村里人意味着什么？'] },
+          { kws: ['庙', '土地神', '上香', '神', '敬'], concept: 'c08b', say: '土地庙里供的老爷爷老奶奶，管着一村的收成。灵不灵俺不敢说，可老辈人传下来的：下种前敬一炷香，收成好感恩，天旱求雨。照着办，心里踏实。这份踏实，是几辈子攒下的。', follow: ['仪式的流程有讲究吗？', '年轻人还信吗？'] },
+          { kws: ['农谚', '看云', '天气', '节气', '老话'], concept: 'c03c', say: '谷雨前后，种瓜点豆；有钱难买五月旱，六月连阴吃饱饭——这些老话，俺爷教俺爹，俺爹教俺，俺又教娃。不用本本，心里都装着哩。天上的云，就是俺们的日历。', follow: ['老话是怎么传下来的？', '老话有过不准的时候吗？'] },
+          { kws: ['吃', '面', '蒜', '馍', '辣'], concept: 'c14a', say: '关中人一天不吃面，浑身没劲。蒜要生啃，辣子要油泼。为啥？从小吃到大，习惯了嘛。你问营养？那是你们读书人的算法。俺们的算法是：祖祖辈辈这么吃，日子就顺顺当当。', follow: ['口味是遗传的吗？', '换个地方的人也这么吃吗？'] },
+          { kws: ['外乡人', '生人', '买卖', '赶集', '集'], concept: 'c12c', say: '和生人做买卖，一手钱一手货，当场算清，多一分少一分都要当面说清。和自家人？抹不开面子嘛。借你家一天碾子、还你两筐红薯，谁也不提"算账"两个字——提了就生分了。', follow: ['为什么自家人不算账？', '买卖为什么推向集上？'] },
+          { kws: ['识字', '念书', '文盲', '写字'], concept: 'c02a', say: '俺没念过几天书，可俺认得每块地的脾气。你说俺"愚"？城里先生来俺村，分不清麦苗和韭菜，是不是也"愚"哩？人各有各的能耐，看你生在啥地方、用不用得上。', follow: ['哪些场合你用得着字？', '你儿子识字多，种地比你强吗？'] }
+        ],
+        fallback: [
+          '嘿，这个俺说不来。俺就知道土里刨食的事。你要不问问地里的事？那俺能给你说上三天三夜。',
+          '你问的这个，得问老支书或者先生，他们肚里的墨水多。俺就懂一把锄头的理。'
+        ]
+      },
+      {
+        id: 'n103', name: '齐守拙', role: '退休教师', age: 58, gender: 'm',
+        hello: '请坐请坐。我在村小教了三十年书，去年退了。你想了解村子，问我是问对人了——我这人爱琢磨。',
+        persona: '说话文气、爱引用碑文与老话，好为人师，句中夹带"你想想看"。',
+        knows: '村史碑刻、蒙学旧事、对联礼数、乡约文字',
+        blind: '具体农活、外出务工的行情',
+        rules: [
+          { kws: ['识字', '读书', '学校', '上学', '文盲', '私塾'], concept: 'c02a', say: '村里老一辈不识字的多了去了，可你敢说人家笨？看云识雨、扬场这些把式，大学教授来了也得拜师。不是智力问题，是从前的生活里没这个需要——一天见面的人，用不着写字说话。', follow: ['从前哪些场合必须用字？', '现在呢？'] },
+          { kws: ['碑', '碑文', '族规', '祠堂', '刻'], concept: 'c08a', say: '祠堂前那通碑你仔细读过没？"犯规者，罚戏一台，当众认错。"你看，不送官、不动刑，罚你请全村看戏、自己站在戏台下认错——这比拘留还叫人难为情。规矩的力量在脸面上。', follow: ['为什么"罚戏"最狠？', '碑上还有哪些规矩？'] },
+          { kws: ['教书', '管学生', '上课', '先生', '规矩', '教'], concept: 'c11a', say: '我教书三十年。娃娃进课堂头一课，手背后、坐端正——这不是跟谁商量出来的，是老辈传下来的样子，先生照着样子陶炼人。先生说的话，当年在娃心里就是半个"圣旨"。这就是乡下的道理：比你年长的，天然有一份教你的权利。', follow: ['这份权利现在还行得通吗？', '先生和官老爷谁大？'] },
+          { kws: ['老话', '传承', '念想', '传下去', '失传'], concept: 'c03c', say: '村史、农谚、红白事的礼数——从前都是口口相传，一套一套跟戏文似的。如今娃娃们外出打工，老话还记得三成。同一台戏，换布景了，词还没换完——你把这些记下来，就是给村子留戏本。', follow: ['哪些老话快失传了？', '为什么词没换完？'] },
+          { kws: ['变化', '新式', '火化', '葬礼', '婚礼', '彩礼'], concept: 'c13b', say: '给你举个例子：丧事的名目还是"白事"，流程还是那几道，可你看——从前抬棺土葬，如今火化了抱着骨灰盒回来，还是要按老礼行、还是要跪、还是要请先生点主。说法没变，里头的做法早换了几茬了。', follow: ['为什么名目不换？', '还有什么"名不变实变"的事？'] },
+          { kws: ['对联', '写', '毛笔', '春联'], concept: 'c02b', say: '从前腊月里，全村的春联都是我一支笔包了。为啥大家不自己写？因为天天抬头见面的街坊，谁家贴什么字、什么意思，一句口信全村知道——文字在这里，真的是个闲差。', follow: ['什么字非请人写不可？', '现在还写春联吗？'] }
+        ],
+        fallback: [
+          '这个问题问得好，但超出了我的见识。我是教书匠，村里的"文"事我熟，"武"事你得问老农和支书。',
+          '你说这个，我想想……一时答不上来。不过你记下来，回头咱们槐树下再聊，我回去翻翻碑文。'
+        ]
+      },
+      {
+        id: 'n104', name: '白战窑', role: '窑匠', age: 55, gender: 'm',
+        hello: '手上有泥，别嫌。你问俺窑上的事，俺一准说利索；别的，俺笨嘴。',
+        persona: '话短、实在，句尾带"咧"，说到手艺就打开话匣子。',
+        knows: '锢窑手艺、砖瓦烧制、材料行价、给谁家干过活',
+        blind: '文字礼数、村史谱系、外头大市场',
+        rules: [
+          { kws: ['手艺', '锢窑', '烧窑', '砖', '瓦', '盖房'], concept: 'c06b', say: '锢窑是俺家的老手艺，俺爷传俺爹，俺爹传俺，俺又教俺娃。一家子的营生全指着这门手艺。农闲烧窑，农忙停火——家和窑是一个理：啥时添柴、啥时封火，就是过日子的章程。', follow: ['手艺为什么不外传？', '这门营生能养几口人？'] },
+          { kws: ['工钱', '接活', '包工', '价钱'], concept: 'c12c', say: '给本村人干活，工钱好说——今年你帮俺收麦，明年俺给你家垒墙，混着算，不伤和气。给外村人包工，一天多少钱、管不管饭，当面讲死，收工结清。跟生人，脸面不值钱，字据才值钱。', follow: ['为什么对生人要字据？', '村里干活为什么"混着算"？'] },
+          { kws: ['徒弟', '传手艺', '学艺', '儿子'], concept: 'c12a', say: '徒弟？俺就教俺娃。手艺跟地一样，是祖上留下的家底，传给儿子天经地义。外人想学？除非上门当女婿——可哪有那么容易的事哩。', follow: ['为什么传子不传徒？', '手艺和土地哪个更要紧？'] },
+          { kws: ['材料', '买砖', '运', '卖家'], concept: 'c12c', say: '砖瓦水泥都从镇上进货，电话一打，货到付款，一分不让。俺们行里人，讲的是"当场两清"——这个理和村里的人情是两本账，不能混。', follow: ['两本账能混吗？', '赊账行吗？'] },
+          { kws: ['窑洞', '冬暖', '夏凉', '住'], concept: 'c01a', say: '窑洞是土里长出来的房。冬暖夏凉，不费一根钢筋。为啥俺们不搬家？搬啥嘛——地在这，窑在这，祖在这。土就是俺们的房梁。', follow: ['窑和地能分开吗？', '年轻人还愿意住窑吗？'] }
+        ],
+        fallback: [
+          '你说这个俺就不懂咧。俺就知道泥、砖、火候。你换个窑上的问题，俺给你说个透。',
+          '俺嘴笨，这个说不好。你去问先生，他识文断字，会说个所以然。'
+        ]
+      },
+      {
+        id: 'n105', name: '王小满', role: '返乡大学生村官', age: 26, gender: 'f',
+        hello: '你好呀，我是小满，回来做村官第三年。你的问题挺"学术"的哈，我用村里的事给你对一对。',
+        persona: '说话利落、爱打比方，常在"老规矩"和"新办法"之间来回对照。',
+        knows: '电商与快递、外出务工地图、村委台账、新旧规矩的碰撞',
+        blind: '族谱细节、农谚、香火仪轨（会主动让你去问长辈）',
+        rules: [
+          { kws: ['打工', '外出', '回来', '返乡', '年轻人'], concept: 'c13b', say: '村里一半年轻人在外头。有意思的是：大家还是管这叫"出去做活"——跟祖辈下地是一个说法。可做的早不是田里的活了，是快递、是工地、是直播间。名目还是那个名目，里头的东西全换了。', follow: ['为什么说法不换？', '哪些"名目"最顽固？'] },
+          { kws: ['电商', '直播', '网店', '柿饼', '花椒', '卖'], concept: 'c14b', say: '俺们卖柿饼，先查行情、算物流成本、定等级规格、再定预售量——账是算出来的。老一辈是"年年这么种"，俺们是"先看看市场需要啥"。从"跟着欲望走"到"按需要计划"，就差这一步。', follow: ['老一辈怎么看这种算法？', '计划失手过吗？'] },
+          { kws: ['老规矩', '规矩', '冲突', '不服'], concept: 'c13b', say: '最典型的：老人说婚丧嫁娶要按老礼来，娃们嘴上应着"对对对"，背后该简化简化——名义上一分不减，实际上内容换了大半。你细看，这就是老人还"管着"、年轻人却按自己的来。', follow: ['老人发现了吗？', '为什么不正面顶？'] },
+          { kws: ['无人机', '打药', '地畔', '新纠纷'], concept: 'c09c', say: '现在新矛盾多了：无人机打药飘到人家花椒地里，两家人照旧先找长者说和——说不动了才到村委会盖章。老槐树底下那一套还在用，只是评理的"理"多了新条款。', follow: ['新条款怎么进"理"里？', '村委和槐树谁权威？'] },
+          { kws: ['告状', '官司', '法院'], concept: 'c09c', say: '真有去县里告状的，一年碰不上一两回。村里人背后还是要咂舌的："那家人，把脸撕到衙门口了。"你看，观念还没跟上法律——评理先于诉讼，还是大家的默认选项。', follow: ['谁最可能去告状？', '什么时候大家会接受打官司？'] },
+          { kws: ['手机', '微信', '群', '快手'], concept: 'c02c', say: '村里群可热闹了：红白事一条语音通知全村，比广播还快。你看，面对面没变，只是"嗓子"接到了手机上——语言还是那个语言，工具换了。', follow: ['群里有什么规矩？', '识字重要还是会发语音重要？'] }
+        ],
+        fallback: [
+          '这个我还真说不好——我回村才三年，老一辈的讲究得问他们。这样，你把问题留给我，我去问了回你。',
+          '哈哈，这个超纲了。要不你换个和村里变化有关的？那条线上的事我都能接住。'
+        ]
+      }
+    ]
+  };
+
+  const root = (typeof window !== 'undefined') ? window : global;
+  root.XT_VILLAGE_V1 = VILLAGE;
+  if (typeof module !== 'undefined' && module.exports) module.exports = VILLAGE;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+  <script>
+/* 村落 v2：荻塘村（江南水乡村 · 太湖南岸圩田水乡）
+ * 对应章节：系维着私人的道德 / 男女有别 / 血缘和地缘 / 名实的分离
+ */
+(function (global) {
+  'use strict';
+
+  const VILLAGE = {
+    id: 'v2', name: '荻塘村', type: '江南水乡村',
+    region: '太湖南岸 · 圩田水乡',
+    chapters: ['c05', 'c07', 'c12', 'c13'],
+    mapTheme: { ground: '#e7e3d2', hill: '#cfd8c4', water: '#b3c7c6', accent: '#8c4a3c', roof: '#5f6f6d' },
+    intro: '荻塘村在太湖南岸的圩田水网里，一条市河穿村而过，河上三桥，两岸河街相对。村中沈姓为大族，祠堂连着义庄，族人聚居两条浜的两岸；村东桑林连着鱼塘，是祖辈传下的"塘泥壅桑、蚕沙喂鱼"循环。桥堍茶馆有"吃讲茶"评理的旧俗，河口旧会馆记录着客商往来的年月。近年半数老宅改作民宿，直播间的吆喝声与摇橹声混在一条河上。',
+    geoFacts: {
+      landform: '湖积平原圩田，地势低平，河浜纵横，四周环堤',
+      climate: '亚热带季风，年降水约1200毫米，梅雨与台风各成一段',
+      agriculture: '桑基鱼塘 + 水稻油菜轮作，蚕桑收入曾经过半',
+      livelihood: '蚕桑、渔业、旅游业，老宅民宿与直播带货渐成主业',
+      transport: '水路曾经通苏杭，今公路环圩，快递直达村口'
+    },
+    features: [
+      {
+        id: 'f201', kind: 'hall', name: '沈氏宗祠与义庄', x: 48, y: 26,
+        note: '三进祠堂，旁带义庄仓廒，存"服济簿"，族中公产账目按年结算。',
+        truth: ['c12a', 'c06b'],
+        analysis: '义庄是血缘性的公产组织：族田收租按服济簿发给族人，亲疏远近决定份额——权利义务随亲属关系而定。',
+        ask: {
+          q: '义庄的租米发给谁、怎么发？',
+          options: ['全村按户均分', '按"服济簿"只济族人，先近亲后远族', '只发给佃户'],
+          answer: 1,
+          exp: '义庄把"亲属关系决定权利义务"变成了账本：血缘继替不止管职业身分，还管一斗米的去处。'
+        }
+      },
+      {
+        id: 'f202', kind: 'street', name: '河街与埠头', x: 52, y: 55,
+        note: '市河两岸石板街对望，埠头石阶入水，旧米行丝行的界石还在。',
+        truth: ['c12c', 'c05c'],
+        analysis: '河街是村落的"契约边界"：米行丝行与外来客商交易当场立票结清——算账的规矩只在生人市场成立，道德要素随关系路线而异。',
+        ask: {
+          q: '河街上的买卖和族里的互助有什么不一样？',
+          options: ['没什么不一样', '当场算清、立票结账，是和"生人"交易的规矩', '河街更便宜'],
+          answer: 1,
+          exp: '亲密社群靠互欠人情维系、最怕清算；所以大宗买卖被推到河街——那里的人讲契约不讲交情。'
+        }
+      },
+      {
+        id: 'f203', kind: 'field', name: '桑基鱼塘', x: 80, y: 42,
+        note: '圩内塘基相间：塘泥壅桑，蚕沙喂鱼，鱼粪肥塘，一环扣一环。',
+        truth: ['c14c'],
+        analysis: '桑基鱼塘是天工而非人力的典范：没有谁画过图纸，是世代在水土里试出来、传下来的经验循环。',
+        ask: {
+          q: '塘泥壅桑、蚕沙喂鱼这套循环是谁设计出来的？',
+          options: ['农技员设计的', '祖祖辈辈在水土里试出来、传下来的经验', '从书上学的'],
+          answer: 1,
+          exp: '欲望经文化陶冶恰好印合生存条件——"好吃""好养"的习惯背后，是一套没人设计却合于生态的账。'
+        }
+      },
+      {
+        id: 'f204', kind: 'homes', name: '浜上民居组团', x: 34, y: 46,
+        note: '两条浜沿岸的老宅：越靠近祠堂的院落门楼越高，往外一圈圈降下去。',
+        truth: ['c04a'],
+        analysis: '民居门楼与院落的规格由内圈向外圈递减——聚居格局一圈圈推开，是同心圆波纹的立体模型。',
+        ask: {
+          q: '老宅沿浜分布有什么规律？',
+          options: ['均匀散布', '越近祠堂、老宅越亲，一圈圈往外推', '随机建造'],
+          answer: 1,
+          exp: '以祖宅为中心一圈圈排布，正是"丢石子入水"的社会结构压在了宅基地上：亲疏即距离。'
+        }
+      },
+      {
+        id: 'f205', kind: 'teahouse', name: '桥堍茶馆', x: 44, y: 62,
+        note: '临水老茶馆，八仙桌十六把壶，墙上有"吃讲茶"旧俗的说明木牌。',
+        truth: ['c09c', 'c11b'],
+        analysis: '"吃讲茶"是江南水乡的评理公堂：中人当众讲理，两造各付茶钱，讲平了握手散场——权威来自年齿与脸面。',
+        ask: {
+          q: '"吃讲茶"是什么场合？',
+          options: ['喝茶闲聊', '双方有纠纷，请中人当众评理讲和', '相亲定亲'],
+          answer: 1,
+          exp: '茶馆是礼治的日常法庭：调解是教育过程，茶钱对半——理讲平了，谁也不欠谁。'
+        }
+      },
+      {
+        id: 'f206', kind: 'ladies', name: '绣坊', x: 26, y: 38,
+        note: '临河小楼，绷架临窗，女眷们在此绣品、说话，男人不登此楼。',
+        truth: ['c07c'],
+        analysis: '绣坊是专属女性的空间："内外有分"的规矩把男女的场分在河的两侧——隔膜是维持安定的制度。',
+        ask: {
+          q: '为什么绣坊只收女眷？',
+          options: ['女孩手更巧', '"内外有分"的规矩：男人的场在田头船上，女人的场在绣绷灶间', '男的不肯学'],
+          answer: 1,
+          exp: '男女有别的制度安排：把两性隔在各自的"场"里，社群靠同性组合运转，求的是稳定不是浪漫。'
+        }
+      },
+      {
+        id: 'f207', kind: 'school', name: '学塾（书厅）', x: 58, y: 34,
+        note: '祠堂东侧书厅，旧为族塾，族中子弟开蒙皆在此，束脩出自公账。',
+        truth: ['c11a'],
+        analysis: '族塾把教化收进家体系：先生由族中奉养，子弟由公账束脩——教化权力攀在长幼之序上。',
+        ask: {
+          q: '族塾的束脩从哪里出？',
+          options: ['各家自己付', '族中公账统一出，子弟皆可开蒙', '官府拨付'],
+          answer: 1,
+          exp: '连读书的钱都从血缘的口袋里出：家族既是生育单位，又是教化机构。'
+        }
+      },
+      {
+        id: 'f208', kind: 'shrine', name: '社庙与戏台', x: 66, y: 72,
+        note: '村南社庙临水，戏台隔河正对大殿，匾书"酬神献戏"。',
+        truth: ['c08a', 'c08b'],
+        analysis: '戏演给神看，人借神的场子聚会——传统仪式把分散的农户一年年重新聚拢在一处。',
+        ask: {
+          q: '戏台正对社庙大殿，戏演给谁看？',
+          options: ['村民娱乐', '演给神看的酬神戏，人沾神的光', '收门票赚钱'],
+          answer: 1,
+          exp: '仪式的中心是神不是人：按仪式做即是礼，敬畏与灵验的信念让这套秩序无需强制也运转。'
+        }
+      },
+      {
+        id: 'f209', kind: 'inn', name: '河口旧会馆', x: 14, y: 58,
+        note: '河口三开间门面，旧为徽商议价的会馆，砖雕上"同乡公所"四字可辨。',
+        truth: ['c12b'],
+        analysis: '会馆以"同乡"为纽带——外乡人在此抱团立足，说明没有血缘的人也能结成地方社群：纯粹地缘的联系。',
+        ask: {
+          q: '外乡客商为什么建"同乡会馆"？',
+          options: ['图个排场', '没有血缘的陌生人在异乡抱团，靠同乡这条新纽带立足', '官府要求'],
+          answer: 1,
+          exp: '血缘和地缘分离的活标本：插进村子的人不被认作"自己人"，便在同乡里结成新的联系。'
+        }
+      },
+      {
+        id: 'f210', kind: 'new', name: '民宿直播小院', x: 24, y: 70,
+        note: '老宅门楼未动，院里改了地暖与直播间，门口挂"百年老宅·云上荻塘"。',
+        truth: ['c13b'],
+        analysis: '门楼还是那个门楼，里子已换了几轮——"老宅民宿"是名实分离的当代样本：形式不变，内容常新。',
+        ask: {
+          q: '"百年老宅"民宿说明了什么现象？',
+          options: ['建筑保护得好', '名义上还是"老宅老字号"，实际功能与做法早已更新', '纯属营销'],
+          answer: 1,
+          exp: '注释式的变迁：表面上维持传统的形式，内容经"注释"而改变——名与实悄悄拉开了距离。'
+        }
+      }
+    ],
+    finds: [
+      { id: 'fd201', name: '茶馆里的"半壶茶"', concept: 'c09c', desc: '吃讲茶的中人茶钱对半、两造各半——连茶钱都算平的评理，透着"调解是教育过程"的江南做法。' },
+      { id: 'fd202', name: '义庄服济簿', concept: 'c12a', desc: '簿上按"服"分级发放：五服之内为先，出服递减——一斗米的去向写着亲属关系的全部等级。' }
+    ],
+    npcs: [
+      {
+        id: 'n201', name: '沈鹤汀', role: '族中长者', age: 62, gender: 'm',
+        hello: '贵客来了，里头坐。敝人管过几年义庄的账，族里的事知道些皮毛，你随意问。',
+        persona: '斯文、谦称"敝人"，说话带旧式客套，提到账目与簿册时格外认真。',
+        knows: '义庄服济簿、祠堂祭仪、吃讲茶的规矩、族中亲疏关系',
+        blind: '直播电商、年轻人文化、外面的金融行情',
+        rules: [
+          { kws: ['义庄', '服济', '族田', '公产', '账'], concept: 'c12a', say: '义庄的田是祖宗留下的公产，收的租米照服济簿发：先五服之内的近支，再推出去服的远族——亲疏远近，簿上写得明明白白。人人都有份，但份份不相同。这簿子，就是咱族的亲疏表。', follow: ['为什么要分远近？', '出了五服还有份吗？'] },
+          { kws: ['祠堂', '祭祖', '昭穆', '牌位'], concept: 'c08a', say: '冬至祭祖，昭穆有序：谁站哪个位子，是辈分定的，动不得。上香、读祝、分胙，一道一道来——不是做给外人看，是让娃娃们自小就记住：你是哪一支的、排在谁后面。', follow: ['分胙怎么分？', '站错位子会怎样？'] },
+          { kws: ['吃讲茶', '讲茶', '茶馆', '评理', '调解', '纠纷'], concept: 'c09c', say: '桥堍茶馆的"吃讲茶"：两造各泡一壶，中人居中，当众把理摆开。讲平了，各自把茶喝干，茶钱对半出——谁也不欠谁，握手散场。这一壶茶，顶得上县里半张传票，还不伤和气。', follow: ['中人怎么选？', '讲不平怎么办？'] },
+          { kws: ['请客', '红白', '喜酒', '坐席', '圈子'], concept: 'c04a', say: '红白事请客，请谁不请谁，主人家心里有本账：至亲坐头桌，族亲次之，街坊再外围——一圈一圈的，乱不得。你去看席面就晓得，这桌次的学问，比族谱还直观。', follow: ['为什么乱不得？', '席面能看出家底吗？'] },
+          { kws: ['客商', '外来', '会馆', '生人'], concept: 'c12c', say: '河街上的老规矩：生人当场银货两讫，立票为凭；族里人之间，白帮工、混着记，从不算清。所以大宗买卖都在河街做——自家人的场子里，抹不开算账的脸。', follow: ['两种规矩会打架吗？', '生人能变成自己人吗？'] },
+          { kws: ['好人', '道德', '规矩', '标准'], concept: 'c05b', say: '啥叫好人？族里的说法：对上孝、对下慈、兄弟和睦、朋友守信——一根一根的绳子上，各有一个字压着。没有那张写满大道理的纸，就这几根绳，人人身上系着。', follow: ['绳子断了会怎样？', '哪个字最重？'] }
+        ],
+        fallback: [
+          '敝人所知有限，这个题超出了账房的门类。你不妨去问塾里的陆先生，他讲礼数比我深。',
+          '这个嘛……容我想想。要不先从义庄的账、茶馆的理说起？那两桩我最熟。'
+        ]
+      },
+      {
+        id: 'n202', name: '顾阿福', role: '老桑农', age: 68, gender: 'm',
+        hello: '坐坐坐，刚从塘里上来。你问种桑养鱼的事，俺闭着眼都能讲。',
+        persona: '爽利、爱用吴地口语词"晓得""来事"，讲到塘里的事眉飞色舞。',
+        knows: '桑基鱼塘循环、蚕事农时、圩田水利、帮工规矩',
+        blind: '族谱义庄、彩礼婚俗的新变化',
+        rules: [
+          { kws: ['桑', '蚕', '鱼塘', '塘泥', '循环', '养鱼'], concept: 'c14c', say: '塘泥壅桑，蚕沙喂鱼，鱼粪肥塘——一环扣一环，一亩塘养三亩桑。这套循环没谁教你，看爹娘做，自家就会了。祖宗在多少年里头试出来的，照做，就饿不死。', follow: ['坏了哪一环会怎样？', '这循环是谁想出来的？'] },
+          { kws: ['圩田', '水利', '堤', '排涝', '分水'], concept: 'c14c', say: '圩田靠堤，堤靠大家守。梅雨一来，全村上堤——你家的田在我家下游，谁也不敢偷懒。祖上传下的分水口子，刻在闸石上，几寸是几寸，不用商量的。', follow: ['闸石上的刻度谁定的？', '新修的水利还信老口子吗？'] },
+          { kws: ['帮工', '换工', '请人', '互助'], concept: 'c05b', say: '请帮工看交情：自家人白帮，朋友记着还，生人当场讲工钱。蚕忙时节，浜东帮浜西，明年调个头——人情像塘里的水，来来去去，才活。', follow: ['人情可以欠多久？', '交情怎么变成人情债？'] },
+          { kws: ['农谚', '节气', '看天', '老话'], concept: 'c03c', say: '"清明浸种，谷雨下秧"——这几句是俺爹口里抢出来的。俺不识字，可哪天下种、哪天采叶，心里门清。老话就是俺们的课本，一代代背下去的。', follow: ['老话会失灵吗？', '年轻人还背吗？'] },
+          { kws: ['卖', '丝行', '行情', '价钿', '贩子'], concept: 'c12c', say: '丝行贩子上门收茧，当场过秤付现钿——一个子儿都不赊。为啥？行贩是生人，生人讲不来交情，只讲秤和票。自家人的账抹不开算，生人的账，当着面算清爽。', follow: ['为什么不赊给熟客？', '秤上做手脚会怎样？'] }
+        ],
+        fallback: [
+          '嗯……这个俺讲不来。俺只晓得塘里桑里的门道，你问那个，俺话就多了。',
+          '你问的这个要问账房里的人。俺们种田人的道理，都在手上，不在嘴上。'
+        ]
+      },
+      {
+        id: 'n203', name: '陆蕴章', role: '绣坊主', age: 55, gender: 'f',
+        hello: '上楼坐，当心门槛。我是绣坊的陆蕴章，你这个学生挺会问，慢慢问。',
+        persona: '语气细软、条理分明，讲到女红规矩时不怒自威。',
+        knows: '绣坊规矩、陪嫁花样的三代变迁、女眷的社交场、学徒规矩',
+        blind: '田里塘里的事、官府文书',
+        rules: [
+          { kws: ['绣坊', '女眷', '内外', '规矩', '分工'], concept: 'c07c', say: '绣坊是女眷的地方。老话讲内外有分：男人的场在田头船上，女人的场在绣绷灶间。这不是瞧不起谁，是各有各的场——男客不上绣楼，女眷不进船行，多少年了，就这么分着。', follow: ['谁定的这个分法？', '现在还这么分吗？'] },
+          { kws: ['陪嫁', '嫁妆', '花样', '绣品', '出嫁'], concept: 'c13b', say: '我婆婆的陪嫁是百子图，我出嫁绣的是鸳鸯戏水，如今小姊妹们要绣手机包——花样换了三代，可"陪嫁要亲手绣"这句话没变。名目还是那个名目，绷子上的东西早换了几茬了。', follow: ['为什么这句话不能变？', '手机包也当陪嫁吗？'] },
+          { kws: ['学徒', '教', '徒弟', '手艺'], concept: 'c11a', say: '学徒进门先敬祖师，再敬师父。我教她们配色分丝，也教她们规矩——先学做人，再学拿针。徒弟叫师父一声师，这份称呼里就带着几分"得听"的意思。', follow: ['徒弟出师要几年？', '徒弟能顶撞师父吗？'] },
+          { kws: ['卖绣品', '订金', '合同', '买家'], concept: 'c12c', say: '绣品的买卖两样：老主顾是口头的，凭交情；外头的订家，一律签单、付订金、定交期——白纸黑字。跟生人，我宁可少赚，也要把字据落定。', follow: ['老主顾赖账怎么办？', '两种买家的差别在哪？'] },
+          { kws: ['上桌', '吃饭', '女人', '地位'], concept: 'c07c', say: '我婆婆那辈，女眷不上正桌，灶间吃；我妈那辈能上桌了，但说话不算数；到我孙女这辈，饭她掌勺，事她拍板——三代的桌子和三代的话事权，一对照就明白了。', follow: ['这变化从哪年起？', '什么推着它变？'] }
+        ],
+        fallback: [
+          '这个妹妹答不上来。绣绷上的事我门清，绷子外的事，你问问沈家老爷或者我当家的族叔。',
+          '嗯，这个我说不好。这样，我领你去河街上转一圈，你自个儿看，比我说得清楚。'
+        ]
+      },
+      {
+        id: 'n204', name: '陆先生', role: '学塾先生', age: 60, gender: 'm',
+        hello: '久仰久仰，学生也贵姓？来来，书厅里坐，让老朽考考你——开玩笑的，你想问什么？',
+        persona: '文绉绉，好引经据典又马上翻译成大白话，爱称学生为"后生"。',
+        knows: '蒙学开笔、六礼婚俗、春联书仪、识字教学史',
+        blind: '电商直播、外出打工行情',
+        rules: [
+          { kws: ['开蒙', '束脩', '拜师', '蒙学', '上学'], concept: 'c11a', say: '开蒙先拜孔子，再拜先生，朱砂启智——先生说的话，当年是要一句句记进心里的。先生者，半个父母也。族里子弟的束脩从公账出，读书的事，从来不是各家自己的事，是全族的事。', follow: ['先生有体罚吗？', '读书为了什么？'] },
+          { kws: ['婚俗', '六礼', '纳采', '说亲', '媒人'], concept: 'c08a', say: '纳采、问名、纳吉、纳征、请期、亲迎——六礼一道不能省。省了哪道，长辈就不点头。你要问为什么？礼者，先王所制也……说白喽：照老样子做，谁也挑不出错，这份安稳，是省不得的。', follow: ['六礼要花多少钱？', '如今还全办吗？'] },
+          { kws: ['识字', '文墨', '红白帖', '写信', '文书'], concept: 'c02b', say: '从前全村的红白帖、契纸、书信，都出自塾师一支笔。不是大家懒——天天见面的街坊，用不着人人会写。一张帖子递过去，字是给外人看的体面，里子靠的是人熟。', follow: ['哪些字帖必须请先生？', '现在人手一部手机，先生还有用吗？'] },
+          { kws: ['评理', '调解', '讲茶', '公堂'], concept: 'c11b', say: '吃讲茶的中人，十个有八个是塾师、族老、船行的老辈——凭的就是"肚里有理、嘴上有德"。后生服不服？当面不敢顶。这顶"不敢"，就是长幼两个字压出来的。', follow: ['先生评理偏袒过吗？', '现在还请先生吗？'] },
+          { kws: ['变化', '简化', '省事', '新式婚礼'], concept: 'c13b', say: '如今的婚事，六礼省成了三道，可请柬上还是写"谨詹于某日为小女于归"——老话一字不改，里头的礼早简了。你看这请柬，就是一本活的名实之书。', follow: ['为什么老话不改？', '老话还能撑多久？'] }
+        ],
+        fallback: [
+          '后生，此问老朽未深思。文墨礼数之事可问老朽，其余……我们茶馆里再讲。',
+          '这个问题有意思，容老朽查查旧书。你先去河街和桑塘走走，改日再谈。'
+        ]
+      },
+      {
+        id: 'n205', name: '陆小舟', role: '民宿主', age: 28, gender: 'f',
+        hello: '嗨，我是小舟，老宅改的民宿我开的。你的问题好"论文"啊——行，我用做生意的账给你翻译翻译。',
+        persona: '轻快、网感十足，爱说"翻译翻译""上数据"，对老规矩一半敬畏一半拆解。',
+        knows: '民宿运营、直播带货、城市客源、新老观念摩擦',
+        blind: '族谱仪轨细节、农谚（会拉你去问长辈）',
+        rules: [
+          { kws: ['民宿', '老宅', '改造', '门楼'], concept: 'c13b', say: '我这院子，门楼一块砖没动，匾还是"百年老宅"；里头地暖、新风、投影都上了。客人要的就是这个"老"——老的是壳子，新的才卖得出价。你说名和实，我天天就在这两者中间过日子。', follow: ['客人发现过反差吗？', '壳子能老到什么时候？'] },
+          { kws: ['直播', '带货', '电商', '运营', '粉丝'], concept: 'c14b', say: '开播前先算账：货备多少、退赔谁担、流量投哪个时段——全是计划出来的数。我奶奶常说"看天吃饭"，我们是"看数据吃饭"。一个靠经验一个靠报表，其实就是从欲望走到了需要。', follow: ['报表失灵过吗？', '奶奶服这个算法吗？'] },
+          { kws: ['押金', '差评', '合同', '客人'], concept: 'c12c', say: '城里客人来：平台合同、押金、退改条款、差评机制，一样不缺——跟村里"打个招呼就是了"完全是两套系统。你细品，我这生意每天都在两种规矩之间切换档位。', follow: ['两套系统会穿帮吗？', '村里人如何看待差评？'] },
+          { kws: ['直播卖', '绣品', '柿子', '特产'], concept: 'c12c', say: '我帮绣坊和桑园带货。跟老主顾还是口头讲；平台订单，一律电子合同。有意思的是，蕴章阿姨嘴上说"信不过网上的生人"，手上的订单倒是一单没落。', follow: ['阿姨为什么嘴硬手快？', '电子票算不算"立字据"？'] },
+          { kws: ['老规矩', '观念', '冲突', '讲究'], concept: 'c13b', say: '最典型的是祭祖：全族还是要来的，香烛换成电子蜡烛，跪垫换成折叠椅——名目一个没动，家伙什全换了。长辈们嘴上说"省事"，心里明白：里子在换，面子先撑着。', follow: ['面子还能撑多久？', '哪些"面子"最结实？'] }
+        ],
+        fallback: [
+          '这个我接不住——我回村才四年，族里的账我只看懂个零头。要不问问沈爷爷？他那里全是故事。',
+          '嗯……这个得翻老账。要不换个角度？民宿生意、直播带货上的事，我保证给你讲透。'
+        ]
+      }
+    ]
+  };
+
+  const root = (typeof window !== 'undefined') ? window : global;
+  root.XT_VILLAGE_V2 = VILLAGE;
+  if (typeof module !== 'undefined' && module.exports) module.exports = VILLAGE;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+  <script>
+/* 村落 v3：围龙村（闽赣客家 · 闽西汀州山区）
+ * 对应章节：差序格局 / 家族 / 从欲望到需要
+ */
+(function (global) {
+  'use strict';
+
+  const VILLAGE = {
+    id: 'v3', name: '围龙村', type: '闽赣客家村',
+    region: '闽西汀州 · 山间盆地',
+    chapters: ['c04', 'c06', 'c14'],
+    mapTheme: { ground: '#e6dfc8', hill: '#c9b98f', water: '#a9c2b8', accent: '#8f3e2e', roof: '#6b4d3a' },
+    intro: '围龙村藏在闽西盆地边缘，一座半月形围屋是全村的心脏：祖堂居中轴最里，房间一圈圈向外排开，前有半月池，后有水口林。蓝、钟两姓各占半条坑垄，梯田顺山势叠到垭口。围屋里有理事会，管着公尝田的账——祭祖、助学、修屋都从这出钱。村口圩场逢三、六、九开圩，大宗买卖全推到圩上做。近年围屋成了网红取景地，返乡青年在侧屋支起了直播间。',
+    geoFacts: {
+      landform: '武夷山南段山间盆地，四周山岭，坑垄梯田叠升',
+      climate: '中亚热带季风，温润多雨，年降水约1700毫米',
+      agriculture: '水稻梯田 + 烤烟、芋头，山塘养鱼，竹林副业',
+      livelihood: '梯田农作 + 围屋旅游 + 银饰、夯土等手艺，青年多外出又渐有回流',
+      transport: '古驿道经圩场通汀州，今省道过村，快递进村半年'
+    },
+    features: [
+      {
+        id: 'f301', kind: 'hall', name: '祖堂（上堂）', x: 50, y: 24,
+        note: '围屋中轴最深处，祖宗牌位满壁，公尝账簿锁于神龛侧柜。',
+        truth: ['c06b', 'c08a'],
+        analysis: '祖堂是家族这台"事业机器"的总控室：祭祖在此、议事在此、公尝账目在此——事业组织以祖先的名义运转。',
+        ask: {
+          q: '围屋正中的上堂是做什么用的？',
+          options: ['族人共用的客厅', '祭祖、议事、管公尝账目的族务中枢', '存放谷物的仓库'],
+          answer: 1,
+          exp: '祖堂把政治、经济、祭祀集于一处：家是事业社群，上堂就是它的"办公间"。'
+        }
+      },
+      {
+        id: 'f302', kind: 'homes', name: '围屋同心圈层', x: 50, y: 45,
+        note: '房间围祖堂一圈圈向外：内圈长房，外圈远支，俯瞰如树的年轮。',
+        truth: ['c04a'],
+        analysis: '同心圆的围屋是"以己为中心推出波纹"的立体化：离祖堂越近亲支越近，一圈圈往外就是推出去的波纹。',
+        ask: {
+          q: '围屋的房间是怎么排布的？',
+          options: ['抽签均匀分', '越靠祖堂支派越近，一圈圈向外排开', '按出资多少排'],
+          answer: 1,
+          exp: '建筑即社会图：一圈圈排布把"亲属关系的亲疏"变成了抬头可见的空间秩序。'
+        }
+      },
+      {
+        id: 'f303', kind: 'field', name: '公尝田（族田）', x: 82, y: 56,
+        note: '坑垄中最好的水田归公尝，收获入祠堂账房，账簿一年一公开。',
+        truth: ['c06b', 'c12a'],
+        analysis: '公尝田是家族的公共财产：收成供祭祖、助学、修屋——家作为事业组织必须有不随各家分家的"公家底"。',
+        ask: {
+          q: '公尝田的收成怎么用？',
+          options: ['按户私分', '供祭祖、助学、修屋等族中公务', '卖了给各家分红'],
+          answer: 1,
+          exp: '公尝把"家的事业"做实：没有这份公产，围屋修不起、书办不起、祭也祭不齐。'
+        }
+      },
+      {
+        id: 'f304', kind: 'grove', name: '水口林与社坛', x: 14, y: 72,
+        note: '村口下游一片老林，古樟遮天，林边社坛立碑："犯禁者罚戏一台"。',
+        truth: ['c08a', 'c08b'],
+        analysis: '水口林禁伐是写进祠堂的族约：以传统与敬畏维持的生态秩序，比官府的告示更有约束力。',
+        ask: {
+          q: '水口的老树为什么谁也不能砍？',
+          options: ['留着当风景', '族约禁伐、犯禁罚戏认错，几代人守下来的规矩', '没有柴刀'],
+          answer: 1,
+          exp: '礼的强制不靠警察：罚戏一台、当众认错——脸面与仪式就是这片老林六百年的"护林员"。'
+        }
+      },
+      {
+        id: 'f305', kind: 'school', name: '书室（家塾）', x: 66, y: 30,
+        note: '祖堂东侧两间书室，匾"耕读传家"，束脩由公尝"助学费"支出。',
+        truth: ['c11a'],
+        analysis: '书室紧贴祖堂：族中出钱办教，先生执礼教化——教化权力以长幼之序和公产同时托底。',
+        ask: {
+          q: '书室的"助学费"从哪里来？',
+          options: ['各家凑钱', '公尝田的收成专项支出，族中子弟皆可读', '官府学田'],
+          answer: 1,
+          exp: '助学走公账：家族不只在管饭管住，还在为"下一代接老规矩"投资——教化是事业的一部分。'
+        }
+      },
+      {
+        id: 'f306', kind: 'market', name: '圩场（圩日集市）', x: 36, y: 80,
+        note: '村外路口的圩坪，逢三六九开圩，四乡八里挑担来集，秤杆林立。',
+        truth: ['c12c'],
+        analysis: '大宗交易推向圩场：与外姓、生人的买卖当场讲价结清——算账的规矩在亲缘圈外才好施展。',
+        ask: {
+          q: '为什么大宗买卖要去圩场而不在围屋里做？',
+          options: ['圩场热闹', '血亲之间抹不开算账，交易推给与外姓打交道的"生人"市场', '官府指定'],
+          answer: 1,
+          exp: '亲密社群最怕清算：围屋里讲人情，圩场上讲秤星——契约的市场长在血缘的边界之外。'
+        }
+      },
+      {
+        id: 'f307', kind: 'genealogy', name: '迁徙碑与族谱', x: 34, y: 30,
+        note: '祠内一方迁徙碑，记先祖自中原南迁的路线；族谱按世系悬挂。',
+        truth: ['c12a'],
+        analysis: '族谱与迁徙碑把"你是谁"写死在世系里：职业、身分、屋舍皆随谱系走——不容个人选择。',
+        ask: {
+          q: '族谱对本村人意味着什么？',
+          options: ['一本旧书', '世系即身分：你是谁的孙、承哪支的业，翻开便定', '旅游纪念品'],
+          answer: 1,
+          exp: '农人之子恒为农——谱系就是分配表：土地、屋舍、名分顺着血缘继替一代代落位。'
+        }
+      },
+      {
+        id: 'f308', kind: 'new', name: '电商服务点与直播间', x: 24, y: 50,
+        note: '侧屋改的直播间，货架上是笋干、芋头、银饰，墙上贴着价格带表。',
+        truth: ['c14b'],
+        analysis: '直播间里一切先算"需要"：选品、定价、备货全是计划——与"祖上这么种"的老逻辑并行运转。',
+        ask: {
+          q: '直播间的备货逻辑与老一辈种地有什么不同？',
+          options: ['没不同', '先查行情、算成本再定产量——按"需要"计划，而非按"习惯"行事', '全靠运气'],
+          answer: 1,
+          exp: '从欲望到需要的那一步，就发生在货架与表格之间：种什么不再问祖上，先问市场。'
+        }
+      },
+      {
+        id: 'f309', kind: 'workshop', name: '擂茶坊与酒坊', x: 72, y: 40,
+        note: '侧屋的擂钵与酒甑，香气顺着天井飘到祖堂前。',
+        truth: ['c14a'],
+        analysis: '擂茶待客是"从小吃到大"的习惯——口味是养出来的文化事实，不是谁算出来的需要。',
+        ask: {
+          q: '客家人为什么家家离不得擂茶？',
+          options: ['营养需要', '祖辈传下的吃食习惯——"好客""好这一口"是文化养出的欲望', '官府倡导'],
+          answer: 1,
+          exp: '欲望并非生物事实而是文化事实：擂茶的"要"，是人造下来教人这样想的。'
+        }
+      },
+      {
+        id: 'f310', kind: 'pond', name: '半月池', x: 50, y: 58,
+        note: '围屋前的半圆水塘，蓄水防火，倒映着整座围屋的轮廓。',
+        truth: ['c08b'],
+        analysis: '半月池讲究"聚财纳气"，实际兼防火蓄水——风水说辞是皮，世代传下的实用传统是骨。',
+        ask: {
+          q: '半月池的"讲究"背后是什么？',
+          options: ['纯迷信', '风水是皮、实用是骨：蓄水防火的合式做法披上了祖训的袍子', '装饰景观'],
+          answer: 1,
+          exp: '不必知之、只要照办：合式的行为披上"灵验"的说辞，传统就这样让人主动服膺。'
+        }
+      }
+    ],
+    finds: [
+      { id: 'fd301', name: '年轮一样的围屋', concept: 'c04a', desc: '航拍围屋一圈圈排开，长房居内、远支居外——把石子入水的波纹盖成了房子，这是全村最直观的一课。' },
+      { id: 'fd302', name: '公尝账房的对簿日', concept: 'c06b', desc: '每年腊月账房当众念账：一笔一笔对全族听——"家是事业组织"最硬核的证据，是这本当众念的账。' }
+    ],
+    npcs: [
+      {
+        id: 'n301', name: '蓝守正', role: '理事会首事', age: 70, gender: 'm',
+        hello: '来者是客，上堂前先在檐下站站——看看咱这屋的排法，你就有数了。有事问老朽便是。',
+        persona: '端庄、慢条斯理，自称"老朽"，讲话先讲祖上再讲当下。',
+        knows: '公尝账目、族约字据、祭祖仪程、围屋修缮分工',
+        blind: '直播行情、短视频玩法、外界市场',
+        rules: [
+          { kws: ['公尝', '族田', '账', '族产', '谷仓'], concept: 'c06b', say: '公尝的谷子，一半做秋祭，一半助学修屋。账房每年腊月对簿：一笔一笔当众念，全族听——谁有二话，当面提。这本账，就是咱这个家的底气。家要办事，就得有这份不随各家分家的公产。', follow: ['账目有出过差错吗？', '公尝田怎么来的？'] },
+          { kws: ['围屋', '排房', '同心', '年轮', '分房'], concept: 'c04a', say: '住房围着祖堂一圈一圈排：离祖堂越近的是长房，再往外二房三房——远支住最外圈。分家不搬走，就在外圈接着起屋。你航拍看看，一圈一圈，跟树的年轮一样，亲疏远近全在里头。', follow: ['为什么内圈最尊？', '外圈的人想住内圈怎么办？'] },
+          { kws: ['水口', '禁伐', '老树', '族规', '罚'], concept: 'c08a', say: '水口林是祖上立约禁伐的，规矩写在祠堂：犯禁者，罚戏一台，当众认错。这不是官府的告示，是自家几代人守出来的章程——守到后来，谁路过那片树，脚都自发放轻。', follow: ['罚戏罚的是钱还是脸？', '有人犯过禁吗？'] },
+          { kws: ['祭祖', '秋祭', '上香', '牌位'], concept: 'c08b', say: '秋祭按老例：前三日扫祠堂，祭日卯时开鼓，主祭读祝，分胙按丁按辈——哪一样都不能省。省了哪样，族里老人就不依。照着做，全族的心就齐了。', follow: ['分胙的讲究？', '在外打工的赶不回来怎么办？'] },
+          { kws: ['助学', '读书', '束脩', '书室'], concept: 'c11a', say: '书室的助学费从公尝出，族中子弟人人有份。先生请的是外头科举出身的先生——先生的话，娃爹妈都不好多说半句。为啥？教人的人，天然立在长幼那层序上头。', follow: ['助学出过大学生吗？', '先生的待遇怎么定？'] },
+          { kws: ['圩场', '圩日', '买卖', '交易'], concept: 'c12c', say: '大宗买卖去圩场：逢三六九，四乡的人挑担来。为啥不在围屋里做？自家兄弟之间，银钱往来一算清，脸就薄了。圩场上跟外姓人，秤平斗满当场两清——反到痛快。', follow: ['族里人借过大钱吗？', '圩场的秤谁校？'] }
+        ],
+        fallback: [
+          '老朽所知，不出这一屋一圈。你问的这个，得去问圩场上的人，或者书室的先生。',
+          '这个问题问得好，容老朽翻翻祠里的旧簿。你先看看中堂的匾，回头再谈。'
+        ]
+      },
+      {
+        id: 'n302', name: '钟阿土', role: '老农', age: 66, gender: 'm',
+        hello: '后生，裤脚还沾着泥哩。田里的事你尽管问，别的不敢应。',
+        persona: '朴实、句尾"哩""咯"，讲梯田像讲自家孩子。',
+        knows: '梯田水源、烤烟稻作、分家规矩、山歌调子',
+        blind: '族账、电商、官府文书',
+        rules: [
+          { kws: ['梯田', '山田', '水圳', '引水'], concept: 'c14c', say: '山垄田一层一层，是祖上一锄头一锄头垒出来的。哪块田晒几日、引哪条圳的水，老辈都试过了——照做，就有收成。你若问为啥？说不来为啥，做就对了。', follow: ['圳水分几股？', '新垒的田怎么定规矩？'] },
+          { kws: ['种烟', '烤烟', '种什么', '作物', '芋头'], concept: 'c14a', say: '为啥种烟不种别的？祖上就这么种，吃惯用惯了。去年小妹说烟叶直播好卖，账她算得欢——可田还是那些田，俺照老历法侍弄。两个账本，各有各的理。', follow: ['两种种法吵过吗？', '你的账本是啥？'] },
+          { kws: ['分家', '分书', '兄弟', '继承'], concept: 'c12a', say: '分家要请族老做中，写分书，祠堂存一份。田随分书走——老大哪几丘、老二哪几丘，写死的。儿子接的是爹的田，这叫接业。接业的儿子，也接祭扫的担子。', follow: ['女儿呢？', '田薄了还接吗？'] },
+          { kws: ['山歌', '对歌', '唱'], concept: 'c07c', say: '后生妹子隔垄对山歌，歌是路，人是隔着一垄田的。老礼不兴凑近了讲——唱拢了，才请媒人。歌里的话可以热，人前的人要稳。', follow: ['歌词现编的吗？', '隔着田唱，谁先开口？'] },
+          { kws: ['卖谷', '粮贩', '圩上'], concept: 'c12c', say: '自家吃的糯谷不出寨；多的背去圩上，贩子当场过秤，当面点钱。自家兄弟借谷？那不叫买卖，叫救急，年底还不还得看收成。两种账，俺心里分得清清楚楚。', follow: ['借谷要利息吗？', '圩上的价怎么谈？'] }
+        ],
+        fallback: [
+          '咯……这个俺讲不来。田里的事俺门清，账面上的事你问首事公。',
+          '后生，你这个问题深哩。俺先去把水圳放水，回转来再同你讲。'
+        ]
+      },
+      {
+        id: 'n303', name: '丘拙庐', role: '书室先生', age: 59, gender: 'm',
+        hello: '请进请进，书房小坐。老朽在书室坐了三十年，谱牒文墨的事，可与你细讲。',
+        persona: '儒雅，自称"老朽"，爱翻谱牒举例，讲着讲着就去书架抽册子。',
+        knows: '族谱世系、蒙学课业、楹联堂号、科举旧事',
+        blind: '梯田农事、直播电商',
+        rules: [
+          { kws: ['族谱', '世系', '谱', '迁徙'], concept: 'c12a', say: '谱上每个名字都挂着世系：你是谁的孙、承哪一支的业、住围屋哪一圈，一翻便知。谱就是咱的"户口册"——你的来路、你的名分，生下来就写在里头了。', follow: ['能改谱上的名字吗？', '新丁入谱什么规矩？'] },
+          { kws: ['开蒙', '课业', '念书', '书室'], concept: 'c11a', say: '开蒙先拜至圣先师，再拜先生。头课念"人之初"，先生一字一句领读，娃们跟诵——领读这个"领"字，就是教化的本相：路是先生走过的，娃跟着走便是。', follow: ['先生打手板吗？', '顽皮的娃怎么管？'] },
+          { kws: ['堂号', '楹联', '匾', '题字'], concept: 'c08a', say: '门楣上"颍川堂""耕读传家"，年年重描——字是老字，意思一茬茬讲给新丁听。匾上没有一句新话，可每代人都从里头读出自己的那一截。这就是规矩的写法：不变的字，常新的人。', follow: ['新丁怎么"读出自己"？', '字能换吗？'] },
+          { kws: ['变化', '新式', '电子', '网上'], concept: 'c13b', say: '如今族谱里添了新式简历页：谁在外打工、谁开网店，附照片二维码——老谱的格没破，里头写的东西换了。你说是变？也对。你说是没变？格还在。这正是古人说的那路子：注而不破。', follow: ['格还能撑几代？', '先生给新页立过规矩吗？'] },
+          { kws: ['劝学', '不读书', '出路'], concept: 'c14b', say: '从前劝学讲"读书明理"，如今家长问的是"读书算不算得过一笔账"——娃读出去要花多少、回来能挣多少。你看，连劝学的话，都从"明理"变成了"算账"。', follow: ['账算清了吗？', '明理和算账矛盾吗？'] }
+        ],
+        fallback: [
+          '此问超出书室功课。田畴之事问钟老弟，族中账目问首事公——老朽只管纸上的乾坤。',
+          '有意思的问题。容老朽夜里翻翻谱牒，明日圩日，圩坪上人多，咱们边看边讲。'
+        ]
+      },
+      {
+        id: 'n304', name: '黄阿夯', role: '夯土师傅', age: 54, gender: 'm',
+        hello: '手停不下来，你边看我边答。俺是修屋的黄阿夯，围屋的墙俺摸了三十年。',
+        persona: '嗓门大、节奏快，句尾"咯"，讲到墙就蹲下比划。',
+        knows: '夯土配方、修缮工约、匠人行价、围屋结构',
+        blind: '谱牒世系、外界行情',
+        rules: [
+          { kws: ['修屋', '修缮', '夯土', '夯墙', '手艺'], concept: 'c06b', say: '修围屋是全族的事：出钱的记账，出力的记工，俺这种匠人吃手艺饭——也是接祖上传下的活。墙上一把土、房上一片瓦，都写着"公家"两个字。一家人，办一屋的事。', follow: ['工怎么记？', '修缮谁说了算？'] },
+          { kws: ['工钱', '包工', '工约', '外活'], concept: 'c12c', say: '给族里修，工钱挂在公账上慢慢结，几百年都这么办；给外人包工，先立工约：白纸黑字，按手印，工期价钱写死。自家人的账靠情分养，外人的账靠纸条拴。', follow: ['情分靠得住吗？', '工约闹过纠纷吗？'] },
+          { kws: ['徒弟', '传艺', '儿子', '学手艺'], concept: 'c12a', say: '手艺传儿不传婿——不是小气，是业随血脉走。俺爹传俺夯土口诀，一句是一句，俺娃背得比课本熟。外人想学？除非上门做女婿，那是另一本账咯。', follow: ['口诀有多少句？', '女婿能学到几成？'] },
+          { kws: ['土墙', '结实', '配方', '糯米'], concept: 'c14a', say: '夯土掺糯米浆、石灰、砂，比例是口诀——为啥是这个数？讲不来，祖上试出来的，照办墙就结实。俺信这个：墙不倒，规矩就不错。', follow: ['试错过吗？', '新配方有人试吗？'] },
+          { kws: ['老屋', '搬走', '搬家', '搬'], concept: 'c01a', say: '围屋住的是祖上的基业：墙是夯的土，土是脚下这方地。人搬屋不搬——搬走了，墙给谁看哩？住在这里的人，脚跟土是长在一起的。', follow: ['外出打工的人算搬走吗？', '新房起在哪？'] }
+        ],
+        fallback: [
+          '咯，这个俺不懂。俺懂墙，不懂账。你问首事公去。',
+          '你问的这个，得问识文断字的人。俺就去叫俺娃来，他手机里啥都有——那后生知道的比俺多，就是不如俺晓得为啥。'
+        ]
+      },
+      {
+        id: 'n305', name: '钟小妹', role: '返乡主播', age: 24, gender: 'f',
+        hello: '来啦？先别开镜头哈，我是小妹，围屋直播就是我。你的问题好硬核，我喜欢，问！',
+        persona: '元气、语速快，爱用直播间黑话"数据""上链接"，又忽然冒出客家话词。',
+        knows: '直播运营、围屋流量、电商物流、年轻人的新想法',
+        blind: '公尝账目细节、夯土口诀、古礼流程',
+        rules: [
+          { kws: ['直播', '网店', '电商', '流量', '带货'], concept: 'c14b', say: '卖之前的功课：拍样品、定价格带、算邮费、估退货率——一切先算需要，再动手。俺爷管这叫"打算盘"，其实就是计划。祖上问"祖上怎么种"，俺问"市场要多少"——差的就是这一问。', follow: ['算错过吗？', '爷服这个算法吗？'] },
+          { kws: ['航拍', '围屋', '粉丝', '流量密码'], concept: 'c04a', say: '粉丝最爱航拍围屋：一圈一圈像树的年轮。俺在镜头里就说：这就是俺们家的"朋友圈"，越里圈越亲——内圈是长房，俺家在外圈第三排。网友刷屏"涨知识"，其实这就是俺们的日常。', follow: ['外圈有意见吗？', '年轮圈还扩吗？'] },
+          { kws: ['祭祖', '直播祭祖', '电子', '蜡烛'], concept: 'c13b', say: '秋祭俺是全族第一个架手机直播的。首事公嘴上说"成何体统"，转头让俺把祭文念清楚点给外地打工的族人听——香烛换了电子的，跪还是真跪。名目没动，内容在换。', follow: ['首事公真接受了吗？', '直播祭祖算不算失礼？'] },
+          { kws: ['快递', '物流', '进货'], concept: 'c12c', say: '快递进村半年，俺跟平台、跟供货商全是电子合同——违约条款一条条抠。跟村里人？口头讲讲就开工。俺现在双标得很熟练：对外条款细到标点，对内连借条都懒得打。', follow: ['双标出过事吗？', '外人怎么理解这种双标？'] },
+          { kws: ['不回来', '留下', '城里', '外出'], concept: 'c12a', say: '俺出去读过书、打过工，最后还是回来了。围屋的房是俺爹名下的，俺名分上就是这一圈里的人——城里房子再大，也挂不进这本谱。回来不是恋旧，是俺的"业"在这本账上。', follow: ['谱上名分重要还是收入重要？', '嫁出去的姐妹呢？'] }
+        ],
+        fallback: [
+          '这个我答不准——账是首事公的，谱是先生的，俺管流量。你要听流量的故事，我能讲到天亮。',
+          '嗯，这个超纲咯。要不我拉你进直播间当十分钟助播？好多答案在弹幕里，不在书里。'
+        ]
+      }
+    ]
+  };
+
+  const root = (typeof window !== 'undefined') ? window : global;
+  root.XT_VILLAGE_V3 = VILLAGE;
+  if (typeof module !== 'undefined' && module.exports) module.exports = VILLAGE;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+  <script>
+/* 村落 v4：云岭寨（云贵山地 · 黔东南苗岭坡地）
+ * 对应章节：文字下乡 / 再论文字下乡 / 无为政治 / 长老统治
+ */
+(function (global) {
+  'use strict';
+
+  const VILLAGE = {
+    id: 'v4', name: '云岭寨', type: '云贵山地村寨',
+    region: '黔东南苗岭 · 高山槽谷',
+    chapters: ['c02', 'c03', 'c10', 'c11'],
+    mapTheme: { ground: '#e3ddc6', hill: '#b9ad82', water: '#a7c0b4', accent: '#7d3f34', roof: '#4f5a52' },
+    intro: '云岭寨挂在苗岭半坡，吊脚楼顺着山势叠成三层，寨心一座鼓楼，楼前歌坪是全寨的场子。糯稻梯田从寨脚叠到垭口，鱼鸭同田。逢亥日赶场，四邻八寨挑担下山，赶场坝设在寨门外——买卖在寨外做，是老规矩。寨里不靠汉字记事：三百首古歌、一部榔规，全在寨老与歌师的肚子里。近年快递点进了寨门，年轻人一边背古歌一边学直播。',
+    geoFacts: {
+      landform: '苗岭中段高山槽谷，坡陡谷深，寨子依山就势分三层',
+      climate: '亚热带山地气候，云雾多、日照少，年降水约1400毫米',
+      agriculture: '糯稻梯田 + 稻鱼鸭共作，油茶、板栗为山货',
+      livelihood: '梯田农作 + 银饰蜡染手艺 + 务工返乡，直播与快递是新营生',
+      transport: '古驿道翻垭口下县城，今盘山公路进寨，赶场日班车加开'
+    },
+    features: [
+      {
+        id: 'f401', kind: 'hall', name: '鼓楼', x: 48, y: 30,
+        note: '寨心高层重檐木楼，楼脚火塘四季不熄，楼板被几代人的背磨得发亮。',
+        truth: ['c11a', 'c09c', 'c10c'],
+        analysis: '鼓楼是全寨的"公堂"：议榔评理、传歌讲古都在此——官府权力到了山外就稀薄，寨老的教化权力坐在这层楼板上，正是"无为"之下基层的实际秩序。',
+        ask: {
+          q: '鼓楼是谁的"公堂"？',
+          options: ['村委的办公楼', '全寨议榔评理、传歌讲古的公所', '存放芦笙的仓库'],
+          answer: 1,
+          exp: '鼓楼不挂衙门牌：寨老凭"经的事多"主持公道——教化权力既非官府委派，也非选举，是长幼之序坐出来的。'
+        }
+      },
+      {
+        id: 'f402', kind: 'plaza', name: '歌坪', x: 44, y: 52,
+        note: '鼓楼前的石板坪，节庆对歌时男女各站一边，芦笙响起满山应和。',
+        truth: ['c07c'],
+        analysis: '对歌隔着坪、隔着田：交往的"热度"由歌传，人保持距离——有节制的社交是求安定的制度安排。',
+        ask: {
+          q: '对歌时男女隔着坪相唱、不并肩牵手——这规矩管什么？',
+          options: ['卫生习惯', '把交往的热度放进"歌"里，人要稳——社交有礼的边界', '音效需要'],
+          answer: 1,
+          exp: '感情的激动会改变关系，隔坪对歌让情意在规矩的河道里流——稳定压倒浪漫。'
+        }
+      },
+      {
+        id: 'f403', kind: 'homes', name: '吊脚楼组团', x: 70, y: 40,
+        note: '吊脚楼顺坡分三层叠排：上层多潘姓，中层多吴姓，各层火塘间互通。',
+        truth: ['c04a'],
+        analysis: '依坡分层聚居、同姓成团：住得离哪家火塘近，就沾哪家的人情——亲疏写在高差上。',
+        ask: {
+          q: '吊脚楼按坡分层、同姓成团，说明什么？',
+          options: ['地形所迫的巧合', '居住团组跟着亲属关系走，亲疏远近就是高差', '寨老统一分配'],
+          answer: 1,
+          exp: '以自家火塘为中心，熟人一圈圈排开——同心圆的波纹顺着山坡铺成了楼群。'
+        }
+      },
+      {
+        id: 'f404', kind: 'field', name: '梯田与水圳', x: 82, y: 62,
+        note: '糯稻梯田叠到垭口，每垄田一条圳，分水口刻着上寨下寨的老约。',
+        truth: ['c14c', 'c08a'],
+        analysis: '稻鱼鸭共作与分水老约都是世代试出的合式做法——经验印合水土，约成规矩，无需谁教谁。',
+        ask: {
+          q: '梯田放鱼鸭、分水刻老约——这套做法从哪来？',
+          options: ['农技员推广的', '祖辈在山坡上试出来、传下来，又立约固定的经验', '从课本学的'],
+          answer: 1,
+          exp: '不流动的坡地上，经验只需保存无需累积：一套合于生存的"戏文"代代照演。'
+        }
+      },
+      {
+        id: 'f405', kind: 'gate', name: '寨门', x: 16, y: 58,
+        note: '杉木寨门临垭口，门柱挂牛角，客到拦门酒，门边立榔规碑。',
+        truth: ['c08a'],
+        analysis: '拦门酒的迎客礼与门边的榔规碑一左一右：寨门是"礼"的门脸——进来的要按礼迎，出去的要按约担。',
+        ask: {
+          q: '寨门口的拦门酒和榔规碑各管什么？',
+          options: ['都管迎客', '拦门酒管"礼"的进，榔规碑管"约"的守——一迎一束', '都是装饰'],
+          answer: 1,
+          exp: '礼与约在寨门口合体：按仪式迎客是礼，刻碑立约禁伐禁盗也是礼——传统维持的秩序从门开始。'
+        }
+      },
+      {
+        id: 'f406', kind: 'market', name: '赶场坝', x: 24, y: 76,
+        note: '寨门外坡坪，逢亥日成圩，秤杆、竹篓、糯米饭香挤作一团。',
+        truth: ['c12c'],
+        analysis: '赶场设在寨门外：与外寨生人的交易当场过秤给钱——算账的场子放在寨门外，人情与买卖分河而治。',
+        ask: {
+          q: '赶场为什么五天一场、且设在寨门外？',
+          options: ['场地轮着用', '生人交易要"当场算清"，放在寨外的场合做，不搅寨内人情', '路远赶不及'],
+          answer: 1,
+          exp: '亲密的寨内最怕算账，生人场上偏要算清——契约的市场长在寨墙之外，五天一轮，泾渭分明。'
+        }
+      },
+      {
+        id: 'f407', kind: 'workshop', name: '银匠铺', x: 64, y: 62,
+        note: '火苗、小锤、錾子，龙家三代打银，纹样按房支分谱。',
+        truth: ['c12a'],
+        analysis: '银匠手艺父传子、纹样随房支：哪家的姑娘戴哪家的银，一看纹样便知是谁家的亲——手艺即身分。',
+        ask: {
+          q: '银饰纹样为什么"一看就知道是谁家的"？',
+          options: ['商业防伪', '纹样按房支传承，手艺与身分都顺着父系走', '银匠偷懒用模板'],
+          answer: 1,
+          exp: '职业与纹样顺血缘继替：农人之子恒为农、银匠之子恒为银匠——身分写在纹样里。'
+        }
+      },
+      {
+        id: 'f408', kind: 'ladies', name: '蜡染坊', x: 52, y: 78,
+        note: '蓝靛缸一排，女眷们蘸蜡画布，铜刀起落全是老图样。',
+        truth: ['c14a'],
+        analysis: '蜡染的图样与穿戴是"从小养成的要"——好吃好穿的欲望由文化陶冶而来，不是谁算出来的需要。',
+        ask: {
+          q: '姑娘们为什么非要穿蜡染盛装过节？',
+          options: ['有补贴', '"要"是从小养成的：穿惯了、好看、不穿就不像过节——欲望由文化养成', '游客喜欢'],
+          answer: 1,
+          exp: '自觉的欲望是文化的命令：盛装的"要"写在文化里，不是账本上。'
+        }
+      },
+      {
+        id: 'f409', kind: 'school', name: '识字班（教学点）', x: 67, y: 22,
+        note: '鼓楼侧的教学点，汉语拼音表与古歌条屏并排贴着。',
+        truth: ['c02a'],
+        analysis: '拼音表与古歌条屏并贴一墙：两条"课本"并行——不识字不等于没学问，只是各有一套课本。',
+        ask: {
+          q: '寨里老人不识汉字却能背三百首古歌，怎么解释？',
+          options: ['天赋异禀', '歌就是他们的课本——经验靠歌传，文字不是唯一载体', '死记硬背'],
+          answer: 1,
+          exp: '识字不识字并非愚不愚的标准：没有使用文字的场合，人自有一套词与歌搭的桥。'
+        }
+      },
+      {
+        id: 'f410', kind: 'hall', name: '古歌堂（传歌堂）', x: 28, y: 32,
+        note: '鼓楼二层，歌师每旬开课，几十个娃娃盘腿围坐，一句一句跟。',
+        truth: ['c03c'],
+        analysis: '古歌堂是把"过去"传给"现在"的课堂：开天辟地、谷种来历全在歌里——一套戏文，代代同台。',
+        ask: {
+          q: '古歌堂教的东西和学校课本像吗？',
+          options: ['完全一样', '都是"课本"：一个教汉字算术，一个教祖宗的全部经验', '古歌只是娱乐'],
+          answer: 1,
+          exp: '词是最主要的桥梁：古歌用歌搭桥，课本用字搭桥——两座桥都把"过去"运到娃娃眼前。'
+        }
+      }
+    ],
+    finds: [
+      { id: 'fd401', name: '榔规碑上的罚则', concept: 'c08a', desc: '榔规碑刻着"偷杉罚杉、失火烧山赔林"，罚则当众议定——全寨的"法律"不长在纸上，长在寨门边的青石上。' },
+      { id: 'fd402', name: '歌师肚里的"课本"', concept: 'c03c', desc: '三百首古歌装着开天辟地、迁徙路线、谷种来历——这个寨子把"时间上的阻隔"全用歌搭了桥。' }
+    ],
+    npcs: [
+      {
+        id: 'n401', name: '潘老金', role: '寨老', age: 74, gender: 'm',
+        hello: '客来了，火塘边坐。我是潘老金，寨里人喊我一声老金。有话慢慢讲，火塘上煮着茶。',
+        persona: '沉稳、爱讲故事开头"从前啊"，讲古理时手指轻敲火塘沿。',
+        knows: '榔规条款、评理旧案、寨史迁徙、各房亲戚脉络',
+        blind: '手机软件、外部市场价、汉字文书',
+        rules: [
+          { kws: ['议榔', '榔规', '评理', '纠纷', '规矩', '鼓楼'], concept: 'c09c', say: '有事情，到鼓楼来。全寨坐定，老的讲古理，壮的摆事情，讲拢了，当众定约——往后谁反悔，按榔规办，没得二话。评理不是判案，是讲到你心服，心服了，约才立得住。', follow: ['讲不服怎么办？', '榔规能改吗？'] },
+          { kws: ['官府', '官家', '干部', '政府', '官'], concept: 'c10c', say: '官家的话到山里慢。从前收粮的来一回，寨老陪着翻一回山就完了，事情还是寨里自己料理。山高路远，官家管不到火塘边——火塘边的事，火塘边自己了。', follow: ['什么官家必须来管？', '寨老和官家哪个大？'] },
+          { kws: ['寨老', '资格', '凭啥', '威望', '听你的'], concept: 'c11b', say: '凭啥听我的？我经的事多。你碰到的沟沟坎坎，我年轻时都蹚过。寨里看人不看钱，看你肚里装了多少事、办成过多少件。年纪是本钱，本事是利息。', follow: ['谁接你的班？', '年轻人有本事怎么办？'] },
+          { kws: ['古歌', '讲古', '歌师', '传歌'], concept: 'c03c', say: '古歌里有开天辟地，有谷种从哪来，有我们祖先翻的哪座山。娃们盘腿坐拢来，一句一句跟——歌就是老辈递给娃的手。歌在，路就在。', follow: ['歌会失传吗？', '歌里的话都应验吗？'] },
+          { kws: ['对歌', '姑娘', '后生', '相好'], concept: 'c07c', say: '后生想会姑娘，先要会唱歌。隔着火塘对，隔着田坝对——话在歌里走，人要站得稳。礼数到了，情才走得通；礼数不到，歌再好听也是野调。', follow: ['歌里能说大实话吗？', '现在还隔田对歌吗？'] },
+          { kws: ['告状', '官司', '法院', '派出所'], concept: 'c09c', say: '打官司？寨里人讲"丢脸到山外去了"。丢了牛、烧了林，先到鼓楼。实在讲不拢的，我陪他去山外——但十个里头九个半，坐拢火塘就了了。', follow: ['那半个为什么去了？', '山外的官信榔规吗？'] }
+        ],
+        fallback: [
+          '嗯——你问的这个，老金的肚里没有。歌师肚里的歌多，银匠手里的花样多，你换个门问问。',
+          '火塘边的茶凉了，你这个问题倒热。容我想一夜，明日赶场日，场坝上人来人往，你也能自己看出些门道。'
+        ]
+      },
+      {
+        id: 'n402', name: '杨阿稼', role: '老农', age: 63, gender: 'm',
+        hello: '从田里来，脚还沾着泥。想问田里的事？坐，我给你摆。',
+        persona: '干脆、爱说"摆一摆"，讲稻鱼鸭时嗓门会亮起来。',
+        knows: '糯稻农时、稻鱼鸭共作、分水老约、赶场行情',
+        blind: '汉字文书、直播、外界学校教育',
+        rules: [
+          { kws: ['糯稻', '梯田', '鱼', '鸭', '田'], concept: 'c14c', say: '田里放鱼苗、赶鸭仔：鱼吃虫，鸭踩田，粪肥田——一套套法祖辈传的，少一样都不成。你说科学？我们不讲这个词，讲"对路"。做对了，田自己会养人。', follow: ['哪一步最不能错？', '这套法子改过吗？'] },
+          { kws: ['分水', '水圳', '引水', '放水'], concept: 'c08a', say: '一垄田一条圳，上寨下寨分水有老约：几寸口子刻在石头上，谁也不许多截一瓢。旱年更见老约的分量——抢水的念想刚冒头，想起石头上的字，手就缩回来了。', follow: ['老约谁定的？', '不守约的怎么罚？'] },
+          { kws: ['农谚', '节气', '布谷', '看天'], concept: 'c03c', say: '开秧门看布谷叫，不看日历。哪天浸种、哪天插秧、哪天放水，老辈的口诀都在心里——我爹传我，我传我儿。田不会骗人，口诀也不会。', follow: ['口诀不对的时候？', '年轻人记这些吗？'] },
+          { kws: ['卖谷', '赶场', '场上', '价钱'], concept: 'c12c', say: '自家吃的糯谷不出寨；多的背去赶场，场上讲价，当场过秤给钱。跟生人，秤是秤、钱是钱；跟兄弟？借谷是情分，不叫买卖。两个场，两本账，莫搞混了。', follow: ['场上能赊吗？', '兄弟借谷怎么还？'] },
+          { kws: ['官', '粮', '交公粮', '旧社会'], concept: 'c10c', say: '旧社会一年到头见不着官面的身影。粮下乡收一回，其余日子，山还是我们的山，田还是我们的田。天高皇帝远——这话不是牢骚，是实情。', follow: ['官不来，坏事没人管吗？', '现在干部常来吗？'] }
+        ],
+        fallback: [
+          '摆不来。你问田里的事、场上的事，我话多；别的，你换个人问。',
+          '这个问题大咯。你去问老金，他火塘边的古理多，够你记一天。'
+        ]
+      },
+      {
+        id: 'n403', name: '吴金花', role: '歌师', age: 58, gender: 'f',
+        hello: '上楼坐，小心楼梯陡。我是金花，寨里喊我歌师。你考我？还是我教你两句？',
+        persona: '爽朗、开口就能唱两句，讲到歌便半唱半说。',
+        knows: '三百首古歌、开课规矩、歌里藏的农事与迁徙史、对歌礼仪',
+        blind: '外部市场、快递物流、手机软件',
+        rules: [
+          { kws: ['古歌', '教歌', '开课', '传歌', '歌师'], concept: 'c03c', say: '古歌里啥都有：天怎么开、地怎么辟、谷种哪座山找来、祖先翻过几道梁。娃们不认字，歌就替书本。我教歌，就是把老辈的课本一句一句过给他们——这课本不占纸，占心。', follow: ['歌本在纸上吗？', '忘了怎么办？'] },
+          { kws: ['识字', '汉字', '文盲', '不认字', '学校'], concept: 'c02a', say: '我汉字认得不多，你说我笨？我肚里三百首古歌，你们的教授来对歌，对不过我。不是笨不笨的事——是你日子过在哪边，就长哪边的本事。寨里人长歌，城里人长字，各长各的。', follow: ['你想要汉字吗？', '娃们两种都要学吗？'] },
+          { kws: ['歌师', '地位', '威望', '听'], concept: 'c11a', say: '寨里论"师"，不光看岁数，还看你肚里装多少古歌古理。歌师说话，爹妈都得让三分——因为老辈的道理从我嘴里过。这份敬，敬的不是我，是我背后那一串老辈人。', follow: ['歌师能评理吗？', '新歌师怎么立起来？'] },
+          { kws: ['对歌', '情歌', '后生', '姑娘'], concept: 'c07c', say: '后生想会姑娘，先得会唱歌。隔着火塘对，隔着田坝对——歌是走的路，人是守的礼。歌可以热得烫嘴，人要稳得像田埂。对上了歌，才请媒人。', follow: ['歌词押韵有讲究吗？', '唱输了会怎样？'] },
+          { kws: ['录音', '手机', '录像', '网上'], concept: 'c02c', say: '小妹他们拿手机录我的歌，娃娃跟手机学——声音还是那个声音，火塘换成了屏幕。我不怕。歌不怕换地方住，就怕没人开口唱。', follow: ['手机教的歌对味吗？', '录歌算不算"写下来"？'] }
+        ],
+        fallback: [
+          '这个我不答——歌师的歌管得到，歌师管不到的你另请高明。要不，我先教你两句再走？',
+          '嗯，这个要问老金。我肚里只有歌和理，没有他那些山外的见识。'
+        ]
+      },
+      {
+        id: 'n404', name: '龙银海', role: '银匠', age: 50, gender: 'm',
+        hello: '锤子吵，担待。我是龙银海，祖上三代打银。银子上头的事，你随便问。',
+        persona: '话少句硬，边打边答，锤声当标点。',
+        knows: '银饰纹样房支、定制与订单、赶场生意、旅游集市',
+        blind: '古歌内容、寨史、文书契约',
+        rules: [
+          { kws: ['银饰', '打银', '纹样', '手艺', '银匠'], concept: 'c12a', say: '打银是祖传的营生：我爹传我，我传我儿。哪家的姑娘戴哪家的银，一看纹样就知道——纹样跟房支走，跟谱走。这行饭，是生下来就端上的。', follow: ['外人能学吗？', '纹样能创新吗？'] },
+          { kws: ['赶场', '摆摊', '场上卖', '收银'], concept: 'c12c', say: '场上买卖：当面讲价，秤平斗满，当场交割——生人场上不欠账。寨里人打银？说一声就开工，工钱年底凑个整。两个场两套规矩，锤子敲下去前，我先分清对面是谁。', follow: ['年底收不回账呢？', '场上的秤信得过吗？'] },
+          { kws: ['订单', '旅游', '城里', '定制', '合同'], concept: 'c14b', say: '城里订单：先打样、报价、定工期，白纸黑字再开工；寨里人定制：一句"照老样子"，我闭眼都打得对。订单是算出来的活，老样子是手艺里的习惯——两种活我都接，两手都要硬。', follow: ['打样要不要钱？', '老样子会改吗？'] },
+          { kws: ['学艺', '儿子', '传承', '师傅'], concept: 'c12a', say: '我儿八岁进火塘边，先学拉风箱三年，再上小锤——不是我心狠，是手艺的规矩就这样一辈一辈过来的。他将来传谁？传他儿。银火不灭，就靠这个"传"字。', follow: ['女儿能碰银吗？', '手艺不如祖上了吗？'] },
+          { kws: ['银锁', '满月', '抓周', '长命'], concept: 'c08a', say: '娃娃满月要打一把银锁，錾上"长命百岁"，纹样按房支谱来——没人下过命令，家家都这么办，不办心里不落底。这就是老辈传下来的合式做法。', follow: ['银锁几钱重？', '不办行不行？'] }
+        ],
+        fallback: [
+          '这个我说不了。锤子底下的事我门清，锤子外头的，你去问老金或者歌师。',
+          '嗯——你这个问题，锤子答不了。要听银子的故事，坐下，我看你这人有耐心，讲给你听。'
+        ]
+      },
+      {
+        id: 'n405', name: '潘小豆', role: '返乡青年', age: 27, gender: 'm',
+        hello: '哥/姐好，我是小豆，寨门口开快递点的那个。刚卸完货，手黑，别嫌弃。问吧！',
+        persona: '热络、爱说"冲一波""整明白"，普通话和寨话切换自如。',
+        knows: '快递物流、直播带货、外出务工地图、新老规矩摩擦现场',
+        blind: '古歌具体内容、榔规条款（会现场请教寨老）',
+        rules: [
+          { kws: ['打工', '外出', '回来', '返乡'], concept: 'c13b', say: '寨里还是讲"出去做活"——跟祖辈下田一个说法。可做的早不是田里的活了：进厂、跑单、做直播。名目还是那个名目，里头全换了。老辈人不是不晓得，是不换口。', follow: ['为什么不换口？', '哪些名目最顽固？'] },
+          { kws: ['快递', '电商', '直播', '物流', '网店'], concept: 'c14b', say: '我的快递点要算账：每天多少件、损耗多少、路线怎么省一公里是一公里——全是计划出来的数。我爷种田看布谷，我看后台数据。他笑我"认不得天"，我笑他"认不得报表"，其实是两代人两本账。', follow: ['两本账吵过架吗？', '数据靠得住吗？'] },
+          { kws: ['榔规', '老规矩', '占地', '修路', '群里'], concept: 'c13b', say: '榔规还管用，但路数变了：比如占地纠纷，现在先拍照发寨群，大家表态，再提鼓楼走流程——鼓楼还是鼓楼，只是多了个"线上预审"。老规矩套了个新壳，你说是换还是没换？', follow: ['寨老接受拍照吗？', '群里表态算数吗？'] },
+          { kws: ['识字', '普通话', '爷爷', '不识字'], concept: 'c02a', say: '我爷不识几个字，可满山的事他都懂：哪块田放几尾鱼、哪条圳放几寸水，闭眼都行。我识字、会用电脑，进城头两年还是两眼一抹黑。各人有各人的课本——他的课本是山，我的是屏幕。', follow: ['你服你爷吗？', '屏幕课本能传山吗？'] },
+          { kws: ['官司', '评理', '鼓楼', '纠纷'], concept: 'c09c', say: '上个月两家为快递车压坏田埂，还是先到鼓楼评理——寨老一句话，修埂赔青苗，两清。真要去打官司的，这几年寨里一例没有。不是怕，是觉得"丢脸"两个字比输赢重。', follow: ['将来会有人去吗？', '你觉得丢脸重要吗？'] }
+        ],
+        fallback: [
+          '这个我接不住——我得去问寨老。要不这样，我带你去鼓楼转一圈？好些答案挂在楼柱上。',
+          '哈哈，超纲了。要不问问快递和直播？那条线上我是全寨最懂行的，寨老都来问我咋发视频。'
+        ]
+      }
+    ]
+  };
+
+  const root = (typeof window !== 'undefined') ? window : global;
+  root.XT_VILLAGE_V4 = VILLAGE;
+  if (typeof module !== 'undefined' && module.exports) module.exports = VILLAGE;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+  <script>
+/* 村落聚合层：4 个虚拟村落 + 查询助手
+ * 依赖：data-village-v1.js ... v4.js 先于本文件加载（浏览器）/ require（Node 测试）
+ */
+(function (global) {
+  'use strict';
+  const root = (typeof window !== 'undefined') ? window : global;
+
+  const LIST = [root.XT_VILLAGE_V1, root.XT_VILLAGE_V2, root.XT_VILLAGE_V3, root.XT_VILLAGE_V4];
+
+  const API = {
+    VILLAGES: LIST,
+    village(id) { return LIST.find(v => v.id === id) || null; },
+    feature(vId, fId) {
+      const v = API.village(vId);
+      return v ? v.features.find(f => f.id === fId) || null : null;
+    },
+    npc(vId, nId) {
+      const v = API.village(vId);
+      return v ? v.npcs.find(n => n.id === nId) || null : null;
+    },
+    find(vId, fdId) {
+      const v = API.village(vId);
+      return v ? v.finds.find(d => d.id === fdId) || null : null;
+    },
+    /** 本村概念池：对口章节概念 + 空间真值/发现/NPC 规则实际用到的概念（保证真值永不被池过滤） */
+    conceptPool(vId) {
+      const v = API.village(vId);
+      if (!v) return [];
+      const set = new Set();
+      (v.chapters || []).forEach(cId => {
+        const ch = root.XT_BOOK && root.XT_BOOK.chapter(cId);
+        if (ch) ch.concepts.forEach(c => set.add(c.id));
+      });
+      v.features.forEach(f => (f.truth || []).forEach(c => set.add(c)));
+      (v.finds || []).forEach(d => set.add(d.concept));
+      v.npcs.forEach(n => n.rules.forEach(r => { if (r.concept) set.add(r.concept); }));
+      return Array.from(set);
+    }
+  };
+
+  root.XT_VILLAGES = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+  <script>
+/* ============================================================
+ * 引擎核心（纯逻辑，禁 DOM）：状态机 / NPC 离线对话 / 空间语义分析 /
+ * 报告生成与初评 / 成就与等级 / 教师端模拟班级 / 双村对比
+ * 纪律：一切函数确定性可测；种子哈希只用输入串；越界一律安全回落。
+ * ============================================================ */
+(function (global) {
+  'use strict';
+  const root = (typeof window !== 'undefined') ? window : global;
+
+  /* ---------- 基础工具 ---------- */
+  function hash32(str) {
+    let h = 2166136261 >>> 0;
+    const s = String(str || '');
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619) >>> 0;
+    }
+    return h >>> 0;
+  }
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function normQ(s) {
+    return String(s || '').toLowerCase()
+      .replace(/[\s，。、；：？！“”‘’"'\.,;:\?\!()（）\[\]【】\-—·~～]/g, '');
+  }
+  function nowId(seq) { return 'm' + String(seq).padStart(4, '0'); }
+  function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+  /* ---------- 状态机 ---------- */
+  const STATE_VERSION = 1;
+
+  function newState(name) {
+    return {
+      version: STATE_VERSION,
+      createdAt: new Date().toISOString(),
+      student: { name: name || '无名调查员' },
+      points: 0,
+      seq: 1,
+      chapters: {},          // c01: {read:true, at}
+      villages: {},          // v1: {visited, features:{}, talks:{}, analysis:{}, report:{}}
+      achievements: [],      // 'a01'
+      compareDone: [],       // 'v1|v2'
+      tasks: [],             // 教师发布 {id, chId, deadline, criteria, at}
+      notes: {},             // 学生批注 { 'c01#2': text }（节选批注）/ 'mat:m0003'（素材评语）
+      settings: { api: { url: '', key: '', model: 'glm-4-flash', enabled: false } },
+      logs: []               // 事件留痕（上限 200）
+    };
+  }
+  function vState(state, vId) {
+    if (!state.villages[vId]) state.villages[vId] = { visited: false, features: {}, talks: {}, analysis: null, report: { text: '', submitted: null } };
+    return state.villages[vId];
+  }
+  function log(state, type, detail) {
+    state.logs.push({ t: Date.now(), type: type, d: String(detail || '').slice(0, 120) });
+    if (state.logs.length > 200) state.logs = state.logs.slice(-200);
+  }
+  function addPoints(state, n) {
+    state.points = Math.max(0, (state.points || 0) + n);
+    return state.points;
+  }
+  function readChapter(state, chId) {
+    if (!state.chapters[chId]) {
+      state.chapters[chId] = { read: true, at: new Date().toISOString() };
+      addPoints(state, 5);
+      log(state, 'read', chId);
+    }
+    return state.chapters[chId];
+  }
+  function visit(state, vId) {
+    const v = vState(state, vId);
+    if (!v.visited) { v.visited = true; addPoints(state, 2); log(state, 'visit', vId); }
+    return v;
+  }
+
+  /* ---------- NPC 离线对话引擎（确定性） ---------- */
+  function pickRule(npc, question) {
+    const q = normQ(question);
+    if (!q) return null;
+    let best = null, bestHits = 0;
+    for (const r of (npc.rules || [])) {
+      let hits = 0;
+      for (const kw of (r.kws || [])) {
+        const k = normQ(kw);
+        if (k && q.indexOf(k) >= 0) hits++;
+      }
+      if (hits > bestHits) { best = r; bestHits = hits; }
+    }
+    return best; // 命中数并列时取声明序在前者（严格大于才替换）
+  }
+  function pickFallback(npc, question) {
+    const arr = npc.fallback || ['这个俺答不上来。'];
+    const idx = hash32((npc.id || '') + '|' + normQ(question)) % arr.length;
+    return arr[idx];
+  }
+  /**
+   * 离线问答。返回 {text, tags, ruleId|null, isFallback, follow}
+   */
+  function askNpc(npc, question) {
+    if (!npc || !npc.id) return { text: '（访谈对象不存在。）', tags: [], ruleId: null, isFallback: true, follow: [] };
+    const rule = pickRule(npc, question);
+    if (rule) {
+      return {
+        text: rule.say,
+        tags: rule.concept ? [rule.concept] : [],
+        ruleId: rule.kws ? rule.kws.join('+') : null,
+        isFallback: false,
+        follow: (rule.follow || []).slice(0, 2)
+      };
+    }
+    return { text: pickFallback(npc, question), tags: [], ruleId: null, isFallback: true, follow: [] };
+  }
+
+  /* ---------- 素材收集 ---------- */
+  const MATERIAL_CAP = 80, NPC_MATERIAL_CAP = 20;
+  function collectMaterial(state, vId, npc, answer) {
+    const v = vState(state, vId);
+    if (!v.talks[npc.id]) v.talks[npc.id] = { turns: 0, materials: [], rulesHit: {} };
+    const t = v.talks[npc.id];
+    t.turns++;
+    const total = Object.keys(v.talks).reduce((s, k) => s + v.talks[k].materials.length, 0);
+    if (total >= MATERIAL_CAP) return null;
+    if (t.materials.length >= NPC_MATERIAL_CAP) return null;
+    if (answer.isFallback) return null; // 回落句不采集
+    const m = {
+      id: nowId(state.seq++),
+      npc: npc.id, npcName: npc.name, role: npc.role,
+      text: String(answer.text || '').slice(0, 400),
+      tags: (answer.tags || []).slice(),
+      ruleId: answer.ruleId || null,
+      at: new Date().toISOString()
+    };
+    t.materials.push(m);
+    if (answer.ruleId) t.rulesHit[answer.ruleId] = (t.rulesHit[answer.ruleId] || 0) + 1;
+    addPoints(state, 1);
+    log(state, 'material', m.id + '@' + npc.id);
+    return m;
+  }
+  function reTagMaterial(state, vId, matId, tags) {
+    const v = vState(state, vId);
+    for (const k of Object.keys(v.talks)) {
+      const m = v.talks[k].materials.find(x => x.id === matId);
+      if (m) { m.tags = (tags || []).slice(0, 3); return m; }
+    }
+    return null;
+  }
+
+  /* ---------- 空间观察与概念标注 ---------- */
+  function featureState(state, vId, fId) {
+    const v = vState(state, vId);
+    if (!v.features[fId]) v.features[fId] = { seen: false, askOk: 0, myTags: [] };
+    return v.features[fId];
+  }
+  function observe(state, vId, feature, choice) {
+    if (!feature || !feature.ask) return { ok: false, exp: '本要素暂无观察题。' };
+    const fs = featureState(state, vId, feature.id);
+    fs.seen = true;
+    fs.askOk = (choice === feature.ask.answer) ? 1 : 0;
+    if (fs.askOk) addPoints(state, 2);
+    log(state, 'observe', feature.id + '=' + fs.askOk);
+    return { ok: fs.askOk === 1, exp: feature.ask.exp };
+  }
+  function tagFeature(state, vId, feature, conceptIds, pool) {
+    const fs = featureState(state, vId, feature.id);
+    const clean = (conceptIds || []).filter(c => !pool || pool.indexOf(c) >= 0).slice(0, 3);
+    fs.myTags = clean;
+    addPoints(state, 1);
+    log(state, 'tag', feature.id + ':' + clean.join(','));
+    return fs;
+  }
+  /**
+   * 空间语义分析（对照真值，确定性）
+   */
+  function analyzeVillage(state, vId, village, pool) {
+    const v = vState(state, vId);
+    const rows = [];
+    let taggedRight = 0, askRight = 0, observed = 0, tagged = 0;
+    for (const f of village.features) {
+      const fs = v.features[f.id];
+      if (!fs || (!fs.seen && !(fs.myTags || []).length)) continue;
+      observed++;
+      const truth = f.truth || [];
+      const mine = (fs.myTags || []).filter(c => truth.indexOf(c) >= 0);
+      if ((fs.myTags || []).length) tagged++;
+      if (mine.length) taggedRight++;
+      if (fs.askOk === 1) askRight++;
+      rows.push({
+        fId: f.id, name: f.name,
+        mine: (fs.myTags || []).slice(),
+        truth: truth.slice(),
+        ok: mine.length > 0,
+        full: mine.length === truth.length && truth.length > 0 && fs.myTags.length === truth.length,
+        analysis: f.analysis
+      });
+    }
+    const maxA = village.features.length * 2;
+    const score = maxA ? Math.round(100 * (taggedRight * 2 + askRight) / maxA) : 0;
+    const finds = (village.finds || []).filter(d => {
+      const f = village.features.find(x => (x.truth || []).indexOf(d.concept) >= 0 && rows.some(r => r.fId === x.id && r.full));
+      return !!f;
+    });
+    // 发现自动入账（每枚 +3）
+    v.finds = v.finds || {};
+    finds.forEach(d => {
+      const fdId = d.id;
+      if (!v.finds[fdId]) { v.finds[fdId] = true; addPoints(state, 3); log(state, 'find', fdId); }
+    });
+    const result = { at: new Date().toISOString(), rows: rows, score: clamp(score, 0, 100), stats: { observed: observed, tagged: tagged, taggedRight: taggedRight, askRight: askRight }, finds: finds.map(d => d.id) };
+    // 首次分析且全场 ask 全对 → 加分
+    const allAsk = village.features.filter(f => f.ask).every(f => v.features[f.id] && v.features[f.id].askOk === 1);
+    if (allAsk && village.features.length && !v.analysis) addPoints(state, 6);
+    v.analysis = result;
+    log(state, 'analyze', vId + '=' + result.score);
+    return result;
+  }
+  function discoverFind(state, vId, findId) {
+    const v = vState(state, vId);
+    if (!v.finds) v.finds = {};
+    if (!v.finds[findId]) { v.finds[findId] = true; addPoints(state, 3); log(state, 'find', findId); return true; }
+    return false;
+  }
+
+  /* ---------- 学生批注 ---------- */
+  const NOTE_CAP = 500;
+  function setNote(state, key, text) {
+    if (!key) return { ok: false };
+    const t = String(text || '').trim().slice(0, NOTE_CAP);
+    state.notes = state.notes || {};
+    const had = !!state.notes[key];
+    if (!t) { delete state.notes[key]; return { ok: true, removed: had }; }
+    state.notes[key] = t;
+    if (!had) { addPoints(state, 1); log(state, 'note', key); }
+    return { ok: true, created: !had };
+  }
+  function noteOf(state, key) {
+    return (state.notes || {})[key] || '';
+  }
+  function findChapterNote(state, chId) {
+    const keys = Object.keys(state.notes || {});
+    for (const k of keys) if (k.indexOf(chId + '#') === 0 && state.notes[k]) return state.notes[k];
+    return '';
+  }
+
+  /* ---------- 报告生成（离线结构化写作） ---------- */
+  function buildReport(state, vId, village, book) {
+    const v = vState(state, vId);
+    const g = village.geoFacts || {};
+    const mats = Object.keys(v.talks).flatMap(k => v.talks[k].materials);
+    const an = v.analysis;
+    const secs = [];
+    secs.push({ title: '一、地理背景与村落概况', body: [
+      village.intro,
+      '地形：' + (g.landform || '—') + '；气候：' + (g.climate || '—') + '。',
+      '农业：' + (g.agriculture || '—') + '；生计：' + (g.livelihood || '—') + '；交通：' + (g.transport || '—') + '。'
+    ].join('\n') });
+    // 二：空间格局
+    const featLines = village.features.map(f => {
+      const fs = v.features[f.id];
+      const tagTxt = fs && fs.myTags && fs.myTags.length ? '（我的标注：' + fs.myTags.map(c => cname(book, c)).join('、') + '）' : '';
+      return '· ' + f.name + '：' + f.note + tagTxt;
+    });
+    secs.push({ title: '二、聚落形态与空间格局', body: '全村共录得 ' + village.features.length + ' 处空间要素：\n' + featLines.join('\n') + (an ? '\n\n空间语义分析得分：' + an.score + '／100。' : '\n\n（空间语义分析尚未运行。）') });
+    // 三：社会结构与人文脉络（按概念归组引用素材）
+    const byConcept = {};
+    mats.forEach(m => (m.tags || []).forEach(t => { (byConcept[t] = byConcept[t] || []).push(m); }));
+    const socLines = Object.keys(byConcept).map(c => {
+      const list = byConcept[c].slice(0, 2);
+      return '【' + cname(book, c) + '】\n' + list.map(m => '「' + m.text + '」（' + m.npcName + '，' + m.role + '）').join('\n');
+    });
+    secs.push({ title: '三、社会结构与人文脉络', body: socLines.length ? socLines.join('\n\n') + '\n\n（素材共 ' + mats.length + ' 条，本节按概念归组摘引。）' : '（访谈素材尚空——先去与村民对话，再回来生成。）' });
+    // 四：经济生产
+    const ecoMats = mats.filter(m => /工钱|买卖|卖|谷|桑|烟|银|柿|快递|圩|价/.test(m.text)).slice(0, 4);
+    secs.push({ title: '四、经济生产与生计方式', body: [ '主要生计：' + (g.agriculture || '—') + '；' + (g.livelihood || '—') + '。', ecoMats.length ? '村民口述：\n' + ecoMats.map(m => '「' + m.text.slice(0, 120) + '……」（' + m.npcName + '）').join('\n') : '（可在访谈中追问买卖与工钱，充实本节。）' ].join('\n') });
+    // 五：以书证乡
+    const chs = (village.chapters || []).map(id => book.chapter(id)).filter(Boolean);
+    const proofLines = chs.map(ch => {
+      const e = ch.excerpts[0] ? '「' + ch.excerpts[0].text.slice(0, 90) + (ch.excerpts[0].text.length > 90 ? '……' : '') + '」（《' + '乡土中国' + '》' + ch.title + '）' : '';
+      const hit = rowsHitFor(state, village, ch);
+      let line = '· 验证「' + ch.concepts[0].name + '」：' + e + '\n  空间证据：' + (hit || '（待补：回到空间观察页完成标注）');
+      const note = findChapterNote(state, ch.id);
+      if (note) line += '\n  我的批注：「' + note.slice(0, 120) + (note.length > 120 ? '……' : '') + '」';
+      return line;
+    });
+    secs.push({ title: '五、探究结论——以书证乡', body: proofLines.join('\n') });
+    return { village: village.id, sections: secs, plain: secs.map(s => s.title + '\n' + s.body).join('\n\n') };
+  }
+  function rowsHitFor(state, village, ch) {
+    const v = state.villages[village.id];
+    if (!v) return '';
+    const hits = village.features.filter(f => {
+      const fs = v.features[f.id];
+      return fs && (fs.myTags || []).some(c => ch.concepts.some(x => x.id === c));
+    }).map(f => f.name);
+    return hits.length ? hits.slice(0, 3).join('、') : '';
+  }
+  function cname(book, conceptId) {
+    const hit = book.concept(conceptId);
+    return hit ? hit.concept.name : conceptId;
+  }
+
+  /* ---------- 报告初评（离线规则评分） ---------- */
+  function gradeReport(state, vId, text, village, book) {
+    const t = String(text || '');
+    const advice = [];
+    let score = 0;
+    const parts = ['一、', '二、', '三、', '四、', '五、'];
+    const partHit = parts.filter(p => t.indexOf(p) >= 0).length;
+    score += partHit * 6; // 满分30
+    if (partHit < 5) advice.push('结构缺 ' + (5 - partHit) + ' 个部分——对照五部分目录补齐。');
+    const len = t.replace(/\s/g, '').length;
+    if (len >= 400) score += 20; else advice.push('正文仅约 ' + len + ' 字，建议扩至 400 字以上（现在差 ' + (400 - len) + ' 字）。');
+    const mats = vState(state, vId).talks ? Object.keys(state.villages[vId].talks).flatMap(k => state.villages[vId].talks[k].materials) : [];
+    const npcNames = village.npcs.map(n => n.name);
+    const cited = npcNames.filter(n => t.indexOf(n) >= 0).length;
+    score += Math.min(20, cited * 7);
+    if (cited < 3) advice.push('引用村民口述不足（检出 ' + cited + ' 位）——多引几位不同身份的村民，观点才有互证。');
+    const conceptNames = (village.chapters || []).map(id => book.chapter(id)).filter(Boolean).flatMap(ch => ch.concepts.map(c => c.name));
+    const used = conceptNames.filter(n => t.indexOf(n) >= 0).length;
+    score += Math.min(15, used * 3);
+    if (used < 4) advice.push('核心概念出现 ' + used + ' 个（建议 ≥4）——把概念名写进分析，别只讲故事。');
+    const quoteHit = (t.match(/「[^」]{8,}」/g) || []).length;
+    score += Math.min(15, quoteHit * 5);
+    if (quoteHit < 2) advice.push('直接引语（「」）不足 2 处——田野报告要用村民的原话和书里的原文说话。');
+    score = clamp(Math.round(score), 0, 100);
+    return { score: score, stars: score >= 85 ? 3 : score >= 70 ? 2 : score >= 50 ? 1 : 0, advice: advice, gradedAt: new Date().toISOString() };
+  }
+  function submitReport(state, vId, text, village, book) {
+    const v = vState(state, vId);
+    v.report.text = text;
+    const grade = gradeReport(state, vId, text, village, book);
+    const first = !v.report.submitted;
+    const prevBest = v.report.bestScore || 0;
+    v.report.submitted = { text: text, grade: grade, verdict: '', at: new Date().toISOString() };
+    if (first) addPoints(state, 10);
+    if (grade.score >= 85 && grade.score > prevBest) addPoints(state, 5); // 只奖进步，不奖重交
+    v.report.bestScore = Math.max(prevBest, grade.score);
+    log(state, 'report', vId + '=' + grade.score);
+    return grade;
+  }
+
+  /* ---------- 双村对比（区域差异分析） ---------- */
+  function compareVillages(vA, vB, state, book) {
+    const rows = [
+      { dim: '地域类型', a: vA.type + '（' + vA.region + '）', b: vB.type + '（' + vB.region + '）' },
+      { dim: '地形与气候', a: (vA.geoFacts.landform || '') + '；' + (vA.geoFacts.climate || ''), b: (vB.geoFacts.landform || '') + '；' + (vB.geoFacts.climate || '') },
+      { dim: '生计方式', a: vA.geoFacts.livelihood || '', b: vB.geoFacts.livelihood || '' },
+      { dim: '聚落形态', a:聚落(vA), b:聚落(vB) },
+      { dim: '权力与秩序（空间证据）', a: 权力(vA), b: 权力(vB) },
+      { dim: '交换与算账（空间证据）', a: 交换(vA), b: 交换(vB) },
+      { dim: '对应章节', a: (vA.chapters || []).map(id => book.chapter(id) ? book.chapter(id).title : id).join('、'), b: (vB.chapters || []).map(id => book.chapter(id) ? book.chapter(id).title : id).join('、') }
+    ];
+    if (state) {
+      const key = [vA.id, vB.id].sort().join('|');
+      if (state.compareDone.indexOf(key) < 0) { state.compareDone.push(key); addPoints(state, 4); log(state, 'compare', key); }
+    }
+    return rows;
+  }
+  function 聚落(v) { const f = v.features.find(x => x.kind === 'homes'); return f ? f.name + '：' + (f.analysis || f.note) : '—'; }
+  function 权力(v) { const f = v.features.find(x => (x.truth || []).indexOf('c08a') >= 0 || (x.truth || []).indexOf('c11a') >= 0); return f ? f.name + '：' + f.note : '—'; }
+  function 交换(v) { const f = v.features.find(x => (x.truth || []).indexOf('c12c') >= 0); return f ? f.name + '：' + f.note : '—'; }
+
+  /* ---------- 成就与称号 ---------- */
+  const ACHIEVEMENTS = [
+    { id: 'a01', name: '开卷有益', desc: '读毕第一章', test: s => Object.keys(s.chapters).length >= 1 },
+    { id: 'a02', name: '通读全本', desc: '《乡土中国》14 章全部读毕', test: s => Object.keys(s.chapters).length >= 14 },
+    { id: 'a03', name: '初级调查员', desc: '一村观察题全部答对', test: s => Object.keys(s.villages).some(vid => {
+      const v = s.villages[vid]; const vil = root.XT_VILLAGES.village(vid);
+      return vil && vil.features.filter(f => f.ask).every(f => v.features[f.id] && v.features[f.id].askOk === 1);
+    }) },
+    { id: 'a04', name: '多方求证', desc: '与 3 位以上村民都谈过话', test: s => Object.keys(s.villages).some(vid => Object.keys(s.villages[vid].talks || {}).length >= 3) },
+    { id: 'a05', name: '田野高手', desc: '累计收集素材 15 条', test: s => Object.keys(s.villages).reduce((n, vid) => n + Object.keys(s.villages[vid].talks || {}).reduce((m, k) => m + s.villages[vid].talks[k].materials.length, 0), 0) >= 15 },
+    { id: 'a06', name: '概念对得上', desc: '任一村空间语义分析 ≥ 80 分', test: s => Object.keys(s.villages).some(vid => s.villages[vid].analysis && s.villages[vid].analysis.score >= 80) },
+    { id: 'a07', name: '四村全览', desc: '四个村落都完成空间观察', test: s => root.XT_VILLAGES.VILLAGES.every(v => {
+      const vs = s.villages[v.id]; return vs && Object.keys(vs.features || {}).length >= 3;
+    }) },
+    { id: 'a08', name: '笔耕不辍', desc: '提交第一份考察报告', test: s => Object.keys(s.villages).some(vid => s.villages[vid].report && s.villages[vid].report.submitted) },
+    { id: 'a09', name: '著述等身', desc: '四村报告全部提交', test: s => root.XT_VILLAGES.VILLAGES.every(v => s.villages[v.id] && s.villages[v.id].report && s.villages[v.id].report.submitted) },
+    { id: 'a10', name: '区域比兴', desc: '完成一次双村对比', test: s => s.compareDone.length >= 1 },
+    { id: 'a11', name: '空间慧眼', desc: '集齐 8 处地理"发现"', test: s => Object.keys(s.villages).reduce((n, vid) => n + Object.keys(s.villages[vid].finds || {}).length, 0) >= 8 },
+    { id: 'a12', name: '名师点睛', desc: '任一报告初评达优秀（≥85）', test: s => Object.keys(s.villages).some(vid => s.villages[vid].report && s.villages[vid].report.submitted && s.villages[vid].report.submitted.grade.score >= 85) },
+    { id: 'a13', name: '熟人社会', desc: '与同一位村民深谈 8 轮以上', test: s => Object.keys(s.villages).some(vid => Object.keys(s.villages[vid].talks || {}).some(k => s.villages[vid].talks[k].turns >= 8)) }
+  ];
+  function checkAchievements(state) {
+    const got = [];
+    for (const a of ACHIEVEMENTS) {
+      if (state.achievements.indexOf(a.id) >= 0) continue;
+      let ok = false;
+      try { ok = !!a.test(state); } catch (e) { ok = false; }
+      if (ok) { state.achievements.push(a.id); got.push(a); addPoints(state, 8); log(state, 'ach', a.id); }
+    }
+    return got;
+  }
+  const LEVELS = [
+    { min: 0, name: '乡土学徒' },
+    { min: 30, name: '初级调查员' },
+    { min: 80, name: '田野行家' },
+    { min: 160, name: '人文地理学者' },
+    { min: 300, name: '乡土观察家' }
+  ];
+  function levelOf(points) {
+    let cur = LEVELS[0];
+    for (const l of LEVELS) if (points >= l.min) cur = l;
+    return cur;
+  }
+
+  /* ---------- 教师端：模拟班级（种子确定性，明示演示数据） ---------- */
+  const DEMO_SURNAMES = ['王', '李', '张', '刘', '陈', '杨', '黄', '赵', '吴', '周', '徐', '孙', '林', '郑', '谢', '沈'];
+  const DEMO_GIVENS = ['梓涵', '一诺', '雨桐', '浩然', '欣怡', '子墨', '思远', '若曦', '俊杰', '语汐', '博文', '诗涵', '志强', '梦洁', '嘉懿', '佳琪'];
+  const DEMO_MISCONCEPTIONS = [
+    '把"愚"理解成智力问题，忽视"机会与需要"的分析',
+    '把差序格局画成"团体格局"：圈子画成有固定边界',
+    '把"礼治"与"法治"混为一谈，未抓住维持规范的力量差异',
+    '只谈横暴权力，忽略"同意权力"与"无为"的限定条件',
+    '把"血缘地缘"讲成城乡差别，未落到交换规则上',
+    '把"注释式变迁"当成"革命式变迁"，名实分离理解表面化'
+  ];
+  function demoClass(seed) {
+    const rnd = mulberry32(hash32('demo-class|' + (seed || '2026')));
+    const students = [];
+    const N = 16;
+    for (let i = 0; i < N; i++) {
+      const name = DEMO_SURNAMES[Math.floor(rnd() * 16)] + DEMO_GIVENS[Math.floor(rnd() * 16)];
+      const chapters = Math.floor(rnd() * 15);
+      const talkTurns = Math.floor(rnd() * 22);
+      const observeScore = Math.floor(rnd() * 101);
+      const reportScore = chapters >= 6 ? Math.floor(45 + rnd() * 55) : (rnd() < 0.4 ? Math.floor(rnd() * 60) : -1);
+      const misconception = DEMO_MISCONCEPTIONS[Math.floor(rnd() * DEMO_MISCONCEPTIONS.length)];
+      students.push({ name: name, chapters: chapters, talkTurns: talkTurns, observeScore: observeScore, reportScore: reportScore, misconception: misconception });
+    }
+    const agg = {
+      avgChapters: Math.round(students.reduce((a, b) => a + b.chapters, 0) / N * 10) / 10,
+      avgTalks: Math.round(students.reduce((a, b) => a + b.talkTurns, 0) / N * 10) / 10,
+      avgObserve: Math.round(students.reduce((a, b) => a + b.observeScore, 0) / N),
+      avgReport: Math.round(students.filter(s => s.reportScore >= 0).reduce((a, b) => a + b.reportScore, 0) / Math.max(1, students.filter(s => s.reportScore >= 0).length)),
+      submitted: students.filter(s => s.reportScore >= 0).length,
+      misconceptionTop: DEMO_MISCONCEPTIONS.map(m => ({ m: m, n: students.filter(s => s.misconception === m).length })).sort((x, y) => y.n - x.n)[0]
+    };
+    return { seed: seed || '2026', students: students, agg: agg, demo: true };
+  }
+
+  /* ---------- 持久化 ---------- */
+  function serialize(state) { return JSON.stringify(state); }
+  function deserialize(text) {
+    let s;
+    try { s = JSON.parse(String(text || '')); } catch (e) { return null; }
+    if (!s || typeof s !== 'object' || !s.student) return null;
+    const fresh = newState(s.student.name);
+    // 浅迁移：保留已知字段，未知忽略
+    const merged = Object.assign(fresh, s);
+    merged.version = STATE_VERSION;
+    merged.settings = s.settings && s.settings.api ? s.settings : fresh.settings;
+    merged.villages = s.villages || {};
+    merged.chapters = s.chapters || {};
+    merged.achievements = Array.isArray(s.achievements) ? s.achievements : [];
+    merged.compareDone = Array.isArray(s.compareDone) ? s.compareDone : [];
+    merged.tasks = Array.isArray(s.tasks) ? s.tasks : [];
+    merged.notes = (s.notes && typeof s.notes === 'object' && !Array.isArray(s.notes)) ? s.notes : {};
+    merged.logs = Array.isArray(s.logs) ? s.logs.slice(-200) : [];
+    return merged;
+  }
+
+  const API = {
+    hash32: hash32, mulberry32: mulberry32, normQ: normQ,
+    STATE_VERSION: STATE_VERSION,
+    newState: newState, vState: vState, log: log, addPoints: addPoints,
+    readChapter: readChapter, visit: visit,
+    askNpc: askNpc, pickRule: pickRule,
+    collectMaterial: collectMaterial, reTagMaterial: reTagMaterial,
+    setNote: setNote, noteOf: noteOf, findChapterNote: findChapterNote, NOTE_CAP: NOTE_CAP,
+    featureState: featureState, observe: observe, tagFeature: tagFeature,
+    analyzeVillage: analyzeVillage, discoverFind: discoverFind,
+    buildReport: buildReport, gradeReport: gradeReport, submitReport: submitReport,
+    compareVillages: compareVillages,
+    ACHIEVEMENTS: ACHIEVEMENTS, checkAchievements: checkAchievements,
+    LEVELS: LEVELS, levelOf: levelOf,
+    demoClass: demoClass,
+    serialize: serialize, deserialize: deserialize,
+    conceptName: cname
+  };
+
+  root.XT_ENGINE = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+  <script>
+/* AI 提示词库（4 组）+ 离线引擎说明
+ * 用法：设置页可一键复制；接 OpenAI 兼容 API（默认智谱 glm-4-flash）后生效，
+ * 失败自动回落离线引擎并在界面上注明。
+ */
+(function (global) {
+  'use strict';
+  const root = (typeof window !== 'undefined') ? window : global;
+
+  const PROMPTS = {
+    npcTalk: {
+      name: '① NPC 村民对话',
+      desc: '把角色卡与对话历史拼入 {…} 占位符后发送；要求方言口吻、不出概念学名、末尾给概念标签。',
+      text: [
+        '你在一堂高中跨学科课的虚拟田野调查中扮演一位村民，供学生做访谈练习。',
+        '角色卡：{ROLE_JSON}',
+        '村落背景：{VILLAGE_INTRO}',
+        '相关《乡土中国》概念卡（仅供你理解，回答中严禁出现这些学术名词本身）：{CONCEPTS_JSON}',
+        '对话历史：{HISTORY_JSON}',
+        '学生刚问：{QUESTION}',
+        '回答要求：',
+        '1) 用第一人称村民口吻回答，150 字以内，符合角色的年龄、职业与知识边界；角色不知道的要自然承认。',
+        '2) 严禁出现以下学术词：差序格局、团体格局、礼治、法治、长老统治、教化权力、横暴权力、同意权力、时势权力、社会继替、名实分离、感情定向、熟人社会、乡土社会、克己复礼、面对面的社群。',
+        '3) 只依据角色知识作答，可举本村具体的人、事、物为例。',
+        '4) 输出 JSON：{"text":"回答正文","concept":"cXXa 形式的概念编号或空串","follow":["可追问的问题1","可追问的问题2"]}'
+      ].join('\n')
+    },
+    spatialAnalysis: {
+      name: '② 空间语义分析解说',
+      desc: '把学生的标注与真值对照表给模型，生成给学生的个性化讲解（离线模式下用要素 analysis 字段回落）。',
+      text: [
+        '你是人文地理助教。学生在一幅虚拟村落手绘图上完成了空间要素观察与概念标注。',
+        '村落：{VILLAGE_INTRO}',
+        '对照表（每行：要素｜学生的概念标注｜教师真值｜观察题对错）：{ROWS_JSON}',
+        '请写一段 200 字以内的点评：先表扬观察对的部分；再点出标注与真值不符的 1-2 处，用空间证据解释为什么真值更合理；最后给一个下一步观察建议。',
+        '语气面向高中生，不用学术黑话，可引用《乡土中国》原句（标注章名）。输出纯文本。'
+      ].join('\n')
+    },
+    reportDraft: {
+      name: '③ 考察报告润色',
+      desc: '学生用离线生成的结构化初稿，可请模型在不虚构素材的前提下润色成文。',
+      text: [
+        '你是乡土地理写作指导。下面是一份由真实调研素材自动汇总的考察报告初稿，以及学生的素材清单。',
+        '报告初稿：{DRAFT_TEXT}',
+        '素材清单（村民口述+空间标注，全部真实采录）：{MATERIALS_JSON}',
+        '请在不虚构任何新事实、不添加素材清单之外的人与事的前提下，把初稿润色为通顺的考察报告（保留五部分结构，保留所有「」引语与出处标注，字数 600-900）。直接输出报告全文。',
+        '若初稿存在素材缺失的空节，保留该节并注明"（本节素材待补）"，不得编造。'
+      ].join('\n')
+    },
+    teacherAnalytics: {
+      name: '④ 教师学情分析',
+      desc: '把班级学情聚合数据交给模型生成讲评建议；离线模式用 demoClass 的常见误区统计回落。',
+      text: [
+        '你是高中语文-地理跨学科教研员。以下是班级学生在《乡土中国》田野探究任务中的学情数据（JSON）。',
+        '{CLASS_JSON}',
+        '请输出：1) 三条总体判断（阅读进度、访谈深度、概念掌握各一条）；2) 最值得全班讲评的 1 个共性问题及 5 分钟讲评设计；3) 给 3 类学生（领先/中间/滞后）各一句个性化建议。500 字以内，输出纯文本。'
+      ].join('\n')
+    }
+  };
+
+  const OFFLINE_NOTES = [
+    '离线引擎不联网：NPC 回答来自身份规则库（身份口吻模板 + 概念卡检索），确定性、可离线批量测试。',
+    '接入 API 后：对话与报告润色走大模型，失败自动回落离线引擎，界面上会标注"（离线回落）"。',
+    '离线报告生成只做"素材结构化重组"：绝不虚构素材清单之外的事实，这是本工具的教学底线。',
+    'API 配置只保存在浏览器本地（localStorage），不经过任何服务器。'
+  ];
+
+  const API = { PROMPTS: PROMPTS, OFFLINE_NOTES: OFFLINE_NOTES };
+  root.XT_PROMPTS = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+  <script>
+/* ============================================================
+ * 浏览器薄壳：hash 路由 + 全部视图（学生端 7 视图 / 教师端 1 页 4 区）
+ * 纪律：引擎逻辑不进本文件——UI 只调 XT_ENGINE；状态落 localStorage('xiangtu1')
+ * ============================================================ */
+(function () {
+  'use strict';
+  const BOOK = window.XT_BOOK, VILLAGES = window.XT_VILLAGES, E = window.XT_ENGINE, PR = window.XT_PROMPTS;
+  const LS_KEY = 'xiangtu1';
+  const app = document.getElementById('app');
+
+  /* ---------- 状态 ---------- */
+  let state = null;
+  function load() {
+    try { state = E.deserialize(localStorage.getItem(LS_KEY)) || E.newState(); } catch (e) { state = E.newState(); }
+  }
+  function save() {
+    try { localStorage.setItem(LS_KEY, E.serialize(state)); } catch (e) { /* 隐身模式等场景静默 */ }
+  }
+
+  /* ---------- 工具 ---------- */
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  function toast(msg) {
+    const t = document.createElement('div');
+    t.className = 'toast'; t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.classList.add('on'), 30);
+    setTimeout(() => { t.classList.remove('on'); setTimeout(() => t.remove(), 400); }, 2200);
+  }
+  function downloadText(name, text) {
+    const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+  function printSheet(title, lines) {
+    let el = document.getElementById('print-sheet');
+    if (!el) { el = document.createElement('div'); el.id = 'print-sheet'; document.body.appendChild(el); }
+    el.innerHTML = '<h1>' + esc(title) + '</h1>' + lines.map(l => '<pre class="ps-line">' + (l === '' ? ' ' : esc(l)) + '</pre>').join('');
+    window.print();
+  }
+  function go(hash) { location.hash = hash; }
+  function parseRoute() {
+    const h = (location.hash || '#/').replace(/^#\/?/, '');
+    const parts = (h.split('?')[0] || '').split('/');
+    const partsArr = (h.split('?')[0]) ? parts : [];
+    partsArr.query = {};
+    const qs = h.split('?')[1];
+    if (qs) qs.split('&').forEach(kv => { const p = kv.split('='); partsArr.query[p[0]] = p[1] || ''; });
+    return partsArr;
+  }
+  function chConceptPool(village) { return VILLAGES.conceptPool(village.id); }
+
+  /* ---------- SVG 村落图 ---------- */
+  // 要素按社会功能分类配色（礼治/教化/居住/生计/市集交通），供地图与图例共用
+  function catOf(kind) {
+    if (['hall', 'shrine', 'gate', 'plaza'].indexOf(kind) >= 0) return { c: '#a4443a', label: '礼治 · 公共空间' };
+    if (['school', 'genealogy'].indexOf(kind) >= 0) return { c: '#46655a', label: '教化 · 文墨' };
+    if (['homes', 'ladies', 'ladies2', 'teahouse', 'inn', 'workshop', 'kiln', 'stove'].indexOf(kind) >= 0) return { c: '#7a5a38', label: '居住 · 生活' };
+    if (['field', 'yard', 'grove', 'tree'].indexOf(kind) >= 0) return { c: '#6b7a44', label: '田畴 · 生计' };
+    if (kind === 'pond') return { c: '#587180', label: '水系 · 风水' };
+    return { c: '#587180', label: '市集 · 交通 · 新生' };
+  }
+  function mapLegendHtml() {
+    const cats = [];
+    ['hall', 'school', 'homes', 'field', 'street', 'pond'].forEach(k => {
+      const cat = catOf(k);
+      if (!cats.some(s => s.label === cat.label)) cats.push(cat);
+    });
+    return '<div class="maplegend">' + cats.map(s => '<span class="lg"><i style="background:' + s.c + '"></i>' + s.label + '</span>').join('') + '</div>';
+  }
+  // 首页 hero 手绘田野场景（远山/田畴/村舍/河流/树/飞鸟，纸墨笔触）
+  function heroSceneSVG() {
+    return `<svg class="heroscene" viewBox="0 0 420 110" preserveAspectRatio="xMidYMid meet" role="img" aria-label="手绘田野场景：远山、田畴、村舍与河流">
+      <path d="M0,72 Q55,38 115,64 Q175,86 235,58 Q305,32 420,66 L420,110 L0,110 Z" fill="#c9b98f" opacity=".5"/>
+      <path d="M0,84 Q80,56 170,78 Q260,96 340,72 Q388,60 420,68 L420,110 L0,110 Z" fill="#b3a476" opacity=".45"/>
+      <path d="M118,110 C140,72 168,74 186,110 Z" fill="#a9c2b8" opacity=".75"/>
+      <path d="M116,110 C138,70 170,72 188,110" fill="none" stroke="#3d3428" stroke-width="1" opacity=".5"/>
+      <path d="M146,86 L158,84 M144,92 L160,90" stroke="#3d3428" stroke-width="1" opacity=".55" fill="none"/>
+      <g stroke="#8a6d2f" opacity=".45" stroke-width=".8">
+        <line x1="228" y1="96" x2="262" y2="92"/><line x1="226" y1="101" x2="266" y2="97"/>
+        <line x1="286" y1="94" x2="322" y2="90"/><line x1="284" y1="99" x2="326" y2="95"/>
+        <line x1="346" y1="96" x2="396" y2="92"/><line x1="344" y1="101" x2="400" y2="97"/>
+        <line x1="18" y1="98" x2="66" y2="94"/><line x1="16" y1="103" x2="70" y2="99"/>
+      </g>
+      <g stroke="#3d3428" stroke-width="1.1" fill="#e8dcc3">
+        <path d="M244,96 v-10 h20 v10 Z"/>
+        <path d="M240,86 L254,74 L268,86 Z" fill="#8a5a33"/>
+        <path d="M282,98 v-9 h17 v9 Z"/>
+        <path d="M278,89 L290.5,78 L303,89 Z" fill="#8a5a33"/>
+        <path d="M318,97 v-10 h19 v10 Z"/>
+        <path d="M314,87 L327.5,75 L341,87 Z" fill="#8a5a33"/>
+        <rect x="252" y="90" width="4" height="6" fill="#5a5245" stroke="none"/>
+        <rect x="289" y="92" width="4" height="6" fill="#5a5245" stroke="none"/>
+        <rect x="326" y="90" width="4" height="6" fill="#5a5245" stroke="none"/>
+      </g>
+      <g fill="#6b7a44" stroke="#3d3428" stroke-width=".9">
+        <circle cx="28" cy="90" r="5"/><circle cx="44" cy="94" r="4"/><circle cx="392" cy="82" r="5"/>
+        <path d="M28,95 v6 M44,98 v5 M392,87 v6" fill="none" stroke="#5a5245"/>
+      </g>
+      <g fill="none" stroke="#3d3428" stroke-width="1.1" opacity=".7">
+        <path d="M300,24 q5,-6 10,0 M316,20 q5,-6 10,0"/>
+      </g>
+    </svg>`;
+  }
+  function markerShape(kind) {
+    switch (kind) {
+      case 'hall': return '<rect x="-7" y="-5" width="14" height="10" rx="1"/><path d="M-9 -5 L0 -11 L9 -5"/>';
+      case 'tree': return '<circle cx="0" cy="-4" r="6"/><line x1="0" y1="2" x2="0" y2="7"/>';
+      case 'yard': return '<rect x="-8" y="-6" width="16" height="12" rx="1"/><line x1="-4" y1="-6" x2="-4" y2="6"/><line x1="4" y1="-6" x2="4" y2="6"/>';
+      case 'homes': return '<rect x="-9" y="-2" width="6" height="5"/><rect x="-2" y="-5" width="6" height="8"/><rect x="5" y="-1" width="5" height="4"/>';
+      case 'pond': return '<ellipse cx="0" cy="0" rx="9" ry="5"/>';
+      case 'shrine': return '<rect x="-6" y="-3" width="12" height="8"/><path d="M-8 -3 L0 -9 L8 -3"/>';
+      case 'school': return '<rect x="-7" y="-4" width="14" height="9"/><line x1="-7" y1="-4" x2="-7" y2="-9"/><path d="M-7 -9 L-2 -8 L-7 -7"/>';
+      case 'road': return '<line x1="-10" y1="3" x2="10" y2="-3"/><line x1="-10" y1="-1" x2="10" y2="-7"/>';
+      case 'kiln': return '<path d="M-8 5 Q-8 -6 0 -6 Q8 -6 8 5"/>';
+      case 'stove': return '<circle cx="0" cy="0" r="6"/>';
+      case 'street': return '<rect x="-10" y="-3" width="20" height="6" rx="1"/>';
+      case 'field': return '<rect x="-9" y="-5" width="18" height="10" rx="2"/><path d="M-9 -2 H9 M-9 1 H9"/>';
+      case 'teahouse': return '<rect x="-7" y="-3" width="14" height="8"/><path d="M-9 -3 L0 -10 L9 -3"/>';
+      case 'ladies': return '<rect x="-6" y="-3" width="12" height="8"/><path d="M-8 -3 L0 -9 L8 -3"/><line x1="-2" y1="5" x2="-2" y2="8"/>';
+      case 'market': return '<path d="M-9 0 L0 -8 L9 0"/><rect x="-8" y="0" width="16" height="6"/>';
+      case 'inn': return '<rect x="-8" y="-4" width="16" height="9"/><path d="M-10 -4 L0 -11 L10 -4"/>';
+      case 'new': return '<rect x="-7" y="-3" width="14" height="8"/><line x1="0" y1="-3" x2="0" y2="-9"/><circle cx="0" cy="-10" r="1.5"/>';
+      case 'genealogy': return '<rect x="-6" y="-7" width="12" height="14"/><line x1="-3" y1="-3" x2="3" y2="-3"/><line x1="-3" y1="0" x2="3" y2="0"/><line x1="-3" y1="3" x2="3" y2="3"/>';
+      case 'grove': return '<circle cx="-5" cy="-3" r="4"/><circle cx="4" cy="-5" r="5"/><circle cx="0" cy="3" r="4"/>';
+      case 'workshop': return '<rect x="-7" y="-2" width="14" height="8"/><path d="M-7 -2 L0 -8 L7 -2"/>';
+      case 'plaza': return '<circle cx="0" cy="0" r="8"/><circle cx="0" cy="0" r="3"/>';
+      case 'gate': return '<line x1="-6" y1="-6" x2="-6" y2="6"/><line x1="6" y1="-6" x2="6" y2="6"/><line x1="-8" y1="-6" x2="8" y2="-6"/>';
+      case 'ladies2': return '<rect x="-6" y="-3" width="12" height="8"/><path d="M-8 -3 L0 -9 L8 -3"/>';
+      default: return '<rect x="-6" y="-6" width="12" height="12"/>';
+    }
+  }
+  function villageDecor(v) {
+    const t = v.mapTheme;
+    if (v.id === 'v1') return `
+      <path d="M0,100 L0,64 Q25,58 50,62 Q75,66 100,60 L100,100 Z" fill="${t.hill}" opacity=".55"/>
+      <path d="M100,20 Q88,30 86,44 Q95,52 100,50" fill="none" stroke="${t.accent}" stroke-width=".6" opacity=".4"/>
+      <path d="M96,10 Q86,22 85,36 Q92,46 100,44" fill="none" stroke="${t.accent}" stroke-width=".6" opacity=".3"/>
+      <g stroke="${t.accent}" opacity=".28" stroke-width=".5">${Array.from({ length: 9 }, (_, i) => `<line x1="${4 + i * 11}" y1="82" x2="${10 + i * 11}" y2="92"/>`).join('')}</g>
+      <text x="6" y="96" font-size="3.4" fill="#6b5a3e">塬上麦田</text>
+      <text x="80" y="22" font-size="3.4" fill="#6b5a3e">沟壑</text>`;
+    if (v.id === 'v2') return `
+      <path d="M-5,58 Q25,50 50,56 Q78,62 105,54 L105,66 Q78,74 50,68 Q25,62 -5,70 Z" fill="${t.water}" opacity=".75"/>
+      <g fill="none" stroke="${t.accent}" opacity=".35" stroke-width=".5">
+        <circle cx="84" cy="36" r="6"/><circle cx="92" cy="44" r="6"/><circle cx="80" cy="46" r="5"/><circle cx="90" cy="28" r="5"/>
+      </g>
+      <text x="76" y="58" font-size="3.4" fill="#4c6b62">桑基鱼塘</text>
+      <rect x="46" y="50" width="8" height="14" fill="${t.roof}" opacity=".4"/>
+      <text x="6" y="52" font-size="3.4" fill="#4c6b62">市河</text>`;
+    if (v.id === 'v3') return `
+      <path d="M-5,10 Q50,-8 105,10 L105,22 Q50,4 -5,22 Z" fill="${t.hill}" opacity=".5"/>
+      <path d="M-5,86 Q50,104 105,86 L105,96 Q50,112 -5,96 Z" fill="${t.hill}" opacity=".5"/>
+      <path d="M50,64 A26,26 0 1 0 50.1,64" fill="none" stroke="${t.roof}" stroke-width="1.2" opacity=".35"/>
+      <path d="M50,64 A19,19 0 1 0 50.1,64" fill="none" stroke="${t.roof}" stroke-width="1.1" opacity=".3"/>
+      <path d="M24,64 A26,26 0 0 1 76,64" fill="none" stroke="${t.accent}" stroke-width="0" />
+      <text x="68" y="96" font-size="3.6" fill="#6b5230">半月池方向</text>
+      <text x="6" y="16" font-size="3.4" fill="#6b5230">北面山岭</text>`;
+    return `
+      <path d="M-5,30 Q30,18 60,26 Q85,32 105,24" fill="none" stroke="${t.hill}" stroke-width="3" opacity=".6"/>
+      <path d="M-5,44 Q30,32 62,40 Q86,46 105,38" fill="none" stroke="${t.hill}" stroke-width="3" opacity=".5"/>
+      <path d="M-5,58 Q28,48 58,54 Q84,60 105,52" fill="none" stroke="${t.hill}" stroke-width="3" opacity=".45"/>
+      <g stroke="${t.accent}" opacity=".3" stroke-width=".5">${Array.from({ length: 7 }, (_, i) => `<line x1="${30 + i * 10}" y1="66" x2="${26 + i * 10}" y2="78"/>`).join('')}</g>
+      <text x="70" y="86" font-size="3.4" fill="#5d6b52">层叠梯田</text>
+      <text x="6" y="34" font-size="3.4" fill="#5d6b52">苗岭坡地</text>`;
+  }
+  function drawMap(v, state, interactive) {
+    const t = v.mapTheme;
+    const marks = v.features.map(f => {
+      const fs = state ? (state.villages[v.id] || {}).features : null;
+      const st = fs && fs[f.id];
+      const seen = st && (st.seen || (st.myTags || []).length);
+      const cls = 'fm' + (seen ? ' seen' : '');
+      return `<g class="${cls}" transform="translate(${f.x},${f.y})" ${interactive ? `data-fid="${f.id}" tabindex="0"` : ''}>
+        <g fill="${catOf(f.kind).c}" stroke="#3d3428" stroke-width=".55" opacity=".92">${markerShape(f.kind)}</g>
+        <text x="0" y="14" text-anchor="middle" font-size="3.7" fill="#33291d" style="paint-order:stroke" stroke="${t.ground}" stroke-width="1.1">${esc(f.name)}</text>
+      </g>`;
+    }).join('');
+    return `<svg class="vmap" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(v.name)}村落平面手绘图">
+      <rect x="0" y="0" width="100" height="100" fill="${t.ground}"/>
+      ${villageDecor(v)}
+      ${marks}
+    </svg>`;
+  }
+
+  /* ---------- 视图：首页 ---------- */
+  function viewHome() {
+    const lvl = E.levelOf(state.points);
+    const achN = state.achievements.length;
+    const readN = Object.keys(state.chapters).length;
+    const saying = BOOK.dailySaying();
+    const chCards = BOOK.CHAPTERS.map(c => {
+      const read = state.chapters[c.id] && state.chapters[c.id].read;
+      const vil = VILLAGES.village(c.village);
+      return `<a class="chcard ${read ? 'read' : ''}" href="#/book/${c.id}">
+        <div class="chno">${c.no}</div>
+        <div class="chbody">
+          <div class="chtitle">${esc(c.title)} <span class="chtheme">${esc(c.theme)}</span></div>
+          <div class="chblurb">${esc(c.blurb)}</div>
+          <div class="chmeta"><span class="chip">${esc(vil.name)}·${esc(vil.type)}</span><span class="chip ghost">${esc(c.geo)}</span></div>
+        </div>
+        ${read ? '<div class="stamp-read">读毕</div>' : ''}
+      </a>`;
+    }).join('');
+    const vilCards = VILLAGES.VILLAGES.map(v => {
+      const vs = state.villages[v.id];
+      const obsN = vs ? Object.keys(vs.features || {}).length : 0;
+      const matN = vs ? Object.keys(vs.talks || {}).reduce((n, k) => n + vs.talks[k].materials.length, 0) : 0;
+      const spine = (v.mapTheme && v.mapTheme.roof) || '#7a5a38';
+      return `<a class="vilcard" style="--spine:${spine}" href="#/village/${v.id}">
+        <div class="vilname">${esc(v.name)}</div>
+        <div class="viltype">${esc(v.type)} · ${esc(v.region)}</div>
+        <div class="vilprog">观察 ${obsN}/${v.features.length} · 素材 ${matN} 条${vs && vs.report && vs.report.submitted ? ' · 报告已交' : ''}</div>
+      </a>`;
+    }).join('');
+    return `
+    <header class="hero">
+      <div class="hero-badge">整本书阅读 × 人文地理 · 跨学科探究</div>
+      <h1>乡土调查员</h1>
+      <p class="hero-sub">——费孝通《乡土中国》田野探究工作坊——</p>
+      <div class="hero-scenewrap">
+        ${heroSceneSVG()}
+        <div class="hero-anno">驻村要点：先看地，再问人，后对书。</div>
+        <div class="tapenote">调查员手册 · 第一卷</div>
+      </div>
+      <p class="hero-saying">「${esc(saying)}」</p>
+      <div class="hero-stat">
+        <span class="chip big">${esc(lvl.name)}</span>
+        <span class="chip ghost big">调查积分 ${state.points}</span>
+        <span class="chip ghost big">读毕 ${readN}/14 章</span>
+        <span class="chip ghost big">成就 ${achN}/${E.ACHIEVEMENTS.length}</span>
+      </div>
+      <div class="hero-nav">
+        <a class="btn" href="#/compare">区域对比</a>
+        <a class="btn" href="#/ach">成就图鉴</a>
+        <a class="btn ghost" href="#/teacher">教师端</a>
+        <a class="btn ghost" href="#/settings">设置·考据</a>
+      </div>
+    </header>
+    <section class="sec"><h2>选章 · 开启驻村任务</h2><p class="sec-sub">从 14 章中选择主题，每章配一处对口的虚拟村落；读章、驻村、访谈、分析、成文，一条线走完。</p>
+      <div class="chgrid">${chCards}</div>
+    </section>
+    <section class="sec"><h2>村落图鉴</h2><p class="sec-sub">四类地域聚落：北方的礼治秩序、江南的人情与契约、客家的同心围屋、云岭的歌与榔规。</p>
+      <div class="vilgrid">${vilCards}</div>
+    </section>
+    <footer class="foot">引文均逐字取自《乡土中国》底本存档（见设置页考据说明）· 离线引擎默认，可在设置页接入大模型 API</footer>`;
+  }
+
+  /* ---------- 视图：章节详情 ---------- */
+  function viewBook(chId) {
+    const c = BOOK.chapter(chId);
+    if (!c) return '<p class="empty">章节不存在。</p>';
+    const read = state.chapters[c.id] && state.chapters[c.id].read;
+    const vil = VILLAGES.village(c.village);
+    const tagLabel = { a: '立论', b: '喻证', c: '空间', d: '结论' };
+    const concepts = c.concepts.map(x => `<div class="conc"><div class="conc-name">${esc(x.name)}</div><div class="conc-def">${esc(x.def)}</div></div>`).join('');
+    const excerpts = c.excerpts.map((e, i) => {
+      const noteKey = c.id + '#' + i;
+      const note = E.noteOf(state, noteKey);
+      return `<blockquote class="excerpt"><span class="extag">${tagLabel[e.tag] || '原文'}</span>${esc(e.text)}<details class="notebox"${note ? ' open' : ''}><summary>我的批注${note ? ' · 已有' : '（可选，将汇入报告）'}</summary><textarea class="note-text" data-notekey="${noteKey}" maxlength="500" placeholder="批读一句话：这段在村子里对应什么现象？（500 字内）">${esc(note)}</textarea><div class="action-row"><button class="btn sm save-note">保存批注</button></div></details></blockquote>`;
+    }).join('');
+    const tasks = c.tasks.map((t, i) => `<li><b>任务${i + 1}</b> ${esc(t.q)} <span class="hint">${esc(t.hint || '')}</span></li>`).join('');
+    return `
+    <div class="crumb"><a href="#/">← 返回首页</a></div>
+    <header class="pagehead">
+      <h1>第${c.no}章 · ${esc(c.title)} <span class="chtheme">${esc(c.theme)}</span></h1>
+      <p class="geo-chip">对应地理模块：${esc(c.geo)}</p>
+    </header>
+    <section class="sec"><h2>导读</h2><p>${esc(c.guide)}</p></section>
+    <section class="sec"><h2>核心概念</h2><div class="concgrid">${concepts}</div></section>
+    <section class="sec"><h2>原文节选（可回查底本）</h2>${excerpts}</section>
+    <section class="sec"><h2>探究任务</h2><ul class="tasks">${tasks}</ul></section>
+    <section class="sec action-row">
+      <button class="btn primary" id="mark-read" ${read ? 'disabled' : ''}>${read ? '✓ 本章已读毕' : '标记本章读毕（积分+5）'}</button>
+      <a class="btn" href="#/village/${vil.id}">前往对口村落「${esc(vil.name)}」驻村 →</a>
+    </section>`;
+  }
+
+  /* ---------- 视图：驻村总览 ---------- */
+  function viewVillage(vId) {
+    const v = VILLAGES.village(vId);
+    if (!v) return '<p class="empty">村落不存在。</p>';
+    E.visit(state, v.id); checkAch();
+    const vs = state.villages[v.id];
+    const obsN = Object.keys(vs.features || {}).length;
+    const matN = Object.keys(vs.talks || {}).reduce((n, k) => n + vs.talks[k].materials.length, 0);
+    const g = v.geoFacts;
+    const npcCards = v.npcs.map(n => `<div class="npccard"><div class="npc-name">${esc(n.name)}</div><div class="npc-role">${esc(n.role)} · ${n.age} 岁</div><div class="npc-knows">${esc(n.knows)}</div><a class="btn sm" href="#/village/${v.id}/talk?npc=${n.id}">去访谈</a></div>`).join('');
+    const findList = v.finds.map(d => {
+      const found = vs.finds && vs.finds[d.id];
+      return `<div class="find ${found ? 'on' : ''}"><b>${esc(d.name)}</b>${found ? ' — ' + esc(d.desc) : ' （待发现）'}</div>`;
+    }).join('');
+    return `
+    <div class="crumb"><a href="#/">← 返回首页</a></div>
+    <header class="pagehead">
+      <h1>${esc(v.name)} <span class="chtheme">${esc(v.type)}</span></h1>
+      <p class="geo-chip">${esc(v.region)}</p>
+      <div class="progress-chips">
+        <span class="chip">空间观察 ${obsN}/${v.features.length}</span>
+        <span class="chip">素材 ${matN} 条</span>
+        <span class="chip">分析 ${vs.analysis ? vs.analysis.score + ' 分' : '未运行'}</span>
+        <span class="chip">报告 ${vs.report && vs.report.submitted ? '已交' : '未交'}</span>
+      </div>
+    </header>
+    <nav class="tabs">
+      <a class="on" href="#/village/${v.id}">村落档案</a>
+      <a href="#/village/${v.id}/map">空间观察</a>
+      <a href="#/village/${v.id}/talk">村民访谈</a>
+      <a href="#/village/${v.id}/analyze">语义分析</a>
+      <a href="#/village/${v.id}/report">考察报告</a>
+    </nav>
+    <section class="sec"><h2>村落平面（手绘鸟瞰）</h2>${drawMap(v, state, false)}${mapLegendHtml()}</section>
+    <section class="sec"><h2>地理背景</h2><p>${esc(v.intro)}</p>
+      <table class="gtab"><tr><th>地形</th><td>${esc(g.landform)}</td></tr>
+      <tr><th>气候</th><td>${esc(g.climate)}</td></tr>
+      <tr><th>农业</th><td>${esc(g.agriculture)}</td></tr>
+      <tr><th>生计</th><td>${esc(g.livelihood)}</td></tr>
+      <tr><th>交通</th><td>${esc(g.transport)}</td></tr></table>
+    </section>
+    <section class="sec"><h2>可访谈的村民（${v.npcs.length} 位）</h2><div class="npcgrid">${npcCards}</div></section>
+    <section class="sec"><h2>待发现的地理"发现"</h2><div class="findlist">${findList}</div></section>`;
+  }
+
+  /* ---------- 视图：空间观察 ---------- */
+  function viewMap(vId, focusFid) {
+    const v = VILLAGES.village(vId);
+    if (!v) return '<p class="empty">村落不存在。</p>';
+    E.visit(state, v.id); checkAch();
+    const pool = chConceptPool(v);
+    const poolChips = pool.map(cid => {
+      const cc = BOOK.concept(cid);
+      return `<label class="tagpick"><input type="checkbox" value="${cid}"/> ${esc(cc.concept.name)}<span class="tagfrom">${esc(cc.chapter.title)}</span></label>`;
+    }).join('');
+    const done = v.features.filter(f => {
+      const fs = state.villages[v.id].features[f.id];
+      return fs && (fs.seen || (fs.myTags || []).length);
+    }).length;
+    return `
+    <div class="crumb"><a href="#/village/${vId}">← ${esc(v.name)}档案</a></div>
+    <header class="pagehead"><h1>空间观察 · ${esc(v.name)}</h1>
+      <p class="sec-sub">点图上的要素看说明并答观察题；再给它贴概念标签（可选 1-3 个，贴完与真值对照）。</p>
+      <div class="progress-chips"><span class="chip">进度 ${done}/${v.features.length}</span></div>
+    </header>
+    <div class="mapwrap">
+      <div class="mapbox" id="mapbox">${drawMap(v, state, true)}${mapLegendHtml()}</div>
+      <aside class="sidepanel" id="fpanel"><p class="empty">点选图上任意要素开始观察。</p></aside>
+    </div>
+    <section class="sec"><h2>概念标签池（本村对口章节）</h2><div class="taggrid">${poolChips}</div></section>`;
+  }
+  function bindMap(vId) {
+    const v = VILLAGES.village(vId);
+    const box = document.getElementById('mapbox');
+    if (!box) return;
+    box.addEventListener('click', ev => {
+      const g = ev.target.closest('[data-fid]');
+      if (g) openFeature(v, g.getAttribute('data-fid'));
+    });
+  }
+  function openFeature(v, fid) {
+    const f = VILLAGES.feature(v.id, fid);
+    if (!f) return;
+    const fs = E.featureState(state, v.id, fid);
+    const cc = BOOK.concept;
+    const truthTxt = (f.truth || []).map(t => E.conceptName(BOOK, t)).join('、');
+    const askHtml = f.ask ? `
+      <div class="ask"><b>观察题</b>：${esc(f.ask.q)}</div>
+      <div class="opts">${f.ask.options.map((o, i) => `<label class="opt"><input type="radio" name="askopt" value="${i}"/> ${esc(o)}</label>`).join('')}
+      <button class="btn sm primary" id="ask-submit">提交观察</button></div>` : '';
+    const tagHtml = `
+      <div class="ask"><b>概念标注</b>（勾选后保存，对照真值：<b>${esc(truthTxt)}</b>）</div>
+      <div class="tagrow">
+        ${chConceptPool(v).map(cid => {
+          const on = fs.myTags.indexOf(cid) >= 0;
+          return `<label class="tagpick sm"><input type="checkbox" value="${cid}" ${on ? 'checked' : ''}/> ${esc(E.conceptName(BOOK, cid))}</label>`;
+        }).join('')}
+      </div>
+      <button class="btn sm" id="tag-save">保存标注（积分+1）</button>`;
+    document.getElementById('fpanel').innerHTML = `
+      <h3>${esc(f.name)}</h3>
+      <p class="fnote">${esc(f.note)}</p>
+      ${fs.askOk === 1 ? '<p class="okline">✓ 观察题已答对</p>' : fs.askOk === 0 && fs.seen ? '<p class="badline">观察题上次答错，可重试。</p>' : ''}
+      ${askHtml}
+      ${tagHtml}`;
+    const sub = document.getElementById('ask-submit');
+    if (sub) sub.addEventListener('click', () => {
+      const checked = document.querySelector('input[name="askopt"]:checked');
+      if (!checked) { toast('先选一个答案'); return; }
+      const r = E.observe(state, v.id, f, parseInt(checked.value, 10));
+      save(); checkAch();
+      document.getElementById('ask-result') && document.getElementById('ask-result').remove();
+      const div = document.createElement('div');
+      div.className = 'ask-result ' + (r.ok ? 'ok' : 'bad');
+      div.id = 'ask-result';
+      div.innerHTML = (r.ok ? '<b>✓ 判断正确</b>　' : '<b>✗ 再想想</b>　') + esc(r.exp || '');
+      sub.parentElement.appendChild(div);
+      if (r.ok) toast('观察正确，积分 +2');
+      refreshMapSeen(v.id, fid);
+    });
+    const tg = document.getElementById('tag-save');
+    if (tg) tg.addEventListener('click', () => {
+      const chosen = Array.from(document.querySelectorAll('.sidepanel .tagpick input:checked')).map(x => x.value);
+      E.tagFeature(state, v.id, f, chosen, chConceptPool(v));
+      save(); checkAch();
+      toast('标注已保存，去"语义分析"页看对照结果');
+      refreshMapSeen(v.id, fid);
+    });
+  }
+  function refreshMapSeen(vId, fid) {
+    const box = document.getElementById('mapbox');
+    if (!box) return;
+    const g = box.querySelector('[data-fid="' + fid + '"]');
+    if (g) g.classList.add('seen');
+  }
+
+  /* ---------- 视图：访谈 ---------- */
+  function viewTalk(vId, presetNpc) {
+    const v = VILLAGES.village(vId);
+    if (!v) return '<p class="empty">村落不存在。</p>';
+    E.visit(state, v.id);
+    const cur = presetNpc || v.npcs[0].id;
+    const npcTabs = v.npcs.map(n => `<button class="npctab ${n.id === cur ? 'on' : ''}" data-npc="${n.id}">${esc(n.name)}<span>${esc(n.role)}</span></button>`).join('');
+    const apiOn = state.settings.api && state.settings.api.enabled;
+    return `
+    <div class="crumb"><a href="#/village/${vId}">← ${esc(v.name)}档案</a></div>
+    <header class="pagehead"><h1>村民访谈 · ${esc(v.name)}</h1>
+      <p class="sec-sub">自由提问；回答可"收进素材库"（自动贴概念标签）。不同身份的村民，答案与立场都不同——多方求证才算好田野。</p>
+      <p class="modebadge">${apiOn ? '模式：已接入 API（失败自动回落离线）' : '模式：离线引擎（设置页可接大模型 API）'}</p>
+    </header>
+    <div class="npctabs">${npcTabs}</div>
+    <div class="chatwrap">
+      <div class="chatlog" id="chatlog"></div>
+      <div class="chatbar">
+        <input id="chatin" type="text" placeholder="向这位村民提问…（回车发送）" maxlength="120"/>
+        <button class="btn primary" id="chatsend">提问</button>
+      </div>
+    </div>
+    <section class="sec"><h2>素材库（本村）</h2><div id="matlist">${matListHtml(vId)}</div></section>`;
+  }
+  function matListHtml(vId) {
+    const vs = state.villages[vId];
+    const mats = Object.keys(vs.talks || {}).flatMap(k => vs.talks[k].materials);
+    if (!mats.length) return '<p class="empty">素材库还空着——去和村民聊聊吧。</p>';
+    return mats.slice().reverse().map(m => {
+      const noteKey = 'mat:' + m.id;
+      const note = E.noteOf(state, noteKey);
+      return `<div class="mat"><div class="mat-meta">${esc(m.npcName)}·${esc(m.role)} <span class="chip ghost sm">${m.tags.map(t => esc(E.conceptName(BOOK, t))).join('、') || '未标概念'}</span></div><div class="mat-text">${esc(m.text)}</div><details class="notebox"${note ? ' open' : ''}><summary>评语${note ? ' · 已有' : ''}</summary><textarea class="note-text" data-notekey="${noteKey}" maxlength="500" placeholder="给这条素材写句评语（可选）">${esc(note)}</textarea><div class="action-row"><button class="btn sm save-note">保存评语</button></div></details></div>`;
+    }).join('');
+  }
+  function bindTalk(vId, presetNpc) {
+    const v = VILLAGES.village(vId);
+    if (!v) return;
+    let curNpc = presetNpc && v.npcs.find(n => n.id === presetNpc) ? presetNpc : v.npcs[0].id;
+    const logEl = document.getElementById('chatlog');
+    function renderNpcTabs() {
+      document.querySelectorAll('.npctab').forEach(b => b.classList.toggle('on', b.getAttribute('data-npc') === curNpc));
+    }
+    function npcIntro(n) {
+      logEl.appendChild(bubble('npc', esc(n.hello), 'persona：' + esc(n.persona)));
+    }
+    npcIntro(v.npcs.find(n => n.id === curNpc));
+    async function send() {
+      const input = document.getElementById('chatin');
+      const q = (input.value || '').trim();
+      if (!q) return;
+      input.value = '';
+      logEl.appendChild(bubble('me', esc(q)));
+      const npc = v.npcs.find(n => n.id === curNpc);
+      let ans = null, mode = '离线引擎';
+      const api = state.settings.api;
+      if (api && api.enabled && api.url && api.key) {
+        try { ans = await remoteAsk(v, npc, q); mode = 'API·' + (api.model || 'model'); }
+        catch (e) { ans = null; mode = 'API 失败→离线回落'; }
+      }
+      if (!ans) { ans = E.askNpc(npc, q); mode = '离线引擎'; }
+      const tagsHtml = ans.tags && ans.tags.length ? `<span class="chip ghost sm">自动标注：${ans.tags.map(t => esc(E.conceptName(BOOK, t))).join('、')}</span>` : '';
+      const followHtml = (ans.follow || []).map(fq => `<button class="btn sm ghost follow" data-q="${esc(fq)}">${esc(fq)}</button>`).join('');
+      const collectHtml = ans.isFallback ? '' : `<button class="btn sm collect">收进素材库</button>`;
+      const node = bubble('npc', esc(ans.text) + `<div class="ansmeta">${mode === '离线引擎' ? '' : '<span class="chip ghost sm">' + esc(mode) + '</span>'} ${tagsHtml} ${collectHtml} ${followHtml}</div>`);
+      logEl.appendChild(node);
+      if (!ans.isFallback) {
+        node.querySelector('.collect').addEventListener('click', () => {
+          const m = E.collectMaterial(state, v.id, npc, ans);
+          save(); checkAch();
+          toast(m ? '已收进素材库（积分+1）' : '素材库已满或该村民素材已够');
+          const ml = document.getElementById('matlist');
+          if (ml) ml.innerHTML = matListHtml(vId);
+        });
+      }
+      node.querySelectorAll('.follow').forEach(b => b.addEventListener('click', () => {
+        document.getElementById('chatin').value = b.getAttribute('data-q');
+        document.getElementById('chatin').focus();
+      }));
+      logEl.scrollTop = logEl.scrollHeight;
+      if (!ans.isFallback) {
+        const t = (state.villages[v.id].talks || {})[npc.id];
+        if (t && t.turns % 3 === 0) toast(npc.name + '的素材已 ' + t.materials.length + ' 条');
+      }
+    }
+    document.getElementById('chatsend').addEventListener('click', send);
+    document.getElementById('chatin').addEventListener('keydown', ev => { if (ev.key === 'Enter') send(); });
+    document.querySelectorAll('.npctab').forEach(b => b.addEventListener('click', () => {
+      curNpc = b.getAttribute('data-npc');
+      renderNpcTabs();
+      logEl.innerHTML = '';
+      npcIntro(v.npcs.find(n => n.id === curNpc));
+    }));
+  }
+  function bubble(who, html, sub) {
+    const d = document.createElement('div');
+    d.className = 'bub ' + who;
+    d.innerHTML = `<div class="bub-text">${html}</div>${sub ? '<div class="bub-sub">' + sub + '</div>' : ''}`;
+    return d;
+  }
+  async function remoteAsk(v, npc, q) {
+    const api = state.settings.api;
+    const concepts = chConceptPool(v).map(cid => { const cc = BOOK.concept(cid); return { id: cid, name: cc.concept.name, def: cc.concept.def }; });
+    const sys = PR.PROMPTS.npcTalk.text
+      .replace('{ROLE_JSON}', JSON.stringify({ name: npc.name, role: npc.role, age: npc.age, persona: npc.persona, knows: npc.knows, blind: npc.blind }))
+      .replace('{VILLAGE_INTRO}', v.intro)
+      .replace('{CONCEPTS_JSON}', JSON.stringify(concepts))
+      .replace('{HISTORY_JSON}', '[]')
+      .replace('{QUESTION}', q);
+    const res = await fetch(api.url.replace(/\/$/, '') + '/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + api.key },
+      body: JSON.stringify({ model: api.model || 'glm-4-flash', messages: [{ role: 'user', content: sys }], temperature: 0.6 })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const j = await res.json();
+    const txt = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || '';
+    const mjson = txt.match(/\{[\s\S]*\}/);
+    if (mjson) {
+      try {
+        const p = JSON.parse(mjson[0]);
+        return { text: String(p.text || txt).slice(0, 400), tags: p.concept ? [p.concept] : [], isFallback: false, follow: (p.follow || []).slice(0, 2) };
+      } catch (e) { /* fallthrough */ }
+    }
+    return { text: txt.slice(0, 400), tags: [], isFallback: false, follow: [] };
+  }
+
+  /* ---------- 视图：语义分析 ---------- */
+  function viewAnalyze(vId) {
+    const v = VILLAGES.village(vId);
+    if (!v) return '<p class="empty">村落不存在。</p>';
+    const vs = state.villages[v.id];
+    const an = vs.analysis;
+    const rowsHtml = an ? an.rows.map(r => `
+      <tr class="${r.ok ? 'ok' : ''}">
+        <td>${esc(r.name)}</td>
+        <td>${r.mine.length ? r.mine.map(t => esc(E.conceptName(BOOK, t))).join('、') : '<i>未标注</i>'}</td>
+        <td>${r.truth.map(t => esc(E.conceptName(BOOK, t))).join('、')}</td>
+        <td>${r.full ? '◎ 全对' : r.ok ? '○ 部分命中' : '✗ 不符'}</td>
+      </tr>`).join('') : '';
+    const finds = (v.finds || []).map(d => {
+      const found = vs.finds && vs.finds[d.id] || (an && an.finds.indexOf(d.id) >= 0);
+      return `<div class="find ${found ? 'on' : ''}"><b>${esc(d.name)}</b>（对应概念：${esc(E.conceptName(BOOK, d.concept))}）${found ? '<br/>' + esc(d.desc) : ' — 满分标注对应要素后自动点亮'}</div>`;
+    }).join('');
+    return `
+    <div class="crumb"><a href="#/village/${vId}">← ${esc(v.name)}档案</a></div>
+    <header class="pagehead"><h1>空间语义分析 · ${esc(v.name)}</h1>
+      <p class="sec-sub">把你在图上贴的概念标签与每处要素的真值对照——这是"空间特征 × 社科概念"的对应表。</p>
+    </header>
+    <section class="sec action-row">
+      <button class="btn primary" id="run-analyze">运行分析（对照真值）</button>
+      ${an ? `<span class="score-ring">${an.score}<small>分</small></span>` : ''}
+    </section>
+    ${an ? `<section class="sec"><h2>概念-空间对照表（${an.rows.length} 项）</h2>
+      <table class="atab"><tr><th>要素</th><th>我的标注</th><th>真值</th><th>判定</th></tr>${rowsHtml}</table>
+      <p class="hint">判定口径：命中任一真值概念＝○；与真值完全一致（数量也一致）＝◎。</p></section>` : '<section class="sec"><p class="empty">先在"空间观察"页完成观察与标注。</p></section>'}
+    <section class="sec"><h2>地理"发现"</h2>${finds}</section>`;
+  }
+  function bindAnalyze(vId) {
+    const v = VILLAGES.village(vId);
+    if (!v) return;
+    const btn = document.getElementById('run-analyze');
+    if (btn) btn.addEventListener('click', () => {
+      E.analyzeVillage(state, v.id, v, chConceptPool(v));
+      save(); checkAch();
+      const an = state.villages[v.id].analysis;
+      toast('分析完成：' + an.score + ' 分');
+      render();
+    });
+  }
+
+  /* ---------- 视图：考察报告 ---------- */
+  function viewReport(vId) {
+    const v = VILLAGES.village(vId);
+    if (!v) return '<p class="empty">村落不存在。</p>';
+    const vs = state.villages[v.id];
+    const sub = vs.report && vs.report.submitted;
+    return `
+    <div class="crumb"><a href="#/village/${vId}">← ${esc(v.name)}档案</a></div>
+    <header class="pagehead"><h1>考察报告工作台 · ${esc(v.name)}</h1>
+      <p class="sec-sub">离线生成器只做"素材结构化重组"，不虚构任何事实；初稿可编辑，提交后自动初评。</p>
+    </header>
+    <section class="sec"><h2>素材库</h2><div id="matlist">${matListHtml(vId)}</div></section>
+    <section class="sec action-row">
+      <button class="btn primary" id="gen-report">由素材生成报告初稿</button>
+      <button class="btn" id="export-report">导出 Markdown</button>
+      <button class="btn" id="print-report">打印 / PDF</button>
+      ${sub ? `<span class="chip ok">已提交 · 初评 ${sub.grade.score} 分</span>` : ''}
+    </section>
+    <section class="sec"><h2>报告正文（可编辑）</h2>
+      <textarea id="report-text" rows="18" placeholder="点击上方按钮生成初稿，或直接撰写……">${esc(vs.report.text || '')}</textarea>
+      <div class="action-row">
+        <button class="btn" id="grade-report">保存并初评</button>
+        <button class="btn primary" id="submit-report">提交报告</button>
+      </div>
+      <div id="gradebox"></div>
+    </section>`;
+  }
+  function bindReport(vId) {
+    const v = VILLAGES.village(vId);
+    if (!v) return;
+    const gen = document.getElementById('gen-report');
+    if (gen) gen.addEventListener('click', () => {
+      const r = E.buildReport(state, v.id, v, BOOK);
+      document.getElementById('report-text').value = r.plain;
+      toast('初稿已生成——请务必自己改过再交');
+    });
+    const gr = document.getElementById('grade-report');
+    if (gr) gr.addEventListener('click', () => {
+      const t = document.getElementById('report-text').value;
+      state.villages[v.id].report.text = t;
+      const g = E.gradeReport(state, v.id, t, v, BOOK);
+      save();
+      document.getElementById('gradebox').innerHTML = gradeBoxHtml(g);
+    });
+    const exp = document.getElementById('export-report');
+    if (exp) exp.addEventListener('click', () => {
+      const t = document.getElementById('report-text').value;
+      if (!t.trim()) { toast('报告正文还是空的'); return; }
+      const sub = state.villages[v.id].report && state.villages[v.id].report.submitted;
+      const md = ['# 《乡土中国》田野考察报告',
+        '- 村落：' + v.name + '（' + v.type + ' · ' + v.region + '）',
+        '- 调查员：' + (state.student.name || '无名调查员'),
+        '- 日期：' + new Date().toISOString().slice(0, 10),
+        sub ? '- 初评：' + sub.grade.score + ' 分' : '- 初评：未提交',
+        '', t, '',
+        '> 生成自「乡土调查员」· 《乡土中国》田野探究工作坊'].join('\n');
+      downloadText('乡土考察报告-' + v.name + '.md', md);
+      toast('已导出 Markdown 文件');
+    });
+    const pr = document.getElementById('print-report');
+    if (pr) pr.addEventListener('click', () => {
+      const t = document.getElementById('report-text').value;
+      if (!t.trim()) { toast('报告正文还是空的'); return; }
+      const lines = ['村落：' + v.name + '（' + v.type + ' · ' + v.region + '）',
+        '调查员：' + (state.student.name || '无名调查员') + ' · ' + new Date().toISOString().slice(0, 10),
+        ''].concat(t.split('\n'));
+      printSheet('《乡土中国》田野考察报告 · ' + v.name, lines);
+    });
+    const sb = document.getElementById('submit-report');
+    if (sb) sb.addEventListener('click', () => {
+      const t = document.getElementById('report-text').value;
+      if (t.replace(/\s/g, '').length < 100) { toast('正文太短，先写满 100 字再交'); return; }
+      const g = E.submitReport(state, v.id, t, v, BOOK);
+      save(); checkAch();
+      document.getElementById('gradebox').innerHTML = gradeBoxHtml(g);
+      // 就地更新提交状态，避免整体重渲染吞掉评分反馈
+      const gen = document.getElementById('gen-report');
+      if (gen && !gen.parentElement.querySelector('.chip.ok')) {
+        const chip = document.createElement('span');
+        chip.className = 'chip ok';
+        chip.textContent = '已提交 · 初评 ' + g.score + ' 分';
+        gen.parentElement.appendChild(chip);
+      }
+      toast('报告已提交：初评 ' + g.score + ' 分');
+    });
+  }
+  function gradeBoxHtml(g) {
+    return `<div class="gradebox"><div class="grade-score">初评 ${g.score} 分 ${'★'.repeat(g.stars)}${'☆'.repeat(3 - g.stars)}</div>
+      <ul>${g.advice.map(a => '<li>' + esc(a) + '</li>').join('') || '<li>各项达标，可以提交给老师终审。</li>'}</ul></div>`;
+  }
+
+  /* ---------- 视图：区域对比 ---------- */
+  function viewCompare() {
+    const opt = (v, sel) => `<option value="${v.id}" ${sel ? 'selected' : ''}>${esc(v.name)}（${esc(v.type)}）</option>`;
+    const optsA = VILLAGES.VILLAGES.map(v => opt(v, v.id === 'v1')).join('');
+    const optsB = VILLAGES.VILLAGES.map(v => opt(v, v.id === 'v2')).join('');
+    return `
+    <div class="crumb"><a href="#/">← 返回首页</a></div>
+    <header class="pagehead"><h1>区域对比 · 差异表</h1>
+      <p class="sec-sub">任意两村横向对照：地理背景、聚落形态、权力空间、交换空间——地理差异如何长出社会差异。</p>
+    </header>
+    <section class="sec action-row">
+      <select id="cmpA">${optsA}</select>
+      <select id="cmpB">${optsB}</select>
+      <button class="btn primary" id="cmpGo">生成对比</button>
+    </section>
+    <section class="sec" id="cmpOut"><p class="empty">选两个村落，点"生成对比"。</p></section>`;
+  }
+  function bindCompare() {
+    const btn = document.getElementById('cmpGo');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const a = document.getElementById('cmpA').value, b = document.getElementById('cmpB').value;
+      if (a === b) { toast('选两个不同的村落'); return; }
+      const vA = VILLAGES.village(a), vB = VILLAGES.village(b);
+      const rows = E.compareVillages(vA, vB, state, BOOK);
+      save(); checkAch();
+      document.getElementById('cmpOut').innerHTML = `<table class="ctab"><tr><th>维度</th><th>${esc(vA.name)}</th><th>${esc(vB.name)}</th></tr>
+        ${rows.map(r => `<tr><th>${esc(r.dim)}</th><td>${esc(r.a)}</td><td>${esc(r.b)}</td></tr>`).join('')}</table>
+        <div class="action-row"><button class="btn sm" id="cmpExport">导出对比 Markdown</button></div>
+        <p class="hint">对比完成（积分+4）。试着回答：同一概念（如"算账"的规矩）在两村的空间证据有何不同？</p>`;
+      const cx = document.getElementById('cmpExport');
+      if (cx) cx.addEventListener('click', () => {
+        const md = ['# 区域差异对比：' + vA.name + ' × ' + vB.name, '',
+          '| 维度 | ' + vA.name + ' | ' + vB.name + ' |', '|---|---|---|',
+          rows.map(r => '| ' + r.dim + ' | ' + String(r.a).replace(/\|/g, '／') + ' | ' + String(r.b).replace(/\|/g, '／') + ' |').join('\n'),
+          '', '> 生成自「乡土调查员」· ' + new Date().toISOString().slice(0, 10)].join('\n');
+        downloadText('区域对比-' + vA.name + '-' + vB.name + '.md', md);
+        toast('已导出对比表');
+      });
+    });
+  }
+
+  /* ---------- 视图：成就 ---------- */
+  function viewAch() {
+    const lvl = E.levelOf(state.points);
+    const next = E.LEVELS.find(l => l.min > state.points);
+    const achs = E.ACHIEVEMENTS.map(a => {
+      const got = state.achievements.indexOf(a.id) >= 0;
+      return `<div class="ach ${got ? 'on' : ''}"><div class="ach-name">${esc(a.name)}</div><div class="ach-desc">${esc(a.desc)}</div></div>`;
+    }).join('');
+    return `
+    <div class="crumb"><a href="#/">← 返回首页</a></div>
+    <header class="pagehead"><h1>调查员等级与成就</h1></header>
+    <section class="sec">
+      <div class="lvlbar"><div class="lvl-fill" style="width:${next ? Math.min(100, Math.round(100 * (state.points - lvl.min) / (next.min - lvl.min))) : 100}%"></div></div>
+      <p><b>${esc(lvl.name)}</b> · ${state.points} 分 ${next ? '（距「' + esc(next.name) + '」还差 ' + (next.min - state.points) + ' 分）' : '（已达最高称号）'}</p>
+      <p class="hint">称号阶梯：${E.LEVELS.map(l => esc(l.name) + ' ' + l.min).join(' → ')}</p>
+    </section>
+    <section class="sec"><h2>成就图鉴（${state.achievements.length}/${E.ACHIEVEMENTS.length}）</h2><div class="achgrid">${achs}</div></section>`;
+  }
+
+  /* ---------- 视图：教师端 ---------- */
+  function viewTeacher() {
+    const tab = parseRoute()[1] || 'dash';
+    const tabs = [
+      ['dash', '学情看板'], ['tasks', '任务发布'], ['review', '报告评阅'], ['collection', '优秀成果集']
+    ].map(t => `<a class="${tab === t[0] ? 'on' : ''}" href="#/teacher/${t[0]}">${t[1]}</a>`).join('');
+    let body = '';
+    if (tab === 'dash') body = teacherDash();
+    else if (tab === 'tasks') body = teacherTasks();
+    else if (tab === 'review') body = teacherReview();
+    else body = teacherCollection();
+    return `
+    <div class="crumb"><a href="#/">← 返回首页</a></div>
+    <header class="pagehead"><h1>教师端 · 探究教学管理工作台</h1></header>
+    <nav class="tabs">${tabs}</nav>${body}`;
+  }
+  function teacherDash() {
+    const cls = E.demoClass('default');
+    const rows = cls.students.map(s => `<tr><td>${esc(s.name)}</td><td>${s.chapters}/14</td><td>${s.talkTurns}</td><td>${s.observeScore}</td><td>${s.reportScore >= 0 ? s.reportScore : '未交'}</td><td class="mis">${esc(s.misconception)}</td></tr>`).join('');
+    const a = cls.agg;
+    return `
+    <section class="sec"><p class="demo-note">※ 以下为种子生成的<b>模拟演示数据</b>（种子 ${esc(String(cls.seed))}），仅展示看板形态；接入真实班级后此区由学生端数据填充。</p>
+      <div class="kpis">
+        <div class="kpi"><b>${a.avgChapters}</b><span>人均读毕章节</span></div>
+        <div class="kpi"><b>${a.avgTalks}</b><span>人均访谈轮次</span></div>
+        <div class="kpi"><b>${a.avgObserve}</b><span>平均观察得分</span></div>
+        <div class="kpi"><b>${a.avgReport}</b><span>平均报告分（${a.submitted} 人提交）</span></div>
+      </div>
+      <table class="atab"><tr><th>学生</th><th>读章</th><th>访谈轮次</th><th>观察分</th><th>报告分</th><th>常见误区（模拟）</th></tr>${rows}</table>
+      <p class="hint">全班最高频误区：${esc(a.misconceptionTop.m)}（${a.misconceptionTop.n} 人）——建议以此做一次 5 分钟全班讲评。</p>
+    </section>`;
+  }
+  function teacherTasks() {
+    const opts = BOOK.CHAPTERS.map(c => `<option value="${c.id}">第${c.no}章 ${esc(c.title)}</option>`).join('');
+    const tasks = state.tasks.slice().reverse().map(t => {
+      const c = BOOK.chapter(t.chId);
+      return `<div class="task"><b>《${esc(c ? c.title : t.chId)}》探究任务</b>　截止：${esc(t.deadline || '不限')}　评价标准：${esc(t.criteria || '初评 ≥70')}<br/><span class="hint">发布于 ${esc(t.at.slice(0, 10))}</span></div>`;
+    }).join('');
+    return `
+    <section class="sec"><h2>发布探究任务</h2>
+      <div class="formrow"><label>章节</label><select id="task-ch">${opts}</select></div>
+      <div class="formrow"><label>截止时间</label><input id="task-dl" type="date"/></div>
+      <div class="formrow"><label>评价标准</label><input id="task-crit" type="text" placeholder="如：初评≥70 且引用原文≥1处" maxlength="60"/></div>
+      <button class="btn primary" id="task-add">发布任务</button>
+      <div id="tasklist">${tasks || '<p class="empty">还没有发布任务。</p>'}</div>
+    </section>`;
+  }
+  function teacherReview() {
+    const subs = [];
+    VILLAGES.VILLAGES.forEach(v => {
+      const vs = state.villages[v.id];
+      if (vs && vs.report && vs.report.submitted) subs.push({ v: v, r: vs.report.submitted });
+    });
+    if (!subs.length) return '<section class="sec"><p class="empty">学生端还没有提交报告（当前浏览器即学生端——去学生端交一份，这里就能看到）。</p></section>';
+    return `<section class="sec">${subs.map(s => `
+      <div class="review">
+        <div class="review-head"><b>${esc(s.v.name)} 考察报告</b> · AI 初评 ${s.r.grade.score} 分 ${'★'.repeat(s.r.grade.stars)} ${s.r.verdict ? '<span class="chip ' + (s.r.verdict === '优秀' ? 'ok' : 'bad') + '">' + esc(s.r.verdict) + '</span>' : '<span class="chip ghost">待终审</span>'}</div>
+        <details><summary>展开正文</summary><pre class="reportpre">${esc(s.r.text)}</pre></details>
+        <div class="action-row">
+          <input type="text" class="verdict-in" placeholder="终审意见（如：建议补一笔'评理'的观察）" maxlength="60"/>
+          <button class="btn sm primary verdict-ok">评为优秀</button>
+          <button class="btn sm verdict-back">打回修改</button>
+        </div>
+      </div>`).join('')}</section>`;
+  }
+  function teacherCollection() {
+    const items = [];
+    VILLAGES.VILLAGES.forEach(v => {
+      const vs = state.villages[v.id];
+      if (vs && vs.report && vs.report.submitted && vs.report.submitted.verdict === '优秀') items.push({ v: v, r: vs.report.submitted });
+    });
+    if (!items.length) return '<section class="sec"><p class="empty">评阅为"优秀"的报告会自动进入成果集。</p></section>';
+    return `<section class="sec">${items.map(s => `<div class="review"><div class="review-head"><b>${esc(s.v.name)}</b> · ${s.r.grade.score} 分</div><pre class="reportpre">${esc(s.r.text)}</pre></div>`).join('')}</section>`;
+  }
+  function bindTeacher() {
+    const tab = parseRoute()[1] || 'dash';
+    if (tab === 'tasks') {
+      const btn = document.getElementById('task-add');
+      if (btn) btn.addEventListener('click', () => {
+        const chId = document.getElementById('task-ch').value;
+        const dl = document.getElementById('task-dl').value;
+        const crit = document.getElementById('task-crit').value.trim();
+        state.tasks.push({ id: 't' + (state.seq++), chId: chId, deadline: dl, criteria: crit, at: new Date().toISOString() });
+        save(); toast('任务已发布'); render();
+      });
+    }
+    if (tab === 'review') {
+      document.querySelectorAll('.review').forEach((div, idx) => {
+        const ok = div.querySelector('.verdict-ok'), back = div.querySelector('.verdict-back'), vin = div.querySelector('.verdict-in');
+        const subs = [];
+        VILLAGES.VILLAGES.forEach(v => { const vs = state.villages[v.id]; if (vs && vs.report && vs.report.submitted) subs.push(v.id); });
+        const vId = subs[idx];
+        if (ok) ok.addEventListener('click', () => {
+          state.villages[vId].report.submitted.verdict = '优秀';
+          state.villages[vId].report.submitted.verdictNote = vin.value.trim();
+          save(); checkAch(); toast('已评为优秀，进入成果集'); render();
+        });
+        if (back) back.addEventListener('click', () => {
+          state.villages[vId].report.submitted.verdict = '打回';
+          state.villages[vId].report.submitted.verdictNote = vin.value.trim();
+          save(); toast('已打回，学生端可见终审意见'); render();
+        });
+      });
+    }
+  }
+
+  /* ---------- 视图：设置 ---------- */
+  function viewSettings() {
+    const api = state.settings.api;
+    const promptCards = Object.keys(PR.PROMPTS).map(k => {
+      const p = PR.PROMPTS[k];
+      return `<div class="promptcard"><div class="prompt-head"><b>${esc(p.name)}</b> <button class="btn sm copy-prompt" data-k="${k}">复制提示词</button></div><p class="hint">${esc(p.desc)}</p><pre class="promptpre">${esc(p.text)}</pre></div>`;
+    }).join('');
+    return `
+    <div class="crumb"><a href="#/">← 返回首页</a></div>
+    <header class="pagehead"><h1>设置 · AI 模式 · 考据</h1></header>
+    <section class="sec"><h2>大模型 API（可选，默认关闭）</h2>
+      <p class="hint">离线引擎默认可用且确定性可测；接入 OpenAI 兼容 API（默认智谱 glm-4-flash）后 NPC 对话与报告润色走大模型，失败自动回落并注明。凭据只存本机浏览器。</p>
+      <div class="formrow"><label>接口地址</label><input id="api-url" type="text" placeholder="https://open.bigmodel.cn/api/paas/v4" value="${esc(api.url)}"/></div>
+      <div class="formrow"><label>API Key</label><input id="api-key" type="password" placeholder="sk-…" value="${esc(api.key)}"/></div>
+      <div class="formrow"><label>模型</label><input id="api-model" type="text" value="${esc(api.model)}"/></div>
+      <div class="action-row">
+        <button class="btn primary" id="api-save">保存配置</button>
+        <button class="btn ${api.enabled ? '' : 'ghost'}" id="api-toggle">${api.enabled ? '✓ 已启用（点击关闭）' : '已禁用（点击启用）'}</button>
+      </div>
+    </section>
+    <section class="sec"><h2>核心 AI 提示词（4 组）</h2>${promptCards}</section>
+    <section class="sec"><h2>离线引擎说明</h2><ul>${PR.OFFLINE_NOTES.map(n => '<li>' + esc(n) + '</li>').join('')}</ul></section>
+    <section class="sec"><h2>数据管理</h2>
+      <div class="action-row">
+        <button class="btn" id="exp-data">导出存档（JSON）</button>
+        <button class="btn" id="imp-data">导入存档</button>
+        <button class="btn ghost" id="clr-data">清空本地存档</button>
+      </div>
+      <input type="file" id="imp-file" accept=".json" style="display:none"/>
+      <p class="hint">存档键：xiangtu1 · 包含全部进度、素材与报告。</p>
+    </section>
+    <section class="sec"><h2>考据说明</h2>
+      <p>本站全部《乡土中国》引文逐字取自底本存档（国学导航版，双源交叉核验过程见 <b>report/考据说明.md</b>）；引文回归测试随 test 套件运行。网络流传"名言"常有拼接改写，引用请以本站原文阅读器为准。</p>
+    </section>`;
+  }
+  function bindSettings() {
+    const apiSave = document.getElementById('api-save');
+    if (apiSave) apiSave.addEventListener('click', () => {
+      state.settings.api.url = document.getElementById('api-url').value.trim();
+      state.settings.api.key = document.getElementById('api-key').value.trim();
+      state.settings.api.model = document.getElementById('api-model').value.trim() || 'glm-4-flash';
+      save(); toast('API 配置已保存（本地）');
+    });
+    const tg = document.getElementById('api-toggle');
+    if (tg) tg.addEventListener('click', () => {
+      if (!state.settings.api.url || !state.settings.api.key) { toast('先填接口地址与 Key'); return; }
+      state.settings.api.enabled = !state.settings.api.enabled;
+      save(); toast(state.settings.api.enabled ? 'API 已启用' : 'API 已关闭'); render();
+    });
+    document.querySelectorAll('.copy-prompt').forEach(b => b.addEventListener('click', () => {
+      const p = PR.PROMPTS[b.getAttribute('data-k')];
+      const ta = document.createElement('textarea');
+      ta.value = p.text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); toast('已复制：' + p.name); } catch (e) { toast('复制失败，请手动选择'); }
+      ta.remove();
+    }));
+    const exp = document.getElementById('exp-data');
+    if (exp) exp.addEventListener('click', () => {
+      const blob = new Blob([E.serialize(state)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'xiangtu-save-' + new Date().toISOString().slice(0, 10) + '.json';
+      a.click();
+    });
+    const imp = document.getElementById('imp-data');
+    if (imp) imp.addEventListener('click', () => document.getElementById('imp-file').click());
+    const file = document.getElementById('imp-file');
+    if (file) file.addEventListener('change', () => {
+      const f = file.files[0];
+      if (!f) return;
+      const rd = new FileReader();
+      rd.onload = () => {
+        const s = E.deserialize(rd.result);
+        if (!s) { toast('存档格式无效'); return; }
+        state = s; save(); toast('存档已导入'); render();
+      };
+      rd.readAsText(f);
+    });
+    const clr = document.getElementById('clr-data');
+    if (clr) clr.addEventListener('click', () => {
+      if (!confirm('确定清空全部本地进度？此操作不可恢复。')) return;
+      localStorage.removeItem(LS_KEY); state = E.newState(); save(); toast('已清空'); render();
+    });
+  }
+
+  /* ---------- 成就刷新 ---------- */
+  function checkAch() {
+    const got = E.checkAchievements(state);
+    if (got.length) save();
+    got.forEach(a => toast('成就解锁：' + a.name));
+    return got;
+  }
+
+  /* ---------- 路由 ---------- */
+  function render() {
+    const r = parseRoute();
+    let html = '';
+    let binder = null;
+    if (r[0] === '' || r[0] === undefined) { html = viewHome(); }
+    else if (r[0] === 'book') { html = viewBook(r[1]); }
+    else if (r[0] === 'village') {
+      const vId = r[1];
+      if (!VILLAGES.village(vId)) html = '<p class="empty">村落不存在。</p>';
+      else if (r[2] === 'map') { html = viewMap(vId); binder = () => bindMap(vId); }
+      else if (r[2] === 'talk') { html = viewTalk(vId, r.query.npc); binder = () => bindTalk(vId, r.query.npc); }
+      else if (r[2] === 'analyze') { html = viewAnalyze(vId); binder = () => bindAnalyze(vId); }
+      else if (r[2] === 'report') { html = viewReport(vId); binder = () => bindReport(vId); }
+      else html = viewVillage(vId);
+    }
+    else if (r[0] === 'compare') { html = viewCompare(); binder = bindCompare; }
+    else if (r[0] === 'ach') { html = viewAch(); }
+    else if (r[0] === 'teacher') { html = viewTeacher(); binder = bindTeacher; }
+    else if (r[0] === 'settings') { html = viewSettings(); binder = bindSettings; }
+    else html = '<p class="empty">页面不存在。</p>';
+    app.innerHTML = html;
+    if (binder) binder();
+    // 章节读毕按钮
+    const mr = document.getElementById('mark-read');
+    if (mr && !mr.disabled) mr.addEventListener('click', () => {
+      E.readChapter(state, r[1]); save(); checkAch(); toast('读毕标记成功，积分+5'); render();
+    });
+    // 批注保存（章节节选批注 / 素材评语，通用委托；就地更新，不重渲染以免丢未提交的正文）
+    app.querySelectorAll('.save-note').forEach(b => b.addEventListener('click', () => {
+      const box = b.closest('.notebox');
+      const ta = box && box.querySelector('.note-text');
+      if (!ta) return;
+      const res = E.setNote(state, ta.getAttribute('data-notekey'), ta.value);
+      save(); checkAch();
+      const sum = box.querySelector('summary');
+      if (sum) {
+        const base = sum.textContent.replace(' · 已有', '');
+        sum.textContent = ta.value.trim() ? base + ' · 已有' : base;
+      }
+      toast(res.removed ? '批注已清空' : '批注已保存' + (res.created ? '（积分+1）' : ''));
+    }));
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- 启动 ---------- */
+  load();
+  window.addEventListener('hashchange', render);
+  render();
+  save();
+})();
+
+</script>
+</body>
+</html>
