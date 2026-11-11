@@ -246,7 +246,7 @@
     <section class="sec"><h2>村落图鉴</h2><p class="sec-sub">四类地域聚落：北方的礼治秩序、江南的人情与契约、客家的同心围屋、云岭的歌与榔规。</p>
       <div class="vilgrid">${vilCards}</div>
     </section>
-    <footer class="foot">引文均逐字取自《乡土中国》底本存档（见设置页考据说明）· 离线引擎默认，可在设置页接入大模型 API</footer>`;
+    <footer class="foot">引文均逐字取自《乡土中国》底本存档（见设置页考据说明）· 离线引擎默认，可在设置页接入大模型 API<br/><a href="教程.html">项目教程（这个站是怎么搭的）</a> · <a href="https://github.com/dingdjfjs-star/xiangtu-surveyor">GitHub 仓库</a></footer>`;
   }
 
   /* ---------- 视图：章节详情 ---------- */

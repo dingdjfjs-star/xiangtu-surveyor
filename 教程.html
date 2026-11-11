@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>教程 · 乡土调查员是怎么搭起来的</title>
+<style>
+  :root { --paper:#f4efe2; --paper2:#efe8d6; --ink:#2f2a22; --ink2:#5a5245; --ink3:#8a7f6c; --line:#c9bda2; --cin:#a4443a; --gold:#8a6d2f; --green:#55663f; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:"Noto Serif SC","Source Han Serif SC","SimSun",serif; line-height:1.8;
+         background-image:radial-gradient(rgba(120,100,60,.05) 1px,transparent 1px); background-size:22px 22px; }
+  .wrap { max-width:1080px; margin:0 auto; padding:20px 16px 70px; }
+  a { color:var(--cin); text-decoration:none; }
+  h1 { font-size:30px; letter-spacing:.1em; margin:8px 0 4px; }
+  h2 { font-size:19px; margin:34px 0 12px; padding-left:10px; border-left:4px solid var(--cin); }
+  .crumb { font-size:13px; margin-bottom:14px; }
+  .hero { border:1px solid var(--line); border-radius:6px; background:var(--paper2); padding:22px 18px; position:relative; box-shadow:0 1px 0 rgba(90,82,69,.18),0 6px 18px -10px rgba(60,50,30,.35); }
+  .hero::after { content:"教程"; position:absolute; right:16px; top:14px; width:44px; height:44px; line-height:44px; text-align:center; color:#fff; background:var(--cin); border-radius:4px; font-size:14px; letter-spacing:2px; transform:rotate(6deg); opacity:.92; }
+  .hero p { margin:6px 0; color:var(--ink2); }
+  .toc { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 0; }
+  .toc a { border:1px solid var(--line); border-radius:999px; padding:2px 12px; font-size:13px; background:#fff8; }
+  .sec { border:1px solid var(--line); border-radius:6px; background:#fff7; margin:16px 0; overflow:hidden; }
+  .sec > summary { list-style:none; cursor:pointer; padding:12px 16px; font-weight:700; font-size:16px; background:var(--paper2); display:flex; gap:10px; align-items:center; }
+  .sec > summary::before { content:"▾"; color:var(--cin); }
+  .sec:not([open]) > summary::before { content:"▸"; }
+  .sec > .inner { padding:6px 18px 18px; border-top:1px dashed var(--line); }
+  pre { background:#2f2a22; color:#e8dcc3; padding:14px 16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6; font-family:Consolas,"Courier New",monospace; }
+  pre .k { color:#e0a458; } pre .s { color:#9fbf8f; } pre .c { color:#8a7f6c; } pre .fn { color:#d98a7e; }
+  .note { border-left:4px solid var(--gold); background:rgba(138,109,47,.08); padding:8px 14px; margin:12px 0; font-size:14px; }
+  .task { border:1px dashed var(--cin); border-radius:6px; padding:10px 14px; margin:10px 0; font-size:14px; }
+  .task b { color:var(--cin); }
+  iframe { width:100%; height:560px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:760px){ .grid2 { grid-template-columns:1fr; } pre{font-size:12px;} }
+  .foot { text-align:center; color:var(--ink3); font-size:12px; margin-top:44px; }
+  svg.arch { width:100%; max-width:760px; display:block; margin:10px auto; background:#fff9; border:1px solid var(--line); border-radius:6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="./index.html">← 回到「乡土调查员」</a> · <a href="docs/教程.md">文字版教程.md</a> · <a href="https://github.com/dingdjfjs-star/xiangtu-surveyor">仓库</a></div>
+  <header class="hero">
+    <h1>乡土调查员 · 项目教程</h1>
+    <p>这个站是怎么搭起来的：三明治架构、考据闭环、确定性 NPC 引擎、SVG 手绘地图、792 项断言测试体系。</p>
+    <p>本页是<b>可交互教学网页</b>——每一节都能展开读代码精讲，最后一节内嵌了实机可直接上手。</p>
+    <nav class="toc">
+      <a href="#s1">1 架构</a><a href="#s2">2 考据闭环</a><a href="#s3">3 NPC 引擎</a><a href="#s4">4 空间语义分析</a><a href="#s5">5 SVG 地图</a><a href="#s6">6 三件套</a><a href="#s7">7 测试体系</a><a href="#s8">8 动手改</a><a href="#s9">9 实机</a>
+    </nav>
+  </header>
+
+  <h2 id="s1">1 · 三明治架构：为什么引擎必须零 DOM</h2>
+  <div class="sec" open><summary>架构总览与铁律</summary><div class="inner">
+    <svg class="arch" viewBox="0 0 760 240" role="img" aria-label="三层架构示意图">
+      <g font-family="serif" font-size="15" fill="#2f2a22">
+        <rect x="30" y="24" width="700" height="56" rx="6" fill="#e8dcc3" stroke="#3d3428"/>
+        <text x="50" y="50" font-weight="bold">数据层 data-*.js</text>
+        <text x="50" y="70" font-size="12" fill="#5a5245">14 章 / 4 村 / NPC 规则库 / AI 提示词 —— 只放数据，双端同构（window + module.exports）</text>
+        <rect x="30" y="92" width="700" height="56" rx="6" fill="#c9b98f" stroke="#3d3428"/>
+        <text x="50" y="118" font-weight="bold">引擎层 engine.js（纯逻辑 · 零 DOM · 零 fetch）</text>
+        <text x="50" y="138" font-size="12" fill="#4a4436">状态机 / NPC 对话 / 空间语义分析 / 报告 / 成就 —— Node require 即可全量断言</text>
+        <rect x="30" y="160" width="700" height="56" rx="6" fill="#a9c2b8" stroke="#3d3428"/>
+        <text x="50" y="186" font-weight="bold">薄壳层 ui.js（hash 路由 + SVG 绘制）</text>
+        <text x="50" y="206" font-size="12" fill="#4c6b62">只调引擎 API，不做业务判断；localStorage 键 xiangtu1</text>
+        <path d="M380,80 L380,92 M380,148 L380,160" stroke="#a4443a" stroke-width="3" marker-end="none"/>
+      </g>
+    </svg>
+    <p>三条铁律：<b>① engine.js 禁止 document./fetch（测试静态扫描）</b>——所以 Node 里 <code>node test\test.js</code> 不开浏览器就能跑 792 项断言；② 数据文件同时挂 <code>window.XT_*</code> 与 <code>module.exports</code>；③ UI 不写业务判断，全委托引擎。</p>
+  </div></div>
+
+  <h2 id="s2">2 · 考据闭环：引文逐字可回查</h2>
+  <div class="sec"><summary>抓底本 → 清洗 → 子串回归（全项目最硬的一环）</summary><div class="inner">
+    <p>管线：抓取脚本（GBK 解码+顺页链）→ 原始存档 → 清洗成纯正文 → <code>data-book.js</code> 每条节选逐字摘录 → 测试对每条节选+每日一句做底本子串匹配，失配即红。</p>
+    <pre><span class="c">// test.js 第③组：引文回归（空白归一化后逐字子串）</span>
+<span class="k">const</span> S = corpus[ch.id].replace(<span class="s">/\s+/g</span>, <span class="s">''</span>);
+<span class="k">if</span> (!S.includes(e.text.replace(<span class="s">/\s+/g</span>, <span class="s">''</span>))) fail(<span class="s">'底本失配'</span>);</pre>
+    <div class="note">实战教训：番茄小说版抓下来是「乡土农弯腰收割稻」式缺字——它用<b>自定义字体做字符混淆</b>，弃用留痕；改信国学导航全本，另对 5 句名句做搜索引擎独立抽查。网络流传"金句"多有拼接改写，一律以底本为准。</div>
+    <div class="task"><b>动手改</b>：给某一章补一条节选——从 资料/底本合并/gx_*.txt 复制一句，贴进 data-book.js，跑 <code>node test\test.js</code>，测试会替你核验摘录是否逐字。</div>
+  </div></div>
+
+  <h2 id="s3">3 · 离线 NPC 引擎：确定性怎么设计</h2>
+  <div class="sec"><summary>规则匹配 / 回落 / 可达性探针 / 语料纪律</summary><div class="inner">
+    <pre><span class="c">// engine.js：命中数最多的规则胜出，并列取声明序 —— 同问必同答</span>
+<span class="k">function</span> <span class="fn">pickRule</span>(npc, question) {
+  <span class="k">const</span> q = normQ(question);          <span class="c">// 去标点空白、转小写</span>
+  <span class="k">let</span> best = <span class="k">null</span>, bestHits = 0;
+  <span class="k">for</span> (<span class="k">const</span> r <span class="k">of</span> npc.rules) {
+    <span class="k">let</span> hits = 0;
+    <span class="k">for</span> (<span class="k">const</span> kw <span class="k">of</span> r.kws) <span class="k">if</span> (q.includes(normQ(kw))) hits++;
+    <span class="k">if</span> (hits &gt; bestHits) { best = r; bestHits = hits; }
+  }
+  <span class="k">return</span> best;                        <span class="c">// 无命中 → 哈希轮转回落句，同问同答</span>
+}</pre>
+    <p>三个关键决策：<b>回落句不采集</b>（闲聊不进素材库）；<b>回落确定性</b>（<code>hash32(npc.id+'|'+q) % len</code>，测试逐位断言）；<b>可达性探针</b>——测试用 <code>r.kws.join('！')</code> 当问句，本规则命中数必然全池最高，绕开"关键词是别的规则子串"的误报。</p>
+    <div class="note">语料纪律：村民<b>不许说出"差序格局""礼治"等 22 个学术词</b>（测试扫描 300+ 段零命中）。概念要由学生自己贴——这是教学设计。</div>
+  </div></div>
+
+  <h2 id="s4">4 · 空间语义分析：把"波纹"盖成房子</h2>
+  <div class="sec"><summary>要素真值 / 评分公式 / 两个踩坑</summary><div class="inner">
+    <pre><span class="c">// 每处 SVG 要素带概念真值与观察题（节选）</span>
+{ id:<span class="s">'f302'</span>, kind:<span class="s">'homes'</span>, name:<span class="s">'围屋同心圈层'</span>,
+  truth:[<span class="s">'c04a'</span>],                       <span class="c">// ← 差序格局的立体模型</span>
+  ask:{ q:<span class="s">'房间怎么排布？'</span>, options:[...], answer:1, exp:<span class="s">'…'</span> },
+  analysis:<span class="s">'建筑即社会图…'</span> }</pre>
+    <p>评分 = <code>(命中标签数×2 + 观察题答对数) / (要素总数×2) × 100</code>；满分标注自动点亮"地理发现"。</p>
+    <div class="note">两个踩坑：①村落真值会引用<b>跨章概念</b>（北方村老槐树同时挂"无讼"和"长幼之序"），概念池若只收本村对口章就会把真值过滤掉——conceptPool 必须取「对口章 ∪ 真值 ∪ 发现 ∪ 规则」并集；②"发现"入账曾把对象当键（<code>v.finds[obj]</code> → <code>'[object Object]'</code>），成就永远不可达——<b>模拟通关测试</b>（13 枚成就逐一解锁）抓出来的。</div>
+  </div></div>
+
+  <h2 id="s5">5 · SVG 手绘地图：数据驱动四技巧</h2>
+  <div class="sec"><summary>百分比坐标 / 形状字库 / 分类配色 / 标签防遮挡</summary><div class="inner">
+    <pre><span class="c">// 要素只存百分比坐标，viewBox 0 0 100 100 全屏等比</span>
+{ id:<span class="s">'f101'</span>, kind:<span class="s">'hall'</span>, name:<span class="s">'王氏祠堂'</span>, x:50, y:24, truth:[...] }
+<span class="c">// 20 余种形状字库：markerShape(kind) 每种一个小 SVG 组</span>
+<span class="c">// 分类配色：catOf(kind) 按社会功能分五类 → 礼治朱红/教化墨绿/居住褐/生计橄榄/市集蓝灰</span>
+&lt;text ... style=<span class="s">"paint-order:stroke"</span> stroke=<span class="s">"宣纸色"</span> stroke-width=<span class="s">"1.1"</span>&gt;<span class="c"> ← 标签描边一行解决可读性</span></pre>
+    <div class="task"><b>动手改</b>：在 <code>markerShape</code> 里加一种新形状（比如戏台），再给某村加一个 <code>kind:'stage'</code> 的要素——图例配色不用动，<code>catOf</code> 会兜底。</div>
+  </div></div>
+
+  <h2 id="s6">6 · 三件套：批注 / 单文件版 / 打印壳</h2>
+  <div class="sec"><summary>每件都有一个"最容易翻车的坑"</summary><div class="inner">
+    <div class="grid2">
+      <div>
+        <p><b>批注</b>：<code>state.notes['c01#2']</code> 键值对 + setNote（500 字上限、首注+1分、清空即删），报告第五节逐章汇入"我的批注「…」"。</p>
+        <p><b>坑</b>：保存批注后<b>不能重渲染整页</b>——报告页 textarea 里未提交的正文会被冲掉。就地更新 summary。</p>
+      </div>
+      <div>
+        <p><b>单文件版</b>：<code>tools/build-single.mjs</code> 把 css+9 个 js 内联进一个 HTML（237.7KB，微信直发）。</p>
+        <p><b>坑</b>：<code>html.replace(tag, code)</code> 的字符串替换会把 JS 里的 <code>${...}</code> 当 $ 特殊序列吃掉——必须用<b>函数式替换</b> <code>replace(tag, () =&gt; code)</code>；另加两道自检：<code>&lt;/script</code> 出现即拒绝、外链残留必须为 0。</p>
+      </div>
+    </div>
+    <p><b>打印壳</b>：<code>#print-sheet</code> 平时 display:none，<code>@media print</code> 里 <code>body *{visibility:hidden}</code> + <code>#print-sheet *{visibility:visible}</code>——不弹新窗口、不重排版。</p>
+    <pre><span class="c">// css/style.css</span>
+<span class="k">@media</span> print {
+  body * { visibility: hidden <span class="k">!important</span>; }
+  #print-sheet, #print-sheet * { visibility: visible <span class="k">!important</span>; }
+}</pre>
+  </div></div>
+
+  <h2 id="s7">7 · 792 项断言的分工表</h2>
+  <div class="sec"><summary>15 组测试，先立断言再写功能</summary><div class="inner">
+    <table style="width:100%;border-collapse:collapse;font-size:14px">
+      <tr><th style="border:1px solid var(--line);background:var(--paper2);padding:6px">组</th><th style="border:1px solid var(--line);background:var(--paper2);padding:6px">断什么</th><th style="border:1px solid var(--line);background:var(--paper2);padding:6px">量级</th></tr>
+      <tr><td style="border:1px solid var(--line);padding:6px">①工程 ②章节</td><td style="border:1px solid var(--line);padding:6px">文件引齐、14 章字段、概念 id 唯一</td><td style="border:1px solid var(--line);padding:6px">~120</td></tr>
+      <tr><td style="border:1px solid var(--line);padding:6px">③引文回归</td><td style="border:1px solid var(--line);padding:6px">节选+名言 ⊆ 底本</td><td style="border:1px solid var(--line);padding:6px">~90</td></tr>
+      <tr><td style="border:1px solid var(--line);padding:6px">④村落 ⑤语料</td><td style="border:1px solid var(--line);padding:6px">结构完整；22 词黑名单零命中、零英文残留</td><td style="border:1px solid var(--line);padding:6px">~420</td></tr>
+      <tr><td style="border:1px solid var(--line);padding:6px">⑥⑦引擎</td><td style="border:1px solid var(--line);padding:6px">同入同出、106 规则全可达、评分口径</td><td style="border:1px solid var(--line);padding:6px">~130</td></tr>
+      <tr><td style="border:1px solid var(--line);padding:6px">⑧-⑬行为</td><td style="border:1px solid var(--line);padding:6px">素材封顶/报告评分/13 成就模拟通关/存档往返/模拟班</td><td style="border:1px solid var(--line);padding:6px">~40</td></tr>
+      <tr><td style="border:1px solid var(--line);padding:6px">⑭⑮静态</td><td style="border:1px solid var(--line);padding:6px">提示词占位符、engine 零 DOM 零 fetch</td><td style="border:1px solid var(--line);padding:6px">~15</td></tr>
+    </table>
+    <p>心法：<b>纪律让测试先开口</b>——"村民不说学名""发现可达""次提交不重复计分"都是先写断言，实现跟着走。</p>
+  </div></div>
+
+  <h2 id="s8">8 · 动手改：三个入门任务</h2>
+  <div class="sec"><summary>照着做，跑测试自查</summary><div class="inner">
+    <div class="task"><b>任务一（内容）</b>：给云岭寨的歌师加一条规则（kws 含"芦笙"），say 里不许出现学术词 → 跑 test，第⑤⑥组替你把关。</div>
+    <div class="task"><b>任务二（视觉）</b>：把 catOf 的"礼治"色从朱红换成靛青 → 刷新村落地图看图例同步。</div>
+    <div class="task"><b>任务三（工程）</b>：跑 <code>node tools\build-single.mjs</code>，把生成的 手机单文件版.html 发到手机打开——完整可玩。</div>
+  </div></div>
+
+  <h2 id="s9">9 · 实机演示（内嵌正站，可直接上手）</h2>
+  <div class="sec"><summary>下面就是真实站点，右侧面板与批注都能用</summary><div class="inner">
+    <iframe src="./index.html" title="乡土调查员实机演示" loading="lazy"></iframe>
+    <p class="note" style="margin-top:10px">iframe 若被站点策略拦截，请<a href="./index.html" target="_blank">新窗口打开站点</a>。建议动线：首页选「差序格局」→ 围龙村地图点"围屋同心圈层"答观察题 → 访谈首事 → 语义分析对照表。</p>
+  </div></div>
+
+  <div class="foot">乡土调查员 · 项目教程 · 生成于 2026-11-12 · <a href="./index.html">进入站点</a> · <a href="docs/教程.md">文字版</a> · <a href="report/考据说明.md">考据说明</a> · <a href="report/质检报告.md">质检报告</a></div>
+</div>
+</body>
+</html>
