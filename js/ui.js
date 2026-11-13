@@ -55,6 +55,13 @@
   function chConceptPool(village) { return VILLAGES.conceptPool(village.id); }
 
   /* ---------- SVG 村落图 ---------- */
+  // 村落图腾小图标（窑洞/水乡桥屋/围屋/鼓楼），用于村落卡
+  const VIL_GLYPHS = {
+    v1: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5,18 Q3.5,9 12,9 Q20.5,9 20.5,18 Z" fill="#b3a476" stroke="#3d3428"/><path d="M8.5,18 Q8.5,12.5 12,12.5 Q15.5,12.5 15.5,18 Z" fill="#8a6d2f" stroke="#3d3428"/><rect x="10.8" y="14.5" width="2.4" height="3.5" fill="#4a4436"/></svg>',
+    v2: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5,16 Q12,11 21.5,16" fill="none" stroke="#587180" stroke-width="1.8"/><path d="M2.5,19.5 Q12,14.5 21.5,19.5" fill="none" stroke="#587180" stroke-width="1.8"/><path d="M9,15 V9.5 L12,6.5 L15,9.5 V15" fill="#e8dcc3" stroke="#3d3428"/><path d="M12,6.5 V15" stroke="#3d3428" stroke-width=".8"/></svg>',
+    v3: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3,13 A9,9 0 0,0 21,13" fill="none" stroke="#8a5a33" stroke-width="1.7"/><path d="M7,13 A5,5 0 0,0 17,13" fill="none" stroke="#8a5a33" stroke-width="1.4"/><path d="M9.5,13 V8.5 H14.5 V13" fill="#a4443a" stroke="#3d3428"/><path d="M8.5,8.5 L12,5 L15.5,8.5 Z" fill="#8a5a33" stroke="#3d3428"/></svg>',
+    v4: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12,3.5 L20.5,8.5 H3.5 Z" fill="#4f5a52" stroke="#3d3428"/><path d="M8.5,8.5 L18.5,12.5 H5.5 Z" fill="#5f6b62" stroke="#3d3428"/><rect x="10" y="12.5" width="4" height="6.5" fill="#6b5a3e" stroke="#3d3428"/></svg>'
+  };
   // 要素按社会功能分类配色（礼治/教化/居住/生计/市集交通），供地图与图例共用
   function catOf(kind) {
     if (['hall', 'shrine', 'gate', 'plaza'].indexOf(kind) >= 0) return { c: '#a4443a', label: '礼治 · 公共空间' };
@@ -72,37 +79,63 @@
     });
     return '<div class="maplegend">' + cats.map(s => '<span class="lg"><i style="background:' + s.c + '"></i>' + s.label + '</span>').join('') + '</div>';
   }
-  // 首页 hero 手绘田野场景（远山/田畴/村舍/河流/树/飞鸟，纸墨笔触）
+  // 首页 hero 宽幅横卷：远山/雾带/梯田/河流/村舍/飞鸟 + 朱砂调查路线贯穿四村（①②③④）
   function heroSceneSVG() {
-    return `<svg class="heroscene" viewBox="0 0 420 110" preserveAspectRatio="xMidYMid meet" role="img" aria-label="手绘田野场景：远山、田畴、村舍与河流">
-      <path d="M0,72 Q55,38 115,64 Q175,86 235,58 Q305,32 420,66 L420,110 L0,110 Z" fill="#c9b98f" opacity=".5"/>
-      <path d="M0,84 Q80,56 170,78 Q260,96 340,72 Q388,60 420,68 L420,110 L0,110 Z" fill="#b3a476" opacity=".45"/>
-      <path d="M118,110 C140,72 168,74 186,110 Z" fill="#a9c2b8" opacity=".75"/>
-      <path d="M116,110 C138,70 170,72 188,110" fill="none" stroke="#3d3428" stroke-width="1" opacity=".5"/>
-      <path d="M146,86 L158,84 M144,92 L160,90" stroke="#3d3428" stroke-width="1" opacity=".55" fill="none"/>
-      <g stroke="#8a6d2f" opacity=".45" stroke-width=".8">
-        <line x1="228" y1="96" x2="262" y2="92"/><line x1="226" y1="101" x2="266" y2="97"/>
-        <line x1="286" y1="94" x2="322" y2="90"/><line x1="284" y1="99" x2="326" y2="95"/>
-        <line x1="346" y1="96" x2="396" y2="92"/><line x1="344" y1="101" x2="400" y2="97"/>
-        <line x1="18" y1="98" x2="66" y2="94"/><line x1="16" y1="103" x2="70" y2="99"/>
+    return `<svg class="heroscene" viewBox="0 0 880 240" preserveAspectRatio="xMidYMid slice" role="img" aria-label="手绘横卷：远山、梯田、村舍、河流与贯穿四村的调查路线">
+      <g fill="none" stroke="#5a5245" stroke-width="1.2" opacity=".55">
+        <path d="M96,44 q10,-14 24,-7 q5,-12 20,-8 q15,-3 17,9 q13,1 11,11"/>
+        <path d="M676,36 q10,-14 24,-7 q5,-12 20,-8 q15,-3 17,9 q13,1 11,11"/>
+      </g>
+      <circle cx="828" cy="40" r="14" fill="none" stroke="#a4443a" stroke-width="1.6" opacity=".75"/>
+      <circle cx="828" cy="40" r="5" fill="none" stroke="#a4443a" stroke-width="1" opacity=".45"/>
+      <path d="M0,150 Q80,96 160,132 Q240,166 320,128 Q400,92 480,130 Q560,164 640,126 Q720,92 880,140 L880,240 L0,240 Z" fill="#cdbd93" opacity=".55"/>
+      <rect x="0" y="148" width="880" height="26" fill="#f3ecdb" opacity=".5"/>
+      <path d="M0,186 Q110,150 220,176 Q330,200 440,172 Q560,146 660,178 Q770,204 880,178 L880,240 L0,240 Z" fill="#b9a97c" opacity=".5"/>
+      <rect x="0" y="192" width="880" height="20" fill="#f3ecdb" opacity=".45"/>
+      <g stroke="#8a6d2f" opacity=".5" stroke-width=".8" fill="none">
+        <path d="M30,158 q40,-10 78,-2"/><path d="M42,166 q36,-8 66,-1"/><path d="M56,174 q30,-7 54,0"/>
+        <line x1="648" y1="204" x2="700" y2="199"/><line x1="646" y1="210" x2="706" y2="205"/>
+        <line x1="730" y1="206" x2="792" y2="200"/><line x1="728" y1="212" x2="798" y2="206"/>
+        <line x1="60" y1="212" x2="140" y2="206"/><line x1="58" y1="218" x2="146" y2="212"/>
+      </g>
+      <path d="M312,240 C342,198 306,172 348,142 C376,122 424,126 452,112 L474,112 C446,130 400,126 376,148 C348,174 378,200 358,240 Z" fill="#a9c2b8" opacity=".8"/>
+      <path d="M310,240 C340,196 304,170 346,140" fill="none" stroke="#3d3428" stroke-width="1" opacity=".4"/>
+      <g stroke="#3d3428" stroke-width="1.2" opacity=".75">
+        <line x1="330" y1="184" x2="368" y2="178"/><line x1="332" y1="192" x2="366" y2="186"/>
       </g>
       <g stroke="#3d3428" stroke-width="1.1" fill="#e8dcc3">
-        <path d="M244,96 v-10 h20 v10 Z"/>
-        <path d="M240,86 L254,74 L268,86 Z" fill="#8a5a33"/>
-        <path d="M282,98 v-9 h17 v9 Z"/>
-        <path d="M278,89 L290.5,78 L303,89 Z" fill="#8a5a33"/>
-        <path d="M318,97 v-10 h19 v10 Z"/>
-        <path d="M314,87 L327.5,75 L341,87 Z" fill="#8a5a33"/>
-        <rect x="252" y="90" width="4" height="6" fill="#5a5245" stroke="none"/>
-        <rect x="289" y="92" width="4" height="6" fill="#5a5245" stroke="none"/>
-        <rect x="326" y="90" width="4" height="6" fill="#5a5245" stroke="none"/>
+        <path d="M556,204 v-12 h22 v12 Z"/><path d="M551,192 L567,178 L583,192 Z" fill="#8a5a33"/>
+        <path d="M598,200 v-10 h19 v10 Z"/><path d="M594,190 L607.5,178 L621,190 Z" fill="#8a5a33"/>
+        <path d="M642,203 v-12 h21 v12 Z"/><path d="M637,191 L652.5,177 L668,191 Z" fill="#8a5a33"/>
+        <rect x="564" y="196" width="5" height="8" fill="#5a5245" stroke="none"/>
+        <rect x="605" y="193" width="5" height="7" fill="#5a5245" stroke="none"/>
+        <rect x="650" y="195" width="5" height="8" fill="#5a5245" stroke="none"/>
+        <g fill="none" opacity=".8">
+          <circle cx="722" cy="212" r="10"/>
+          <line x1="712" y1="212" x2="732" y2="212"/><line x1="722" y1="202" x2="722" y2="222"/>
+        </g>
+        <path d="M688,206 h8 v10 h-8 Z" fill="#b3a476"/>
       </g>
       <g fill="#6b7a44" stroke="#3d3428" stroke-width=".9">
-        <circle cx="28" cy="90" r="5"/><circle cx="44" cy="94" r="4"/><circle cx="392" cy="82" r="5"/>
-        <path d="M28,95 v6 M44,98 v5 M392,87 v6" fill="none" stroke="#5a5245"/>
+        <circle cx="38" cy="212" r="6"/><circle cx="66" cy="218" r="5"/><circle cx="776" cy="212" r="6"/><circle cx="836" cy="218" r="5"/>
+        <path d="M38,218 v7 M66,223 v6 M776,218 v7 M836,223 v6" fill="none" stroke="#5a5245"/>
       </g>
-      <g fill="none" stroke="#3d3428" stroke-width="1.1" opacity=".7">
-        <path d="M300,24 q5,-6 10,0 M316,20 q5,-6 10,0"/>
+      <g fill="none" stroke="#3d3428" stroke-width="1.2" opacity=".65">
+        <path d="M238,58 q6,-7 12,0 M256,50 q6,-7 12,0"/>
+        <path d="M540,54 q6,-7 12,0 M558,46 q6,-7 12,0"/>
+      </g>
+      <path d="M44,214 C140,190 216,232 322,214 C424,197 466,232 558,214 C646,196 700,230 806,206"
+            fill="none" stroke="#a4443a" stroke-width="2" stroke-dasharray="7 5" opacity=".8"/>
+      <g font-family="serif">
+        <g stroke="#a4443a" stroke-width="1.8" fill="#f7f1e1">
+          <circle cx="104" cy="204" r="9"/><circle cx="304" cy="221" r="9"/><circle cx="560" cy="213" r="9"/><circle cx="806" cy="206" r="9"/>
+        </g>
+        <g fill="#a4443a" font-size="11" font-weight="bold" text-anchor="middle">
+          <text x="104" y="208">1</text><text x="304" y="225">2</text><text x="560" y="217">3</text><text x="806" y="210">4</text>
+        </g>
+        <g fill="#4a4436" font-size="11" text-anchor="middle" opacity=".85">
+          <text x="104" y="228">槐荫村</text><text x="304" y="238">荻塘村</text><text x="560" y="230">围龙村</text><text x="806" y="222">云岭寨</text>
+        </g>
       </g>
     </svg>`;
   }
@@ -195,7 +228,7 @@
     const chCards = BOOK.CHAPTERS.map(c => {
       const read = state.chapters[c.id] && state.chapters[c.id].read;
       const vil = VILLAGES.village(c.village);
-      return `<a class="chcard ${read ? 'read' : ''}" href="#/book/${c.id}">
+      return `<a class="chcard ${read ? 'read' : ''}" style="--spine:${(vil.mapTheme && vil.mapTheme.roof) || '#a4443a'}" data-no="${c.no}" href="#/book/${c.id}">
         <div class="chno">${c.no}</div>
         <div class="chbody">
           <div class="chtitle">${esc(c.title)} <span class="chtheme">${esc(c.theme)}</span></div>
@@ -211,7 +244,7 @@
       const matN = vs ? Object.keys(vs.talks || {}).reduce((n, k) => n + vs.talks[k].materials.length, 0) : 0;
       const spine = (v.mapTheme && v.mapTheme.roof) || '#7a5a38';
       return `<a class="vilcard" style="--spine:${spine}" href="#/village/${v.id}">
-        <div class="vilname">${esc(v.name)}</div>
+        <div class="vilname"><span class="vilglyph">${VIL_GLYPHS[v.id] || ''}</span>${esc(v.name)}</div>
         <div class="viltype">${esc(v.type)} · ${esc(v.region)}</div>
         <div class="vilprog">观察 ${obsN}/${v.features.length} · 素材 ${matN} 条${vs && vs.report && vs.report.submitted ? ' · 报告已交' : ''}</div>
       </a>`;
@@ -222,9 +255,10 @@
       <h1>乡土调查员</h1>
       <p class="hero-sub">——费孝通《乡土中国》田野探究工作坊——</p>
       <div class="hero-scenewrap">
+        <div class="tape tl"></div><div class="tape tr"></div>
         ${heroSceneSVG()}
         <div class="hero-anno">驻村要点：先看地，再问人，后对书。</div>
-        <div class="tapenote">调查员手册 · 第一卷</div>
+        <div class="scene-cap">调查路线图 · 四村环线（与页脚「村落图鉴」编号对应）</div>
       </div>
       <p class="hero-saying">「${esc(saying)}」</p>
       <div class="hero-stat">

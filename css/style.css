@@ -340,3 +340,95 @@ details.notebox { margin: 8px 0 0; }
   }
   .toast, .btn { display: none !important; }
 }
+
+
+/* ============================================================
+ * 视觉二轮（用户反馈"还是不好看"后的大改）：
+ * 宣纸肌理 / 手账双线边框 / 宽幅横卷场景 / 章节水印 / 波浪标题
+ * ============================================================ */
+
+/* 全页宣纸：肌理 + 原点网格双层 */
+body {
+  background-color: #f2ebd9;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0.06 0'/></filter><rect width='240' height='240' filter='url(%23g)'/></svg>"), radial-gradient(rgba(120, 100, 60, .05) 1px, transparent 1px);
+  background-size: 240px 240px, 22px 22px;
+}
+/* 手账双线边框（固定视口，不随滚动） */
+body::after {
+  content: ""; position: fixed; inset: 10px;
+  border: 1px solid rgba(90, 82, 69, .4);
+  outline: 1px solid rgba(90, 82, 69, .22);
+  outline-offset: 3px;
+  pointer-events: none; z-index: 60;
+}
+
+/* 宽幅横卷场景 */
+.hero-scenewrap {
+  position: relative; margin: 16px -4px 2px; max-width: none;
+  border: 1px solid var(--line); border-radius: 4px;
+  background: #f7f2e3;
+  box-shadow: 0 2px 0 rgba(90, 82, 69, .12), 0 10px 22px -14px rgba(60, 50, 30, .5);
+  overflow: hidden;
+}
+.heroscene { width: 100%; display: block; }
+.scene-cap {
+  text-align: center; font-size: 11px; letter-spacing: .25em;
+  color: var(--ink3); padding: 4px 0 8px;
+  border-top: 1px dashed var(--line);
+}
+/* 胶带（左右上角） */
+.tape {
+  position: absolute; top: -9px; width: 96px; height: 24px;
+  background: rgba(138, 109, 47, .2);
+  border-left: 3px solid rgba(138, 109, 47, .42);
+  border-right: 3px solid rgba(138, 109, 47, .42);
+  z-index: 2;
+}
+.tape.tl { left: 7%; transform: rotate(-4deg); }
+.tape.tr { right: 7%; transform: rotate(3.5deg); }
+.tapenote {
+  position: static; margin: 8px auto 0; display: table;
+  transform: rotate(-.5deg);
+}
+
+/* 章节卡：对口村脊色 + 章号大水印 */
+.chcard { border-left: 5px solid var(--spine, #a4443a); }
+.chcard::before {
+  content: attr(data-no);
+  position: absolute; right: 8px; top: -18px;
+  font-size: 76px; line-height: 1; font-weight: 700;
+  color: rgba(164, 68, 58, .09);
+  pointer-events: none; font-family: Georgia, "Times New Roman", serif;
+}
+.chcard:hover::before { color: rgba(164, 68, 58, .14); }
+
+/* 村落图腾 */
+.vilglyph { width: 26px; height: 26px; display: inline-block; vertical-align: -7px; margin-right: 7px; }
+.vilglyph svg { width: 100%; height: 100%; display: block; }
+
+/* 标题手账感：墨色短杠 + 朱砂波浪线 */
+.sec h2::after {
+  content: ""; flex: 1; height: 7px; border: none; opacity: .8;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='7'><path d='M0,4 q7,-5 14,0 t14,0' fill='none' stroke='%23a4443a' stroke-width='1.1' opacity='.55'/></svg>") repeat-x left center / 28px 7px;
+}
+
+/* 页脚：虚线 + 居中印章点 */
+.foot { border-top: 1px dashed var(--line); padding-top: 16px; position: relative; }
+.foot::before {
+  content: "勘"; position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-4deg);
+  width: 26px; height: 26px; line-height: 26px; text-align: center;
+  background: var(--paper); color: var(--cinnabar);
+  border: 1.5px solid var(--cinnabar); border-radius: 4px; font-size: 13px;
+}
+
+/* 打印隐藏边框 */
+@media print { body::after { display: none !important; } }
+
+/* 移动端微调 */
+@media (max-width: 760px) {
+  body::after { inset: 6px; }
+  .chcard::before { font-size: 56px; top: -12px; }
+  .tape { width: 64px; height: 18px; }
+  .hero-anno { writing-mode: horizontal-rl; border-right: none; border-left: 3px solid var(--cinnabar); padding: 2px 8px; right: 6px; top: 6px; background: rgba(244, 239, 226, .85); }
+  .scene-cap { letter-spacing: .12em; }
+}
