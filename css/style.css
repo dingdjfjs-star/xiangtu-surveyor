@@ -1,16 +1,16 @@
 /* 乡土调查员 · 纸墨手记风（宣纸底 / 墨字 / 朱砂印；无渐变无 emoji） */
 :root {
-  --paper: #f4efe2;
-  --paper-2: #efe8d6;
-  --ink: #2f2a22;
-  --ink-2: #5a5245;
-  --ink-3: #8a7f6c;
-  --line: #c9bda2;
-  --cinnabar: #a4443a;
-  --cinnabar-2: #8c4a3c;
-  --green: #55663f;
-  --gold: #8a6d2f;
-  --shadow: 0 1px 0 rgba(90, 82, 69, .18), 0 6px 18px -10px rgba(60, 50, 30, .35);
+  --paper: #eef2ec;
+  --paper-2: #e2ebe1;
+  --ink: #24413d;
+  --ink-2: #4a6157;
+  --ink-3: #7d9188;
+  --line: #c3d2c6;
+  --cinnabar: #b5543f;
+  --cinnabar-2: #9c4534;
+  --green: #2f5d62;
+  --gold: #b0713a;
+  --shadow: 0 1px 0 rgba(70, 100, 82, .18), 0 6px 18px -10px rgba(35, 62, 50, .38);
   --radius: 6px;
 }
 * { box-sizing: border-box; }
@@ -20,7 +20,7 @@ body {
   color: var(--ink);
   font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", "Songti SC", serif;
   line-height: 1.75;
-  background-image: radial-gradient(rgba(120, 100, 60, .05) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(60, 95, 75, .05) 1px, transparent 1px);
   background-size: 22px 22px;
 }
 #app { max-width: 1020px; margin: 0 auto; padding: 18px 16px 60px; }
@@ -54,7 +54,7 @@ p { margin: 8px 0; }
 .btn { display: inline-block; border: 1px solid var(--ink-2); background: var(--paper-2); color: var(--ink); border-radius: var(--radius); padding: 6px 16px; font-size: 14px; cursor: pointer; font-family: inherit; letter-spacing: .05em; }
 .btn:hover { background: #fff; text-decoration: none; }
 .btn.primary { background: var(--cinnabar); border-color: var(--cinnabar); color: #fff; }
-.btn.primary:hover { background: #93372e; }
+.btn.primary:hover { background: #9c4534; }
 .btn.ghost { background: transparent; }
 .btn.sm { padding: 2px 10px; font-size: 12px; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
@@ -118,7 +118,7 @@ p { margin: 8px 0; }
 .opts { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
 .opt { font-size: 14px; }
 .ask-result { margin-top: 8px; padding: 8px 10px; border-radius: var(--radius); font-size: 13px; }
-.ask-result.ok { border: 1px solid var(--green); color: var(--green); background: #f2f5ea; }
+.ask-result.ok { border: 1px solid var(--green); color: var(--green); background: #e7efe9; }
 .ask-result.bad { border: 1px solid var(--cinnabar); color: var(--cinnabar-2); background: #f7ece7; }
 .okline { color: var(--green); font-size: 13px; }
 .badline { color: var(--cinnabar-2); font-size: 13px; }
@@ -159,7 +159,7 @@ svg .fm.seen circle:first-child, svg .fm.seen rect:first-child { stroke: var(--g
 /* 分析 */
 .score-ring { display: inline-flex; align-items: baseline; border: 2px solid var(--cinnabar); color: var(--cinnabar); border-radius: 50%; width: 72px; height: 72px; align-items: center; justify-content: center; font-size: 22px; }
 .score-ring small { font-size: 12px; margin-left: 2px; }
-.atab tr.ok td { background: #f2f5ea; }
+.atab tr.ok td { background: #e7efe9; }
 .atab td i { color: var(--ink-3); }
 .atab td:nth-child(4) { font-weight: 700; }
 
@@ -224,9 +224,9 @@ textarea#report-text { width: 100%; border: 1px solid var(--line); border-radius
 }
 .tapenote {
   position: absolute; left: -8px; bottom: -6px;
-  background: rgba(138, 109, 47, .16);
-  border-left: 3px solid rgba(138, 109, 47, .5);
-  border-right: 3px solid rgba(138, 109, 47, .5);
+  background: rgba(106, 143, 113, .18);
+  border-left: 3px solid rgba(106, 143, 113, .5);
+  border-right: 3px solid rgba(106, 143, 113, .5);
   color: var(--ink-2); font-size: 12px; padding: 3px 16px;
   transform: rotate(-2.5deg); letter-spacing: .2em;
 }
@@ -235,15 +235,15 @@ textarea#report-text { width: 100%; border: 1px solid var(--line); border-radius
 /* 章节卡：纸纹 + 印章 + 微动效 */
 .chcard {
   position: relative; overflow: hidden;
-  background-image: repeating-linear-gradient(0deg, transparent 0 26px, rgba(120, 100, 60, .06) 26px 27px);
+  background-image: repeating-linear-gradient(0deg, transparent 0 26px, rgba(60, 95, 75, .06) 26px 27px);
   transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
 }
-.chcard:hover { transform: translateY(-3px); box-shadow: 0 2px 0 rgba(90, 82, 69, .18), 0 14px 26px -12px rgba(60, 50, 30, .45); text-decoration: none; }
+.chcard:hover { transform: translateY(-3px); box-shadow: 0 2px 0 rgba(70, 100, 82, .18), 0 14px 26px -12px rgba(35, 62, 50, .48); text-decoration: none; }
 .chcard:hover .chno { transform: rotate(-2deg) scale(1.06); }
 .chno {
-  background: var(--cinnabar); color: #f7f1e1;
+  background: var(--cinnabar); color: #f0f5ee;
   border: none; border-radius: 3px;
-  box-shadow: inset 0 0 0 1px rgba(255, 245, 225, .35), 0 2px 5px -2px rgba(120, 40, 30, .6);
+  box-shadow: inset 0 0 0 1px rgba(255, 245, 225, .35), 0 2px 5px -2px rgba(130, 55, 42, .6);
   transform: rotate(-3deg);
   transition: transform .18s ease;
   font-weight: 700;
@@ -258,24 +258,24 @@ textarea#report-text { width: 100%; border: 1px solid var(--line); border-radius
 }
 
 /* 村落卡：脊色 + 悬停 */
-.vilcard { position: relative; border-left: 5px solid var(--spine, #7a5a38); background-image: repeating-linear-gradient(0deg, transparent 0 26px, rgba(120, 100, 60, .06) 26px 27px); transition: transform .18s ease, box-shadow .18s ease; }
-.vilcard:hover { transform: translateY(-3px); box-shadow: 0 2px 0 rgba(90, 82, 69, .18), 0 14px 26px -12px rgba(60, 50, 30, .45); text-decoration: none; }
+.vilcard { position: relative; border-left: 5px solid var(--spine, #7a5a38); background-image: repeating-linear-gradient(0deg, transparent 0 26px, rgba(60, 95, 75, .06) 26px 27px); transition: transform .18s ease, box-shadow .18s ease; }
+.vilcard:hover { transform: translateY(-3px); box-shadow: 0 2px 0 rgba(70, 100, 82, .18), 0 14px 26px -12px rgba(35, 62, 50, .48); text-decoration: none; }
 .vilcard::after {
   content: "村"; position: absolute; right: 10px; top: 10px;
   width: 26px; height: 26px; line-height: 26px; text-align: center;
-  background: var(--spine, #7a5a38); color: #f7f1e1;
+  background: var(--spine, #7a5a38); color: #f0f5ee;
   border-radius: 3px; font-size: 13px; transform: rotate(6deg);
   opacity: .9;
 }
 
 /* 按钮微动效 */
 .btn { transition: transform .15s ease, box-shadow .15s ease, background .15s ease; }
-.btn.primary:hover { transform: translateY(-1px); box-shadow: 0 6px 14px -8px rgba(140, 40, 30, .7); }
+.btn.primary:hover { transform: translateY(-1px); box-shadow: 0 6px 14px -8px rgba(150, 65, 50, .7); }
 
 /* 地图图例（HTML，随图渲染） */
 .maplegend { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; margin: 8px auto 0; max-width: 640px; font-size: 12px; color: var(--ink-2); }
 .maplegend .lg { display: inline-flex; align-items: center; gap: 5px; }
-.maplegend .lg i { width: 12px; height: 12px; border-radius: 2px; border: 1px solid #3d3428; display: inline-block; }
+.maplegend .lg i { width: 12px; height: 12px; border-radius: 2px; border: 1px solid #2b3a33; display: inline-block; }
 
 /* 标题手账感：双线尾饰 */
 .sec h2 { display: flex; align-items: center; gap: 10px; }
@@ -349,15 +349,15 @@ details.notebox { margin: 8px 0 0; }
 
 /* 全页宣纸：肌理 + 原点网格双层 */
 body {
-  background-color: #f2ebd9;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0.06 0'/></filter><rect width='240' height='240' filter='url(%23g)'/></svg>"), radial-gradient(rgba(120, 100, 60, .05) 1px, transparent 1px);
+  background-color: #edf2ec;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0.24 0 0 0 0 0.32 0 0 0 0 0.26 0 0 0 0.055 0'/></filter><rect width='240' height='240' filter='url(%23g)'/></svg>"), radial-gradient(rgba(60, 95, 75, .05) 1px, transparent 1px);
   background-size: 240px 240px, 22px 22px;
 }
 /* 手账双线边框（固定视口，不随滚动） */
 body::after {
   content: ""; position: fixed; inset: 10px;
-  border: 1px solid rgba(90, 82, 69, .4);
-  outline: 1px solid rgba(90, 82, 69, .22);
+  border: 1px solid rgba(70, 100, 82, .42);
+  outline: 1px solid rgba(70, 100, 82, .22);
   outline-offset: 3px;
   pointer-events: none; z-index: 60;
 }
@@ -367,7 +367,7 @@ body::after {
   position: relative; margin: 16px -4px 2px; max-width: none;
   border: 1px solid var(--line); border-radius: 4px;
   background: #f7f2e3;
-  box-shadow: 0 2px 0 rgba(90, 82, 69, .12), 0 10px 22px -14px rgba(60, 50, 30, .5);
+  box-shadow: 0 2px 0 rgba(70, 100, 82, .12), 0 10px 22px -14px rgba(35, 62, 50, .5);
   overflow: hidden;
 }
 .heroscene { width: 100%; display: block; }
@@ -379,9 +379,9 @@ body::after {
 /* 胶带（左右上角） */
 .tape {
   position: absolute; top: -9px; width: 96px; height: 24px;
-  background: rgba(138, 109, 47, .2);
-  border-left: 3px solid rgba(138, 109, 47, .42);
-  border-right: 3px solid rgba(138, 109, 47, .42);
+  background: rgba(106, 143, 113, .22);
+  border-left: 3px solid rgba(106, 143, 113, .45);
+  border-right: 3px solid rgba(106, 143, 113, .45);
   z-index: 2;
 }
 .tape.tl { left: 7%; transform: rotate(-4deg); }
@@ -392,15 +392,15 @@ body::after {
 }
 
 /* 章节卡：对口村脊色 + 章号大水印 */
-.chcard { border-left: 5px solid var(--spine, #a4443a); }
+.chcard { border-left: 5px solid var(--spine, #b5543f); }
 .chcard::before {
   content: attr(data-no);
   position: absolute; right: 8px; top: -18px;
   font-size: 76px; line-height: 1; font-weight: 700;
-  color: rgba(164, 68, 58, .09);
+  color: rgba(181, 84, 63, .1);
   pointer-events: none; font-family: Georgia, "Times New Roman", serif;
 }
-.chcard:hover::before { color: rgba(164, 68, 58, .14); }
+.chcard:hover::before { color: rgba(181, 84, 63, .16); }
 
 /* 村落图腾 */
 .vilglyph { width: 26px; height: 26px; display: inline-block; vertical-align: -7px; margin-right: 7px; }
@@ -409,7 +409,7 @@ body::after {
 /* 标题手账感：墨色短杠 + 朱砂波浪线 */
 .sec h2::after {
   content: ""; flex: 1; height: 7px; border: none; opacity: .8;
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='7'><path d='M0,4 q7,-5 14,0 t14,0' fill='none' stroke='%23a4443a' stroke-width='1.1' opacity='.55'/></svg>") repeat-x left center / 28px 7px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='7'><path d='M0,4 q7,-5 14,0 t14,0' fill='none' stroke='%232f5d62' stroke-width='1.1' opacity='.55'/></svg>") repeat-x left center / 28px 7px;
 }
 
 /* 页脚：虚线 + 居中印章点 */

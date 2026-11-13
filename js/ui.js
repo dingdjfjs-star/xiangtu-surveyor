@@ -57,19 +57,19 @@
   /* ---------- SVG 村落图 ---------- */
   // 村落图腾小图标（窑洞/水乡桥屋/围屋/鼓楼），用于村落卡
   const VIL_GLYPHS = {
-    v1: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5,18 Q3.5,9 12,9 Q20.5,9 20.5,18 Z" fill="#b3a476" stroke="#3d3428"/><path d="M8.5,18 Q8.5,12.5 12,12.5 Q15.5,12.5 15.5,18 Z" fill="#8a6d2f" stroke="#3d3428"/><rect x="10.8" y="14.5" width="2.4" height="3.5" fill="#4a4436"/></svg>',
-    v2: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5,16 Q12,11 21.5,16" fill="none" stroke="#587180" stroke-width="1.8"/><path d="M2.5,19.5 Q12,14.5 21.5,19.5" fill="none" stroke="#587180" stroke-width="1.8"/><path d="M9,15 V9.5 L12,6.5 L15,9.5 V15" fill="#e8dcc3" stroke="#3d3428"/><path d="M12,6.5 V15" stroke="#3d3428" stroke-width=".8"/></svg>',
-    v3: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3,13 A9,9 0 0,0 21,13" fill="none" stroke="#8a5a33" stroke-width="1.7"/><path d="M7,13 A5,5 0 0,0 17,13" fill="none" stroke="#8a5a33" stroke-width="1.4"/><path d="M9.5,13 V8.5 H14.5 V13" fill="#a4443a" stroke="#3d3428"/><path d="M8.5,8.5 L12,5 L15.5,8.5 Z" fill="#8a5a33" stroke="#3d3428"/></svg>',
-    v4: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12,3.5 L20.5,8.5 H3.5 Z" fill="#4f5a52" stroke="#3d3428"/><path d="M8.5,8.5 L18.5,12.5 H5.5 Z" fill="#5f6b62" stroke="#3d3428"/><rect x="10" y="12.5" width="4" height="6.5" fill="#6b5a3e" stroke="#3d3428"/></svg>'
+    v1: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5,18 Q3.5,9 12,9 Q20.5,9 20.5,18 Z" fill="#b9c9ae" stroke="#2b3a33"/><path d="M8.5,18 Q8.5,12.5 12,12.5 Q15.5,12.5 15.5,18 Z" fill="#b0713a" stroke="#2b3a33"/><rect x="10.8" y="14.5" width="2.4" height="3.5" fill="#3f5a4d"/></svg>',
+    v2: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5,16 Q12,11 21.5,16" fill="none" stroke="#3f5a78" stroke-width="1.8"/><path d="M2.5,19.5 Q12,14.5 21.5,19.5" fill="none" stroke="#3f5a78" stroke-width="1.8"/><path d="M9,15 V9.5 L12,6.5 L15,9.5 V15" fill="#e9efe4" stroke="#2b3a33"/><path d="M12,6.5 V15" stroke="#2b3a33" stroke-width=".8"/></svg>',
+    v3: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3,13 A9,9 0 0,0 21,13" fill="none" stroke="#6b8f71" stroke-width="1.7"/><path d="M7,13 A5,5 0 0,0 17,13" fill="none" stroke="#6b8f71" stroke-width="1.4"/><path d="M9.5,13 V8.5 H14.5 V13" fill="#b5543f" stroke="#2b3a33"/><path d="M8.5,8.5 L12,5 L15.5,8.5 Z" fill="#2f5d62" stroke="#2b3a33"/></svg>',
+    v4: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12,3.5 L20.5,8.5 H3.5 Z" fill="#2f5d62" stroke="#2b3a33"/><path d="M8.5,8.5 L18.5,12.5 H5.5 Z" fill="#3f6b5a" stroke="#2b3a33"/><rect x="10" y="12.5" width="4" height="6.5" fill="#4a6157" stroke="#2b3a33"/></svg>'
   };
   // 要素按社会功能分类配色（礼治/教化/居住/生计/市集交通），供地图与图例共用
   function catOf(kind) {
-    if (['hall', 'shrine', 'gate', 'plaza'].indexOf(kind) >= 0) return { c: '#a4443a', label: '礼治 · 公共空间' };
-    if (['school', 'genealogy'].indexOf(kind) >= 0) return { c: '#46655a', label: '教化 · 文墨' };
-    if (['homes', 'ladies', 'ladies2', 'teahouse', 'inn', 'workshop', 'kiln', 'stove'].indexOf(kind) >= 0) return { c: '#7a5a38', label: '居住 · 生活' };
-    if (['field', 'yard', 'grove', 'tree'].indexOf(kind) >= 0) return { c: '#6b7a44', label: '田畴 · 生计' };
-    if (kind === 'pond') return { c: '#587180', label: '水系 · 风水' };
-    return { c: '#587180', label: '市集 · 交通 · 新生' };
+    if (['hall', 'shrine', 'gate', 'plaza'].indexOf(kind) >= 0) return { c: '#b5543f', label: '礼治 · 公共空间' };
+    if (['school', 'genealogy'].indexOf(kind) >= 0) return { c: '#2f5d62', label: '教化 · 文墨' };
+    if (['homes', 'ladies', 'ladies2', 'teahouse', 'inn', 'workshop', 'kiln', 'stove'].indexOf(kind) >= 0) return { c: '#6b8f71', label: '居住 · 生活' };
+    if (['field', 'yard', 'grove', 'tree'].indexOf(kind) >= 0) return { c: '#c8a15a', label: '田畴 · 生计' };
+    if (kind === 'pond') return { c: '#7fa8b8', label: '水系 · 风水' };
+    return { c: '#3f5a78', label: '市集 · 交通 · 新生' };
   }
   function mapLegendHtml() {
     const cats = [];
@@ -82,58 +82,58 @@
   // 首页 hero 宽幅横卷：远山/雾带/梯田/河流/村舍/飞鸟 + 朱砂调查路线贯穿四村（①②③④）
   function heroSceneSVG() {
     return `<svg class="heroscene" viewBox="0 0 880 240" preserveAspectRatio="xMidYMid slice" role="img" aria-label="手绘横卷：远山、梯田、村舍、河流与贯穿四村的调查路线">
-      <g fill="none" stroke="#5a5245" stroke-width="1.2" opacity=".55">
+      <g fill="none" stroke="#4a6157" stroke-width="1.2" opacity=".55">
         <path d="M96,44 q10,-14 24,-7 q5,-12 20,-8 q15,-3 17,9 q13,1 11,11"/>
         <path d="M676,36 q10,-14 24,-7 q5,-12 20,-8 q15,-3 17,9 q13,1 11,11"/>
       </g>
-      <circle cx="828" cy="40" r="14" fill="none" stroke="#a4443a" stroke-width="1.6" opacity=".75"/>
-      <circle cx="828" cy="40" r="5" fill="none" stroke="#a4443a" stroke-width="1" opacity=".45"/>
-      <path d="M0,150 Q80,96 160,132 Q240,166 320,128 Q400,92 480,130 Q560,164 640,126 Q720,92 880,140 L880,240 L0,240 Z" fill="#cdbd93" opacity=".55"/>
-      <rect x="0" y="148" width="880" height="26" fill="#f3ecdb" opacity=".5"/>
-      <path d="M0,186 Q110,150 220,176 Q330,200 440,172 Q560,146 660,178 Q770,204 880,178 L880,240 L0,240 Z" fill="#b9a97c" opacity=".5"/>
-      <rect x="0" y="192" width="880" height="20" fill="#f3ecdb" opacity=".45"/>
-      <g stroke="#8a6d2f" opacity=".5" stroke-width=".8" fill="none">
+      <circle cx="828" cy="40" r="14" fill="none" stroke="#b5543f" stroke-width="1.6" opacity=".75"/>
+      <circle cx="828" cy="40" r="5" fill="none" stroke="#b5543f" stroke-width="1" opacity=".45"/>
+      <path d="M0,150 Q80,96 160,132 Q240,166 320,128 Q400,92 480,130 Q560,164 640,126 Q720,92 880,140 L880,240 L0,240 Z" fill="#9db8a8" opacity=".55"/>
+      <rect x="0" y="148" width="880" height="26" fill="#eef2ec" opacity=".5"/>
+      <path d="M0,186 Q110,150 220,176 Q330,200 440,172 Q560,146 660,178 Q770,204 880,178 L880,240 L0,240 Z" fill="#7fa08f" opacity=".5"/>
+      <rect x="0" y="192" width="880" height="20" fill="#eef2ec" opacity=".45"/>
+      <g stroke="#b0713a" opacity=".45" stroke-width=".8" fill="none">
         <path d="M30,158 q40,-10 78,-2"/><path d="M42,166 q36,-8 66,-1"/><path d="M56,174 q30,-7 54,0"/>
         <line x1="648" y1="204" x2="700" y2="199"/><line x1="646" y1="210" x2="706" y2="205"/>
         <line x1="730" y1="206" x2="792" y2="200"/><line x1="728" y1="212" x2="798" y2="206"/>
         <line x1="60" y1="212" x2="140" y2="206"/><line x1="58" y1="218" x2="146" y2="212"/>
       </g>
-      <path d="M312,240 C342,198 306,172 348,142 C376,122 424,126 452,112 L474,112 C446,130 400,126 376,148 C348,174 378,200 358,240 Z" fill="#a9c2b8" opacity=".8"/>
-      <path d="M310,240 C340,196 304,170 346,140" fill="none" stroke="#3d3428" stroke-width="1" opacity=".4"/>
-      <g stroke="#3d3428" stroke-width="1.2" opacity=".75">
+      <path d="M312,240 C342,198 306,172 348,142 C376,122 424,126 452,112 L474,112 C446,130 400,126 376,148 C348,174 378,200 358,240 Z" fill="#8fb6c4" opacity=".85"/>
+      <path d="M310,240 C340,196 304,170 346,140" fill="none" stroke="#2b3a33" stroke-width="1" opacity=".4"/>
+      <g stroke="#2b3a33" stroke-width="1.2" opacity=".75">
         <line x1="330" y1="184" x2="368" y2="178"/><line x1="332" y1="192" x2="366" y2="186"/>
       </g>
-      <g stroke="#3d3428" stroke-width="1.1" fill="#e8dcc3">
-        <path d="M556,204 v-12 h22 v12 Z"/><path d="M551,192 L567,178 L583,192 Z" fill="#8a5a33"/>
-        <path d="M598,200 v-10 h19 v10 Z"/><path d="M594,190 L607.5,178 L621,190 Z" fill="#8a5a33"/>
-        <path d="M642,203 v-12 h21 v12 Z"/><path d="M637,191 L652.5,177 L668,191 Z" fill="#8a5a33"/>
-        <rect x="564" y="196" width="5" height="8" fill="#5a5245" stroke="none"/>
-        <rect x="605" y="193" width="5" height="7" fill="#5a5245" stroke="none"/>
-        <rect x="650" y="195" width="5" height="8" fill="#5a5245" stroke="none"/>
+      <g stroke="#2b3a33" stroke-width="1.1" fill="#f0f5ee">
+        <path d="M556,204 v-12 h22 v12 Z"/><path d="M551,192 L567,178 L583,192 Z" fill="#2f5d62"/>
+        <path d="M598,200 v-10 h19 v10 Z"/><path d="M594,190 L607.5,178 L621,190 Z" fill="#2f5d62"/>
+        <path d="M642,203 v-12 h21 v12 Z"/><path d="M637,191 L652.5,177 L668,191 Z" fill="#2f5d62"/>
+        <rect x="564" y="196" width="5" height="8" fill="#4a6157" stroke="none"/>
+        <rect x="605" y="193" width="5" height="7" fill="#4a6157" stroke="none"/>
+        <rect x="650" y="195" width="5" height="8" fill="#4a6157" stroke="none"/>
         <g fill="none" opacity=".8">
           <circle cx="722" cy="212" r="10"/>
           <line x1="712" y1="212" x2="732" y2="212"/><line x1="722" y1="202" x2="722" y2="222"/>
         </g>
-        <path d="M688,206 h8 v10 h-8 Z" fill="#b3a476"/>
+        <path d="M688,206 h8 v10 h-8 Z" fill="#c5d4bd"/>
       </g>
-      <g fill="#6b7a44" stroke="#3d3428" stroke-width=".9">
+      <g fill="#6b8f71" stroke="#2b3a33" stroke-width=".9">
         <circle cx="38" cy="212" r="6"/><circle cx="66" cy="218" r="5"/><circle cx="776" cy="212" r="6"/><circle cx="836" cy="218" r="5"/>
-        <path d="M38,218 v7 M66,223 v6 M776,218 v7 M836,223 v6" fill="none" stroke="#5a5245"/>
+        <path d="M38,218 v7 M66,223 v6 M776,218 v7 M836,223 v6" fill="none" stroke="#4a6157"/>
       </g>
-      <g fill="none" stroke="#3d3428" stroke-width="1.2" opacity=".65">
+      <g fill="none" stroke="#2b3a33" stroke-width="1.2" opacity=".65">
         <path d="M238,58 q6,-7 12,0 M256,50 q6,-7 12,0"/>
         <path d="M540,54 q6,-7 12,0 M558,46 q6,-7 12,0"/>
       </g>
       <path d="M44,214 C140,190 216,232 322,214 C424,197 466,232 558,214 C646,196 700,230 806,206"
-            fill="none" stroke="#a4443a" stroke-width="2" stroke-dasharray="7 5" opacity=".8"/>
+            fill="none" stroke="#b5543f" stroke-width="2" stroke-dasharray="7 5" opacity=".85"/>
       <g font-family="serif">
-        <g stroke="#a4443a" stroke-width="1.8" fill="#f7f1e1">
+        <g stroke="#b5543f" stroke-width="1.8" fill="#f4f7ef">
           <circle cx="104" cy="204" r="9"/><circle cx="304" cy="221" r="9"/><circle cx="560" cy="213" r="9"/><circle cx="806" cy="206" r="9"/>
         </g>
-        <g fill="#a4443a" font-size="11" font-weight="bold" text-anchor="middle">
+        <g fill="#b5543f" font-size="11" font-weight="bold" text-anchor="middle">
           <text x="104" y="208">1</text><text x="304" y="225">2</text><text x="560" y="217">3</text><text x="806" y="210">4</text>
         </g>
-        <g fill="#4a4436" font-size="11" text-anchor="middle" opacity=".85">
+        <g fill="#3f5a4d" font-size="11" text-anchor="middle" opacity=".85">
           <text x="104" y="228">槐荫村</text><text x="304" y="238">荻塘村</text><text x="560" y="230">围龙村</text><text x="806" y="222">云岭寨</text>
         </g>
       </g>
@@ -174,31 +174,31 @@
       <path d="M100,20 Q88,30 86,44 Q95,52 100,50" fill="none" stroke="${t.accent}" stroke-width=".6" opacity=".4"/>
       <path d="M96,10 Q86,22 85,36 Q92,46 100,44" fill="none" stroke="${t.accent}" stroke-width=".6" opacity=".3"/>
       <g stroke="${t.accent}" opacity=".28" stroke-width=".5">${Array.from({ length: 9 }, (_, i) => `<line x1="${4 + i * 11}" y1="82" x2="${10 + i * 11}" y2="92"/>`).join('')}</g>
-      <text x="6" y="96" font-size="3.4" fill="#6b5a3e">塬上麦田</text>
-      <text x="80" y="22" font-size="3.4" fill="#6b5a3e">沟壑</text>`;
+      <text x="6" y="96" font-size="3.4" fill="#4a6157">塬上麦田</text>
+      <text x="80" y="22" font-size="3.4" fill="#4a6157">沟壑</text>`;
     if (v.id === 'v2') return `
       <path d="M-5,58 Q25,50 50,56 Q78,62 105,54 L105,66 Q78,74 50,68 Q25,62 -5,70 Z" fill="${t.water}" opacity=".75"/>
       <g fill="none" stroke="${t.accent}" opacity=".35" stroke-width=".5">
         <circle cx="84" cy="36" r="6"/><circle cx="92" cy="44" r="6"/><circle cx="80" cy="46" r="5"/><circle cx="90" cy="28" r="5"/>
       </g>
-      <text x="76" y="58" font-size="3.4" fill="#4c6b62">桑基鱼塘</text>
+      <text x="76" y="58" font-size="3.4" fill="#57736b">桑基鱼塘</text>
       <rect x="46" y="50" width="8" height="14" fill="${t.roof}" opacity=".4"/>
-      <text x="6" y="52" font-size="3.4" fill="#4c6b62">市河</text>`;
+      <text x="6" y="52" font-size="3.4" fill="#57736b">市河</text>`;
     if (v.id === 'v3') return `
       <path d="M-5,10 Q50,-8 105,10 L105,22 Q50,4 -5,22 Z" fill="${t.hill}" opacity=".5"/>
       <path d="M-5,86 Q50,104 105,86 L105,96 Q50,112 -5,96 Z" fill="${t.hill}" opacity=".5"/>
       <path d="M50,64 A26,26 0 1 0 50.1,64" fill="none" stroke="${t.roof}" stroke-width="1.2" opacity=".35"/>
       <path d="M50,64 A19,19 0 1 0 50.1,64" fill="none" stroke="${t.roof}" stroke-width="1.1" opacity=".3"/>
       <path d="M24,64 A26,26 0 0 1 76,64" fill="none" stroke="${t.accent}" stroke-width="0" />
-      <text x="68" y="96" font-size="3.6" fill="#6b5230">半月池方向</text>
-      <text x="6" y="16" font-size="3.4" fill="#6b5230">北面山岭</text>`;
+      <text x="68" y="96" font-size="3.6" fill="#4a6157">半月池方向</text>
+      <text x="6" y="16" font-size="3.4" fill="#4a6157">北面山岭</text>`;
     return `
       <path d="M-5,30 Q30,18 60,26 Q85,32 105,24" fill="none" stroke="${t.hill}" stroke-width="3" opacity=".6"/>
       <path d="M-5,44 Q30,32 62,40 Q86,46 105,38" fill="none" stroke="${t.hill}" stroke-width="3" opacity=".5"/>
       <path d="M-5,58 Q28,48 58,54 Q84,60 105,52" fill="none" stroke="${t.hill}" stroke-width="3" opacity=".45"/>
       <g stroke="${t.accent}" opacity=".3" stroke-width=".5">${Array.from({ length: 7 }, (_, i) => `<line x1="${30 + i * 10}" y1="66" x2="${26 + i * 10}" y2="78"/>`).join('')}</g>
-      <text x="70" y="86" font-size="3.4" fill="#5d6b52">层叠梯田</text>
-      <text x="6" y="34" font-size="3.4" fill="#5d6b52">苗岭坡地</text>`;
+      <text x="70" y="86" font-size="3.4" fill="#57736b">层叠梯田</text>
+      <text x="6" y="34" font-size="3.4" fill="#57736b">苗岭坡地</text>`;
   }
   function drawMap(v, state, interactive) {
     const t = v.mapTheme;
@@ -208,8 +208,8 @@
       const seen = st && (st.seen || (st.myTags || []).length);
       const cls = 'fm' + (seen ? ' seen' : '');
       return `<g class="${cls}" transform="translate(${f.x},${f.y})" ${interactive ? `data-fid="${f.id}" tabindex="0"` : ''}>
-        <g fill="${catOf(f.kind).c}" stroke="#3d3428" stroke-width=".55" opacity=".92">${markerShape(f.kind)}</g>
-        <text x="0" y="14" text-anchor="middle" font-size="3.7" fill="#33291d" style="paint-order:stroke" stroke="${t.ground}" stroke-width="1.1">${esc(f.name)}</text>
+        <g fill="${catOf(f.kind).c}" stroke="#2b3a33" stroke-width=".55" opacity=".92">${markerShape(f.kind)}</g>
+        <text x="0" y="14" text-anchor="middle" font-size="3.7" fill="#24413d" style="paint-order:stroke" stroke="${t.ground}" stroke-width="1.1">${esc(f.name)}</text>
       </g>`;
     }).join('');
     return `<svg class="vmap" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(v.name)}村落平面手绘图">
@@ -228,7 +228,7 @@
     const chCards = BOOK.CHAPTERS.map(c => {
       const read = state.chapters[c.id] && state.chapters[c.id].read;
       const vil = VILLAGES.village(c.village);
-      return `<a class="chcard ${read ? 'read' : ''}" style="--spine:${(vil.mapTheme && vil.mapTheme.roof) || '#a4443a'}" data-no="${c.no}" href="#/book/${c.id}">
+      return `<a class="chcard ${read ? 'read' : ''}" style="--spine:${(vil.mapTheme && vil.mapTheme.roof) || '#b5543f'}" data-no="${c.no}" href="#/book/${c.id}">
         <div class="chno">${c.no}</div>
         <div class="chbody">
           <div class="chtitle">${esc(c.title)} <span class="chtheme">${esc(c.theme)}</span></div>

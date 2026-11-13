@@ -8,7 +8,7 @@
     id: 'v2', name: '荻塘村', type: '江南水乡村',
     region: '太湖南岸 · 圩田水乡',
     chapters: ['c05', 'c07', 'c12', 'c13'],
-    mapTheme: { ground: '#e7e3d2', hill: '#cfd8c4', water: '#b3c7c6', accent: '#8c4a3c', roof: '#5f6f6d' },
+    mapTheme: { ground: '#eaf0e8', hill: '#c5d4bd', water: '#a9c8cc', accent: '#b5543f', roof: '#2f5d62' },
     intro: '荻塘村在太湖南岸的圩田水网里，一条市河穿村而过，河上三桥，两岸河街相对。村中沈姓为大族，祠堂连着义庄，族人聚居两条浜的两岸；村东桑林连着鱼塘，是祖辈传下的"塘泥壅桑、蚕沙喂鱼"循环。桥堍茶馆有"吃讲茶"评理的旧俗，河口旧会馆记录着客商往来的年月。近年半数老宅改作民宿，直播间的吆喝声与摇橹声混在一条河上。',
     geoFacts: {
       landform: '湖积平原圩田，地势低平，河浜纵横，四周环堤',

@@ -9,7 +9,7 @@
     id: 'v1', name: '槐荫村', type: '北方黄土村',
     region: '黄土高原南部 · 渭北台塬',
     chapters: ['c01', 'c08', 'c09'],
-    mapTheme: { ground: '#e8dcc3', hill: '#d9c69a', water: '#b9c8b1', accent: '#a4443a', roof: '#8a5a33' },
+    mapTheme: { ground: '#eaf0e8', hill: '#c5d4bd', water: '#a9c8cc', accent: '#b5543f', roof: '#3f6b5a' },
     intro: '槐荫村坐落在渭北台塬的塬面上，背靠沟壑、面朝麦田，全村三百多口人，王姓占七成。窑洞沿塬边锢建，巷道成正交格网，村北高台上是王氏祠堂，村口一棵六百年老槐。塬上无河，吃水靠涝池与水窖，麦收时节全村都挤进打谷场。青年多往西安打工，柿子与花椒近年靠电商出山。',
     geoFacts: {
       landform: '黄土台塬，塬面平缓、四周沟壑深切',

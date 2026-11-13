@@ -8,7 +8,7 @@
     id: 'v3', name: '围龙村', type: '闽赣客家村',
     region: '闽西汀州 · 山间盆地',
     chapters: ['c04', 'c06', 'c14'],
-    mapTheme: { ground: '#e6dfc8', hill: '#c9b98f', water: '#a9c2b8', accent: '#8f3e2e', roof: '#6b4d3a' },
+    mapTheme: { ground: '#eaf0e8', hill: '#c5d4bd', water: '#a9c8cc', accent: '#b5543f', roof: '#3f6b5a' },
     intro: '围龙村藏在闽西盆地边缘，一座半月形围屋是全村的心脏：祖堂居中轴最里，房间一圈圈向外排开，前有半月池，后有水口林。蓝、钟两姓各占半条坑垄，梯田顺山势叠到垭口。围屋里有理事会，管着公尝田的账——祭祖、助学、修屋都从这出钱。村口圩场逢三、六、九开圩，大宗买卖全推到圩上做。近年围屋成了网红取景地，返乡青年在侧屋支起了直播间。',
     geoFacts: {
       landform: '武夷山南段山间盆地，四周山岭，坑垄梯田叠升',
