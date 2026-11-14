@@ -41,7 +41,7 @@
   <div class="crumb"><a href="./index.html">← 回到「乡土调查员」</a> · <a href="docs/教程.md">文字版教程.md</a> · <a href="https://github.com/dingdjfjs-star/xiangtu-surveyor">仓库</a></div>
   <header class="hero">
     <h1>乡土调查员 · 项目教程</h1>
-    <p>这个站是怎么搭起来的：三明治架构、考据闭环、确定性 NPC 引擎、SVG 手绘地图、792 项断言测试体系。</p>
+    <p>这个站是怎么搭起来的：三明治架构、考据闭环、确定性 NPC 引擎、SVG 手绘地图、914 项断言测试体系。</p>
     <p>本页是<b>可交互教学网页</b>——每一节都能展开读代码精讲，最后一节内嵌了实机可直接上手。</p>
     <nav class="toc">
       <a href="#s1">1 架构</a><a href="#s2">2 考据闭环</a><a href="#s3">3 NPC 引擎</a><a href="#s4">4 空间语义分析</a><a href="#s5">5 SVG 地图</a><a href="#s6">6 三件套</a><a href="#s7">7 测试体系</a><a href="#s8">8 动手改</a><a href="#s9">9 实机</a>
@@ -64,7 +64,7 @@
         <path d="M380,80 L380,92 M380,148 L380,160" stroke="#a4443a" stroke-width="3" marker-end="none"/>
       </g>
     </svg>
-    <p>三条铁律：<b>① engine.js 禁止 document./fetch（测试静态扫描）</b>——所以 Node 里 <code>node test\test.js</code> 不开浏览器就能跑 792 项断言；② 数据文件同时挂 <code>window.XT_*</code> 与 <code>module.exports</code>；③ UI 不写业务判断，全委托引擎。</p>
+    <p>三条铁律：<b>① engine.js 禁止 document./fetch（测试静态扫描）</b>——所以 Node 里 <code>node test\test.js</code> 不开浏览器就能跑 914 项断言；② 数据文件同时挂 <code>window.XT_*</code> 与 <code>module.exports</code>；③ UI 不写业务判断，全委托引擎。</p>
   </div></div>
 
   <h2 id="s2">2 · 考据闭环：引文逐字可回查</h2>
@@ -102,7 +102,7 @@
   ask:{ q:<span class="s">'房间怎么排布？'</span>, options:[...], answer:1, exp:<span class="s">'…'</span> },
   analysis:<span class="s">'建筑即社会图…'</span> }</pre>
     <p>评分 = <code>(命中标签数×2 + 观察题答对数) / (要素总数×2) × 100</code>；满分标注自动点亮"地理发现"。</p>
-    <div class="note">两个踩坑：①村落真值会引用<b>跨章概念</b>（北方村老槐树同时挂"无讼"和"长幼之序"），概念池若只收本村对口章就会把真值过滤掉——conceptPool 必须取「对口章 ∪ 真值 ∪ 发现 ∪ 规则」并集；②"发现"入账曾把对象当键（<code>v.finds[obj]</code> → <code>'[object Object]'</code>），成就永远不可达——<b>模拟通关测试</b>（13 枚成就逐一解锁）抓出来的。</div>
+    <div class="note">两个踩坑：①村落真值会引用<b>跨章概念</b>（北方村老槐树同时挂"无讼"和"长幼之序"），概念池若只收本村对口章就会把真值过滤掉——conceptPool 必须取「对口章 ∪ 真值 ∪ 发现 ∪ 规则」并集；②"发现"入账曾把对象当键（<code>v.finds[obj]</code> → <code>'[object Object]'</code>），成就永远不可达——<b>模拟通关测试</b>（15 枚成就逐一解锁）抓出来的。</div>
   </div></div>
 
   <h2 id="s5">5 · SVG 手绘地图：数据驱动四技巧</h2>
@@ -135,7 +135,7 @@
 }</pre>
   </div></div>
 
-  <h2 id="s7">7 · 792 项断言的分工表</h2>
+  <h2 id="s7">7 · 914 项断言的分工表</h2>
   <div class="sec"><summary>15 组测试，先立断言再写功能</summary><div class="inner">
     <table style="width:100%;border-collapse:collapse;font-size:14px">
       <tr><th style="border:1px solid var(--line);background:var(--paper2);padding:6px">组</th><th style="border:1px solid var(--line);background:var(--paper2);padding:6px">断什么</th><th style="border:1px solid var(--line);background:var(--paper2);padding:6px">量级</th></tr>
@@ -143,7 +143,7 @@
       <tr><td style="border:1px solid var(--line);padding:6px">③引文回归</td><td style="border:1px solid var(--line);padding:6px">节选+名言 ⊆ 底本</td><td style="border:1px solid var(--line);padding:6px">~90</td></tr>
       <tr><td style="border:1px solid var(--line);padding:6px">④村落 ⑤语料</td><td style="border:1px solid var(--line);padding:6px">结构完整；22 词黑名单零命中、零英文残留</td><td style="border:1px solid var(--line);padding:6px">~420</td></tr>
       <tr><td style="border:1px solid var(--line);padding:6px">⑥⑦引擎</td><td style="border:1px solid var(--line);padding:6px">同入同出、106 规则全可达、评分口径</td><td style="border:1px solid var(--line);padding:6px">~130</td></tr>
-      <tr><td style="border:1px solid var(--line);padding:6px">⑧-⑬行为</td><td style="border:1px solid var(--line);padding:6px">素材封顶/报告评分/13 成就模拟通关/存档往返/模拟班</td><td style="border:1px solid var(--line);padding:6px">~40</td></tr>
+      <tr><td style="border:1px solid var(--line);padding:6px">⑧-⑬行为</td><td style="border:1px solid var(--line);padding:6px">素材封顶/报告评分/15 成就模拟通关/存档往返/模拟班</td><td style="border:1px solid var(--line);padding:6px">~40</td></tr>
       <tr><td style="border:1px solid var(--line);padding:6px">⑭⑮静态</td><td style="border:1px solid var(--line);padding:6px">提示词占位符、engine 零 DOM 零 fetch</td><td style="border:1px solid var(--line);padding:6px">~15</td></tr>
     </table>
     <p>心法：<b>纪律让测试先开口</b>——"村民不说学名""发现可达""次提交不重复计分"都是先写断言，实现跟着走。</p>

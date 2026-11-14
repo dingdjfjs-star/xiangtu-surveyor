@@ -432,3 +432,43 @@ body::after {
   .hero-anno { writing-mode: horizontal-rl; border-right: none; border-left: 3px solid var(--cinnabar); padding: 2px 8px; right: 6px; top: 6px; background: rgba(244, 239, 226, .85); }
   .scene-cap { letter-spacing: .12em; }
 }
+
+/* ============================================================
+ * 概念罗盘 + 调查本（驻村探案）
+ * ============================================================ */
+.compasswrap { text-align: center; padding: 6px 0 2px; }
+.compass-svg { width: min(430px, 94%); height: auto; }
+.compass-svg.compact { width: min(330px, 88%); }
+.compass-svg a { cursor: pointer; }
+.compass-svg a:hover circle { stroke: var(--cinnabar); stroke-width: 1.6; }
+.conc-detail .atab td:first-child { width: 46%; color: var(--ink-2); }
+
+.casecard {
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: rgba(255, 255, 255, .5);
+  padding: 12px 14px; margin: 10px 0;
+}
+.casecard h3 { margin: 0 0 4px; }
+.caseitems { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; align-items: flex-start; }
+.caseheard {
+  border-left: 3px solid var(--green);
+  background: rgba(255, 255, 255, .55);
+  padding: 8px 12px; border-radius: 4px; width: 100%;
+  box-sizing: border-box;
+}
+.caseheard-head { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; flex-wrap: wrap; }
+.casetext { font-size: 14px; line-height: 1.7; }
+.caselock {
+  color: var(--ink-3); font-size: 13px;
+  border: 1px dashed var(--line); border-radius: 4px; padding: 6px 10px;
+}
+.cmap-mark { cursor: pointer; outline: none; }
+.cmap-mark:hover text, .cmap-mark:focus text { fill: var(--cinnabar); }
+textarea#case-text {
+  width: 100%; border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 12px; font-family: inherit; font-size: 14px; line-height: 1.8;
+  background: rgba(255, 255, 255, .6); box-sizing: border-box;
+}
+@media (max-width: 760px) {
+  .compass-svg, .compass-svg.compact { width: 100%; }
+}

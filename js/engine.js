@@ -365,6 +365,180 @@
   function 权力(v) { const f = v.features.find(x => (x.truth || []).indexOf('c08a') >= 0 || (x.truth || []).indexOf('c11a') >= 0); return f ? f.name + '：' + f.note : '—'; }
   function 交换(v) { const f = v.features.find(x => (x.truth || []).indexOf('c12c') >= 0); return f ? f.name + '：' + f.note : '—'; }
 
+  /* ---------- 概念证据图谱（题目↔概念以 feature.truth 为权威映射，不重复维护标签） ---------- */
+  function conceptSources(book, villages) {
+    const out = {};
+    ((book && book.CHAPTERS) || []).forEach(ch => (ch.concepts || []).forEach(c => {
+      out[c.id] = { cid: c.id, name: c.name, def: c.def, chapterId: ch.id, chapterNo: ch.no, chapterTitle: ch.title, features: [], rules: [], reportVillages: [], caseHits: [] };
+    }));
+    const list = (villages && villages.VILLAGES) || [];
+    list.forEach(v => {
+      (v.chapters || []).forEach(chId => {
+        const ch = (book && book.chapter) ? book.chapter(chId) : null;
+        if (!ch) return;
+        (ch.concepts || []).forEach(c => { if (out[c.id]) out[c.id].reportVillages.push(v.id); });
+      });
+      (v.features || []).forEach(f => (f.truth || []).forEach(cid => {
+        if (out[cid]) out[cid].features.push({ vId: v.id, fId: f.id, name: f.name, ask: f.ask ? f.ask.q : '' });
+      }));
+      (v.npcs || []).forEach(n => (n.rules || []).forEach(r => {
+        if (r.concept && out[r.concept]) out[r.concept].rules.push({ vId: v.id, npcId: n.id, npcName: n.name, kw: (r.kws || [])[0] || '' });
+      }));
+      if (v.case) (v.case.testimony || []).forEach(t => (t.concepts || []).forEach(cid => {
+        if (out[cid]) out[cid].caseHits.push({ vId: v.id, tId: t.id, ask: t.ask });
+      }));
+    });
+    return out;
+  }
+  function masteryOf(e) {
+    const qr = (e && e.quizRight) || 0, qw = (e && e.quizWrong) || 0;
+    const tr = (e && e.tagRight) || 0, tw = (e && e.tagWrong) || 0;
+    const h = (e && e.heard) || 0, r = (e && e.report) || 0;
+    const pos = 2 * qr + 2 * tr + 2 * Math.min(r, 2) + Math.min(h, 2);
+    const neg = 2 * qw + 2 * tw;
+    let status = 'untouched';
+    if (pos >= 4 && pos - neg >= 2) status = 'mastered';
+    else if (pos + neg > 0) status = 'fragile';
+    return { status: status, pos: pos, neg: neg, score: Math.max(0, pos - neg) };
+  }
+  // 全部从当前存档纯推导：重做答对会自动覆盖旧错，刷分无意义
+  function conceptEvidence(state, book, villages) {
+    const src = conceptSources(book, villages);
+    const ev = {};
+    Object.keys(src).forEach(cid => { ev[cid] = { cid: cid, quizRight: 0, quizWrong: 0, tagRight: 0, tagWrong: 0, heard: 0, report: 0 }; });
+    const list = (villages && villages.VILLAGES) || [];
+    list.forEach(v => {
+      const vs = (state && state.villages) ? state.villages[v.id] : null;
+      if (!vs) return;
+      (v.features || []).forEach(f => {
+        const fs = vs.features && vs.features[f.id];
+        if (!fs) return;
+        const truth = f.truth || [];
+        if (fs.seen && f.ask) truth.forEach(cid => { if (ev[cid]) ev[cid][fs.askOk === 1 ? 'quizRight' : 'quizWrong']++; });
+        (fs.myTags || []).forEach(cid => {
+          if (ev[cid]) ev[cid][truth.indexOf(cid) >= 0 ? 'tagRight' : 'tagWrong']++;
+        });
+      });
+      Object.keys(vs.talks || {}).forEach(k => (vs.talks[k].materials || []).forEach(m => (m.tags || []).forEach(cid => { if (ev[cid]) ev[cid].heard++; })));
+      if (v.case && vs.case) (v.case.testimony || []).forEach(t => {
+        if (vs.case.heard && vs.case.heard[t.id]) (t.concepts || []).forEach(cid => { if (ev[cid]) ev[cid].heard++; });
+      });
+      const sub = vs.report && vs.report.submitted;
+      if (sub && sub.text) (v.chapters || []).forEach(chId => {
+        const ch = book.chapter(chId);
+        if (!ch) return;
+        (ch.concepts || []).forEach(c => { if (ev[c.id] && String(sub.text).indexOf(c.name) >= 0) ev[c.id].report++; });
+      });
+    });
+    Object.keys(ev).forEach(cid => {
+      const m = masteryOf(ev[cid]);
+      ev[cid].status = m.status; ev[cid].pos = m.pos; ev[cid].neg = m.neg;
+    });
+    return ev;
+  }
+  function conceptSummary(state, book, villages) {
+    const ev = conceptEvidence(state, book, villages);
+    const src = conceptSources(book, villages);
+    const chapters = ((book && book.CHAPTERS) || []).map(ch => ({
+      id: ch.id, no: ch.no, title: ch.title,
+      concepts: (ch.concepts || []).map(c => ({
+        cid: c.id, name: c.name, def: c.def,
+        status: ev[c.id].status, pos: ev[c.id].pos, neg: ev[c.id].neg,
+        evidence: ev[c.id], source: src[c.id]
+      }))
+    }));
+    const counts = { mastered: 0, fragile: 0, untouched: 0 };
+    chapters.forEach(ch => ch.concepts.forEach(c => { counts[c.status]++; }));
+    return {
+      total: chapters.reduce((n, ch) => n + ch.concepts.length, 0),
+      mastered: counts.mastered, fragile: counts.fragile, untouched: counts.untouched,
+      chapters: chapters, evidence: ev, sources: src
+    };
+  }
+
+  /* ---------- 驻村探案（多地点取证 → 追问解锁 → 结案初评） ---------- */
+  function caseState(state, vId) {
+    const v = vState(state, vId);
+    if (!v.case) v.case = { heard: {}, report: { text: '', submitted: null, bestScore: 0 } };
+    if (!v.case.heard) v.case.heard = {};
+    if (!v.case.report) v.case.report = { text: '', submitted: null, bestScore: 0 };
+    if (typeof v.case.report.bestScore !== 'number') v.case.report.bestScore = 0;
+    return v.case;
+  }
+  function caseProgress(state, vId, kase) {
+    const cs = caseState(state, vId);
+    const all = (kase && kase.testimony) || [];
+    const heard = all.filter(t => cs.heard[t.id]).length;
+    const keys = all.filter(t => t.key);
+    const keyHeard = keys.filter(t => cs.heard[t.id]).length;
+    return { heard: heard, total: all.length, keyHeard: keyHeard, keyTotal: keys.length, canReport: keys.length > 0 && keyHeard >= keys.length };
+  }
+  function caseAt(state, vId, kase, locId) {
+    const cs = caseState(state, vId);
+    return ((kase && kase.testimony) || []).filter(t => t.loc === locId).map(t => ({
+      testimony: t,
+      heard: !!cs.heard[t.id],
+      locked: (t.requires || []).some(id => !cs.heard[id])
+    }));
+  }
+  function caseAsk(state, vId, kase, tId) {
+    if (!kase) return { ok: false, reason: '这个村子还没有案件。' };
+    const t = (kase.testimony || []).find(x => x.id === tId);
+    if (!t) return { ok: false, reason: '这条证言不存在。' };
+    const cs = caseState(state, vId);
+    const missing = (t.requires || []).filter(id => !cs.heard[id]);
+    if (missing.length) {
+      const names = missing.map(id => { const m = (kase.testimony || []).find(x => x.id === id); return m ? m.ask : id; });
+      return { ok: false, reason: '还问不出这句——先听：' + names.join('；'), locked: missing };
+    }
+    const already = !!cs.heard[tId];
+    if (!already) { cs.heard[tId] = new Date().toISOString(); addPoints(state, 1); log(state, 'case-hear', vId + '/' + tId); }
+    return { ok: true, text: t.text, already: already, testimony: t, progress: caseProgress(state, vId, kase) };
+  }
+  function caseGrade(text, kase, village, book) {
+    const t = String(text || '');
+    const advice = [];
+    let score = 0;
+    const parts = ['一、', '二、', '三、', '四、'];
+    const partHit = parts.filter(p => t.indexOf(p) >= 0).length;
+    score += partHit * 6; // 24
+    if (partHit < 4) advice.push('结构缺 ' + (4 - partHit) + ' 节——按「案由／双方说法／矛盾与查证／依礼评理」四节写。');
+    const len = t.replace(/\s/g, '').length;
+    if (len >= 300) score += 16; else advice.push('正文约 ' + len + ' 字，建议写到 300 字以上（还差 ' + Math.max(0, 300 - len) + ' 字）。');
+    const names = ((village && village.npcs) || []).map(n => n.name);
+    const cited = names.filter(n => t.indexOf(n) >= 0).length;
+    score += Math.min(18, cited * 6);
+    if (cited < 3) advice.push('引用村民说法不足（检出 ' + cited + ' 位）——至少引三位当事人的原话。');
+    const cn = ((kase && kase.concepts) || []).map(cid => cname(book, cid));
+    const used = cn.filter(n => t.indexOf(n) >= 0).length;
+    score += Math.min(15, used * 5);
+    if (used < 2) advice.push('核心概念只出现 ' + used + ' 个（建议 ≥2）——把「无讼」「评理」这类名字用进分析。');
+    const factGroups = [['台账', '作业记录'], ['风向', '东南风', '西风'], ['补种', '帮工'], ['认错', '当众']];
+    const factHit = factGroups.filter(g => g.some(k => t.indexOf(k) >= 0)).length;
+    score += Math.min(15, factHit * 4);
+    if (factHit < 3) advice.push('关键事实（台账／风向／补种／认错）落笔不足——结案要能对上证据。');
+    const quotes = (t.match(/「[^」]{6,}」/g) || []).length;
+    score += Math.min(12, quotes * 4);
+    if (quotes < 2) advice.push('直接引语（「」）不足 2 处——让当事人自己说话。');
+    score = clamp(Math.round(score), 0, 100);
+    return { score: score, stars: score >= 85 ? 3 : score >= 70 ? 2 : score >= 50 ? 1 : 0, advice: advice, gradedAt: new Date().toISOString() };
+  }
+  function caseSubmit(state, vId, text, kase, village, book) {
+    const prog = caseProgress(state, vId, kase);
+    if (!prog.canReport) return { ok: false, reason: '关键证言还没听全（' + prog.keyHeard + '/' + prog.keyTotal + '），先别结案。', grade: null, progress: prog };
+    const cs = caseState(state, vId);
+    const grade = caseGrade(text, kase, village, book);
+    const first = !cs.report.submitted;
+    const prevBest = cs.report.bestScore || 0;
+    cs.report.text = text;
+    cs.report.submitted = { text: text, grade: grade, at: new Date().toISOString() };
+    if (first) addPoints(state, 10);
+    if (grade.score >= 85 && grade.score > prevBest) addPoints(state, 5);
+    cs.report.bestScore = Math.max(prevBest, grade.score);
+    log(state, 'case-report', vId + '=' + grade.score);
+    return { ok: true, grade: grade, first: first, progress: prog };
+  }
+
   /* ---------- 成就与称号 ---------- */
   const ACHIEVEMENTS = [
     { id: 'a01', name: '开卷有益', desc: '读毕第一章', test: s => Object.keys(s.chapters).length >= 1 },
@@ -384,7 +558,12 @@
     { id: 'a10', name: '区域比兴', desc: '完成一次双村对比', test: s => s.compareDone.length >= 1 },
     { id: 'a11', name: '空间慧眼', desc: '集齐 8 处地理"发现"', test: s => Object.keys(s.villages).reduce((n, vid) => n + Object.keys(s.villages[vid].finds || {}).length, 0) >= 8 },
     { id: 'a12', name: '名师点睛', desc: '任一报告初评达优秀（≥85）', test: s => Object.keys(s.villages).some(vid => s.villages[vid].report && s.villages[vid].report.submitted && s.villages[vid].report.submitted.grade.score >= 85) },
-    { id: 'a13', name: '熟人社会', desc: '与同一位村民深谈 8 轮以上', test: s => Object.keys(s.villages).some(vid => Object.keys(s.villages[vid].talks || {}).some(k => s.villages[vid].talks[k].turns >= 8)) }
+    { id: 'a13', name: '熟人社会', desc: '与同一位村民深谈 8 轮以上', test: s => Object.keys(s.villages).some(vid => Object.keys(s.villages[vid].talks || {}).some(k => s.villages[vid].talks[k].turns >= 8)) },
+    { id: 'a14', name: '概念成图', desc: '全书掌握 12 个以上核心概念', test: s => conceptSummary(s, root.XT_BOOK, root.XT_VILLAGES).mastered >= 12 },
+    { id: 'a15', name: '结案陈词', desc: '探案结案报告初评 ≥80 分', test: s => Object.keys(s.villages).some(vid => {
+      const vs = s.villages[vid];
+      return vs && vs.case && vs.case.report && vs.case.report.submitted && vs.case.report.submitted.grade.score >= 80;
+    }) }
   ];
   function checkAchievements(state) {
     const got = [];
@@ -477,6 +656,8 @@
     analyzeVillage: analyzeVillage, discoverFind: discoverFind,
     buildReport: buildReport, gradeReport: gradeReport, submitReport: submitReport,
     compareVillages: compareVillages,
+    conceptSources: conceptSources, conceptEvidence: conceptEvidence, masteryOf: masteryOf, conceptSummary: conceptSummary,
+    caseState: caseState, caseProgress: caseProgress, caseAt: caseAt, caseAsk: caseAsk, caseGrade: caseGrade, caseSubmit: caseSubmit,
     ACHIEVEMENTS: ACHIEVEMENTS, checkAchievements: checkAchievements,
     LEVELS: LEVELS, levelOf: levelOf,
     demoClass: demoClass,

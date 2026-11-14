@@ -246,9 +246,10 @@
       return `<a class="vilcard" style="--spine:${spine}" href="#/village/${v.id}">
         <div class="vilname"><span class="vilglyph">${VIL_GLYPHS[v.id] || ''}</span>${esc(v.name)}</div>
         <div class="viltype">${esc(v.type)} · ${esc(v.region)}</div>
-        <div class="vilprog">观察 ${obsN}/${v.features.length} · 素材 ${matN} 条${vs && vs.report && vs.report.submitted ? ' · 报告已交' : ''}</div>
+        <div class="vilprog">观察 ${obsN}/${v.features.length} · 素材 ${matN} 条${vs && vs.report && vs.report.submitted ? ' · 报告已交' : ''}${v.case ? ' · <b>有疑案</b>' : ''}</div>
       </a>`;
     }).join('');
+    const csum = E.conceptSummary(state, BOOK, VILLAGES);
     return `
     <header class="hero">
       <div class="hero-badge">整本书阅读 × 人文地理 · 跨学科探究</div>
@@ -265,15 +266,21 @@
         <span class="chip big">${esc(lvl.name)}</span>
         <span class="chip ghost big">调查积分 ${state.points}</span>
         <span class="chip ghost big">读毕 ${readN}/14 章</span>
+        <span class="chip ghost big">概念掌握 ${csum.mastered}/${csum.total}</span>
         <span class="chip ghost big">成就 ${achN}/${E.ACHIEVEMENTS.length}</span>
       </div>
       <div class="hero-nav">
+        <a class="btn" href="#/compass">概念罗盘</a>
         <a class="btn" href="#/compare">区域对比</a>
         <a class="btn" href="#/ach">成就图鉴</a>
         <a class="btn ghost" href="#/teacher">教师端</a>
         <a class="btn ghost" href="#/settings">设置·考据</a>
       </div>
     </header>
+    <section class="sec"><h2>概念罗盘 · 42 个核心概念一张图</h2><p class="sec-sub">石绿＝掌握、赭金＝将破、空心＝未通。每答对一道观察题、贴对一次标注、用对一次概念，圆点就会变绿。</p>
+      <div class="compasswrap">${compassSVG(true)}</div>
+      <div class="action-row"><a class="btn" href="#/compass">打开完整罗盘与补强路线 →</a></div>
+    </section>
     <section class="sec"><h2>选章 · 开启驻村任务</h2><p class="sec-sub">从 14 章中选择主题，每章配一处对口的虚拟村落；读章、驻村、访谈、分析、成文，一条线走完。</p>
       <div class="chgrid">${chCards}</div>
     </section>
@@ -310,6 +317,7 @@
     <section class="sec action-row">
       <button class="btn primary" id="mark-read" ${read ? 'disabled' : ''}>${read ? '✓ 本章已读毕' : '标记本章读毕（积分+5）'}</button>
       <a class="btn" href="#/village/${vil.id}">前往对口村落「${esc(vil.name)}」驻村 →</a>
+      ${vil.case && vil.case.chapter === c.id ? `<a class="btn primary" href="#/village/${vil.id}/case">去${esc(vil.name)}办案 · ${esc(vil.case.name)} →</a>` : ''}
     </section>`;
   }
 
@@ -345,6 +353,7 @@
       <a href="#/village/${v.id}/talk">村民访谈</a>
       <a href="#/village/${v.id}/analyze">语义分析</a>
       <a href="#/village/${v.id}/report">考察报告</a>
+      ${v.case ? `<a href="#/village/${v.id}/case">调查本</a>` : ''}
     </nav>
     <section class="sec"><h2>村落平面（手绘鸟瞰）</h2>${drawMap(v, state, false)}${mapLegendHtml()}</section>
     <section class="sec"><h2>地理背景</h2><p>${esc(v.intro)}</p>
@@ -450,7 +459,7 @@
   }
 
   /* ---------- 视图：访谈 ---------- */
-  function viewTalk(vId, presetNpc) {
+  function viewTalk(vId, presetNpc, presetQ) {
     const v = VILLAGES.village(vId);
     if (!v) return '<p class="empty">村落不存在。</p>';
     E.visit(state, v.id);
@@ -467,7 +476,7 @@
     <div class="chatwrap">
       <div class="chatlog" id="chatlog"></div>
       <div class="chatbar">
-        <input id="chatin" type="text" placeholder="向这位村民提问…（回车发送）" maxlength="120"/>
+        <input id="chatin" type="text" placeholder="向这位村民提问…（回车发送）" maxlength="120" value="${esc(presetQ || '')}"/>
         <button class="btn primary" id="chatsend">提问</button>
       </div>
     </div>
@@ -708,6 +717,198 @@
   function gradeBoxHtml(g) {
     return `<div class="gradebox"><div class="grade-score">初评 ${g.score} 分 ${'★'.repeat(g.stars)}${'☆'.repeat(3 - g.stars)}</div>
       <ul>${g.advice.map(a => '<li>' + esc(a) + '</li>').join('') || '<li>各项达标，可以提交给老师终审。</li>'}</ul></div>`;
+  }
+
+  /* ---------- 概念罗盘（14 扇区 × 3 环 = 42 概念点，纯推导着色） ---------- */
+  function statusChip(status) {
+    const map = { mastered: ['掌握', 'ok'], fragile: ['将破', ''], untouched: ['未通', 'ghost'] };
+    const m = map[status] || ['?', 'ghost'];
+    return `<span class="chip ${m[1]}">${m[0]}</span>`;
+  }
+  function compassSVG(compact) {
+    const sum = E.conceptSummary(state, BOOK, VILLAGES);
+    const C = 120, N = 14;
+    const fill = s => s === 'mastered' ? '#2f5d62' : s === 'fragile' ? '#c8a15a' : '#eef2ec';
+    const dots = [];
+    sum.chapters.forEach((ch, ci) => {
+      const ang = -Math.PI / 2 + ci * (Math.PI * 2 / N);
+      ch.concepts.forEach((c, j) => {
+        const r = 36 + j * 19;
+        const x = (C + Math.cos(ang) * r).toFixed(1), y = (C + Math.sin(ang) * r).toFixed(1);
+        dots.push(`<a href="#/compass?c=${c.cid}"><circle cx="${x}" cy="${y}" r="8" fill="${fill(c.status)}" stroke="#2b3a33" stroke-width="1"><title>${esc(ch.no + '章 · ' + c.name)}</title></circle></a>`);
+      });
+    });
+    const labels = sum.chapters.map((ch, ci) => {
+      const ang = -Math.PI / 2 + ci * (Math.PI * 2 / N);
+      const x = (C + Math.cos(ang) * 103).toFixed(1), y = (C + Math.sin(ang) * 103 + 4).toFixed(1);
+      return `<text x="${x}" y="${y}" text-anchor="middle" font-size="11" fill="#4a6157">${ch.no}</text>`;
+    }).join('');
+    const rings = [36, 55, 74].map(r => `<circle cx="${C}" cy="${C}" r="${r}" fill="none" stroke="#c3d2c6" stroke-width="1" stroke-dasharray="3 4"/>`).join('');
+    return `<svg class="compass-svg${compact ? ' compact' : ''}" viewBox="0 0 240 240" role="img" aria-label="概念罗盘：42 个核心概念掌握地图">
+      <circle cx="${C}" cy="${C}" r="114" fill="#f4f7ef" stroke="#c3d2c6"/>
+      ${rings}
+      <text x="${C}" y="${C - 4}" text-anchor="middle" font-size="26" font-weight="bold" fill="#24413d">${sum.mastered}</text>
+      <text x="${C}" y="${C + 18}" text-anchor="middle" font-size="11" fill="#7d9188">掌握 / ${sum.total}</text>
+      ${dots}
+      ${labels}
+    </svg>`;
+  }
+  function viewCompass(selCid) {
+    const sum = E.conceptSummary(state, BOOK, VILLAGES);
+    let detail = '';
+    if (selCid && sum.evidence[selCid]) {
+      const c = sum.sources[selCid], e = sum.evidence[selCid];
+      const routes = ['<a class="btn sm" href="#/book/' + c.chapterId + '">回读「' + esc(c.chapterTitle) + '」</a>'];
+      if (c.features.length) routes.push('<a class="btn sm" href="#/village/' + c.features[0].vId + '/map?f=' + c.features[0].fId + '">去观察「' + esc(c.features[0].name) + '」</a>');
+      if (c.rules.length) routes.push('<a class="btn sm" href="#/village/' + c.rules[0].vId + '/talk?npc=' + c.rules[0].npcId + '&q=' + encodeURIComponent(c.rules[0].kw) + '">去问「' + esc(c.rules[0].npcName) + '」</a>');
+      if (c.caseHits.length) routes.push('<a class="btn sm" href="#/village/' + c.caseHits[0].vId + '/case">去探案听证言</a>');
+      if (c.reportVillages.length) routes.push('<a class="btn sm" href="#/village/' + c.reportVillages[0] + '/report">写报告用上它</a>');
+      detail = `<section class="sec conc-detail"><h2>${esc(c.name)} ${statusChip(e.status)}</h2>
+        <p>${esc(c.def)}</p>
+        <table class="atab"><tr><th>证据</th><th>计数</th></tr>
+          <tr><td>观察题 答对 / 答错</td><td>${e.quizRight} / ${e.quizWrong}</td></tr>
+          <tr><td>标注 命中 / 乱标</td><td>${e.tagRight} / ${e.tagWrong}</td></tr>
+          <tr><td>访谈听到</td><td>${e.heard}</td></tr>
+          <tr><td>探案证言</td><td>${c.caseHits.length ? c.caseHits.map(h => esc(h.ask)).join('、') : '—'}</td></tr>
+          <tr><td>报告用上</td><td>${e.report} 次</td></tr>
+        </table>
+        <p class="hint">补强路线：石绿涨到 4 分且无明显错漏，即从「将破」转「掌握」。</p>
+        <div class="action-row">${routes.join('')}</div>
+      </section>`;
+    }
+    const groups = sum.chapters.map(ch => `<div class="casecard"><h3>第${ch.no}章 · ${esc(ch.title)}</h3><div class="tagrow">${ch.concepts.map(c =>
+      `<a class="chip ${c.status === 'mastered' ? 'ok' : c.status === 'untouched' ? 'ghost' : ''}" ${c.status === 'fragile' ? 'style="border-color:#b0713a;color:#b0713a"' : ''} href="#/compass?c=${c.cid}">${esc(c.name)}·${c.status === 'mastered' ? '掌握' : c.status === 'fragile' ? '将破' : '未通'}</a>`).join('')}</div></div>`).join('');
+    return `
+    <div class="crumb"><a href="#/">← 返回首页</a></div>
+    <header class="pagehead"><h1>概念罗盘</h1>
+      <p class="sec-sub">42 个核心概念一张图：石绿＝掌握、赭金＝将破、空心＝未通。点圆点看证据与补强路线。</p>
+      <div class="progress-chips">
+        <span class="chip ok">掌握 ${sum.mastered}</span>
+        <span class="chip" style="border-color:#b0713a;color:#b0713a">将破 ${sum.fragile}</span>
+        <span class="chip ghost">未通 ${sum.untouched}</span>
+      </div>
+    </header>
+    <div class="compasswrap">${compassSVG(false)}</div>
+    ${detail}
+    <section class="sec"><h2>14 章 · 42 概念清单</h2>${groups}</section>`;
+  }
+
+  /* ---------- 视图：调查本（驻村探案） ---------- */
+  function caseMapSVG(v, kase) {
+    const cs = E.caseState(state, v.id);
+    const locs = v.features.filter(f => kase.testimony.some(t => t.loc === f.id));
+    const marks = locs.map(f => {
+      const entries = E.caseAt(state, v.id, kase, f.id);
+      const heardAll = entries.every(e => e.heard);
+      const anyHeard = entries.some(e => e.heard);
+      const dot = heardAll ? '#2f5d62' : anyHeard ? '#c8a15a' : '#eef2ec';
+      return `<g class="cmap-mark" transform="translate(${f.x},${f.y})" data-loc="${f.id}" tabindex="0">
+        <circle r="4.6" fill="${dot}" stroke="#2b3a33" stroke-width=".6"/>
+        <text x="0" y="12" text-anchor="middle" font-size="3.6" fill="#24413d" style="paint-order:stroke" stroke="${v.mapTheme.ground}" stroke-width="1">${esc(f.name)}</text>
+      </g>`;
+    }).join('');
+    return `<svg class="vmap" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" role="img" aria-label="案发地点分布图">
+      <rect x="0" y="0" width="100" height="100" fill="${v.mapTheme.ground}"/>
+      ${villageDecor(v)}
+      ${marks}
+    </svg>`;
+  }
+  function viewCase(vId) {
+    const v = VILLAGES.village(vId);
+    const kase = v && v.case;
+    if (!v) return '<p class="empty">村落不存在。</p>';
+    if (!kase) return '<p class="empty">这个村子暂无案件。</p>';
+    E.visit(state, v.id); checkAch();
+    const cs = E.caseState(state, v.id);
+    const prog = E.caseProgress(state, v.id, kase);
+    const sub = cs.report.submitted;
+    const locs = v.features.filter(f => kase.testimony.some(t => t.loc === f.id));
+    const locCards = locs.map(f => {
+      const entries = E.caseAt(state, v.id, kase, f.id);
+      const items = entries.map(en => {
+        const t = en.testimony;
+        if (en.heard) return `<div class="caseheard"><div class="caseheard-head"><b>${esc(t.who)}</b><span class="chip ghost sm">${esc(t.ask)}</span></div><div class="casetext">${esc(t.text)}</div></div>`;
+        if (en.locked) return `<div class="caselock">【待解锁】这条说法要先听到别的证言——去别处走走再回来。</div>`;
+        return `<button class="btn sm case-ask" data-tid="${t.id}">问「${esc(t.who)}」：${esc(t.ask)}</button>`;
+      }).join('');
+      return `<div class="casecard" id="case-loc-${f.id}"><h3>${esc(f.name)}</h3><p class="hint">${esc(f.note)}</p><div class="caseitems">${items}</div></div>`;
+    }).join('');
+    const tabs = [
+      `<a href="#/village/${v.id}">村落档案</a>`,
+      `<a href="#/village/${v.id}/map">空间观察</a>`,
+      `<a href="#/village/${v.id}/talk">村民访谈</a>`,
+      `<a href="#/village/${v.id}/analyze">语义分析</a>`,
+      `<a href="#/village/${v.id}/report">考察报告</a>`,
+      `<a class="on" href="#/village/${v.id}/case">调查本</a>`
+    ].join('');
+    return `
+    <div class="crumb"><a href="#/village/${vId}">← ${esc(v.name)}档案</a></div>
+    <header class="pagehead"><h1>调查本 · ${esc(kase.name)} <span class="chtheme">${esc(kase.sub)}</span></h1>
+      <p class="geo-chip">${esc(v.name)} · ${esc(v.region)}</p>
+      <div class="progress-chips">
+        <span class="chip">证言 ${prog.heard}/${prog.total}</span>
+        <span class="chip">关键 ${prog.keyHeard}/${prog.keyTotal}</span>
+        <span class="chip ${prog.canReport ? 'ok' : ''}">${prog.canReport ? '可结案' : '关键证言未齐'}</span>
+        ${sub ? `<span class="chip ok">已交 · ${sub.grade.score} 分</span>` : ''}
+      </div>
+    </header>
+    <nav class="tabs">${tabs}</nav>
+    <section class="sec"><h2>案情</h2><p>${esc(kase.intro)}</p><p class="hint">${esc(kase.goal)}</p></section>
+    <section class="sec"><h2>取证地图（石绿＝听全，赭金＝听过，空心＝未去）</h2>${caseMapSVG(v, kase)}</section>
+    <section class="sec"><h2>地点与证言</h2>${locCards}</section>
+    <section class="sec"><h2>结案陈词</h2>
+      <p class="sec-sub">四节结构：案由／双方说法／矛盾与查证／依礼评理。关键证言齐了才能交。</p>
+      <textarea id="case-text" rows="14" placeholder="${prog.canReport ? '把这场评理的来龙去脉写下来……' : '关键证言未齐，先去取证……'}">${esc(cs.report.text || '')}</textarea>
+      <div class="action-row">
+        <button class="btn" id="grade-case">保存并初评</button>
+        <button class="btn primary" id="submit-case" ${prog.canReport ? '' : 'disabled'}>提交结案</button>
+      </div>
+      <div id="case-gradebox"></div>
+    </section>`;
+  }
+  function bindCase(vId) {
+    const v = VILLAGES.village(vId);
+    if (!v || !v.case) return;
+    app.querySelectorAll('.case-ask').forEach(b => b.addEventListener('click', () => {
+      const ta = document.getElementById('case-text');
+      if (ta) E.caseState(state, v.id).report.text = ta.value; // 保留未提交正文
+      const r = E.caseAsk(state, v.id, v.case, b.getAttribute('data-tid'));
+      save(); checkAch();
+      if (!r.ok) { toast(r.reason); return; }
+      toast(r.already ? '这条已经听过了' : '已记入调查本（证言 ' + r.progress.heard + '/' + r.progress.total + '）');
+      render();
+      const card = document.getElementById('case-loc-' + r.testimony.loc);
+      if (card) card.scrollIntoView({ block: 'center' });
+    }));
+    app.querySelectorAll('.cmap-mark').forEach(g => g.addEventListener('click', () => {
+      const card = document.getElementById('case-loc-' + g.getAttribute('data-loc'));
+      if (card) card.scrollIntoView({ block: 'center' });
+    }));
+    const gr = document.getElementById('grade-case');
+    if (gr) gr.addEventListener('click', () => {
+      const t = document.getElementById('case-text').value;
+      E.caseState(state, v.id).report.text = t;
+      const g = E.caseGrade(t, v.case, v, BOOK);
+      save();
+      document.getElementById('case-gradebox').innerHTML = gradeBoxHtml(g);
+    });
+    const sb = document.getElementById('submit-case');
+    if (sb) sb.addEventListener('click', () => {
+      const t = document.getElementById('case-text').value;
+      if (t.replace(/\s/g, '').length < 100) { toast('结案陈词太短，先写满 100 字'); return; }
+      const r = E.caseSubmit(state, v.id, t, v.case, v, BOOK);
+      save(); checkAch();
+      if (!r.ok) { toast(r.reason); return; }
+      document.getElementById('case-gradebox').innerHTML = gradeBoxHtml(r.grade);
+      const chips = document.querySelector('.progress-chips');
+      if (chips && !chips.querySelector('.chip.ok')) {
+        const chip = document.createElement('span');
+        chip.className = 'chip ok';
+        chip.textContent = '可结案';
+        chips.appendChild(chip);
+      }
+      toast('结案陈词已提交：初评 ' + r.grade.score + ' 分');
+    });
   }
 
   /* ---------- 视图：区域对比 ---------- */
@@ -980,12 +1181,20 @@
     else if (r[0] === 'village') {
       const vId = r[1];
       if (!VILLAGES.village(vId)) html = '<p class="empty">村落不存在。</p>';
-      else if (r[2] === 'map') { html = viewMap(vId); binder = () => bindMap(vId); }
-      else if (r[2] === 'talk') { html = viewTalk(vId, r.query.npc); binder = () => bindTalk(vId, r.query.npc); }
+      else if (r[2] === 'map') {
+        html = viewMap(vId);
+        binder = () => {
+          bindMap(vId);
+          if (r.query.f) openFeature(VILLAGES.village(vId), r.query.f);
+        };
+      }
+      else if (r[2] === 'talk') { html = viewTalk(vId, r.query.npc, r.query.q); binder = () => bindTalk(vId, r.query.npc); }
       else if (r[2] === 'analyze') { html = viewAnalyze(vId); binder = () => bindAnalyze(vId); }
       else if (r[2] === 'report') { html = viewReport(vId); binder = () => bindReport(vId); }
+      else if (r[2] === 'case') { html = viewCase(vId); binder = () => bindCase(vId); }
       else html = viewVillage(vId);
     }
+    else if (r[0] === 'compass') { html = viewCompass(r.query.c); }
     else if (r[0] === 'compare') { html = viewCompare(); binder = bindCompare; }
     else if (r[0] === 'ach') { html = viewAch(); }
     else if (r[0] === 'teacher') { html = viewTeacher(); binder = bindTeacher; }

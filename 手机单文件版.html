@@ -442,6 +442,46 @@ body::after {
   .scene-cap { letter-spacing: .12em; }
 }
 
+/* ============================================================
+ * 概念罗盘 + 调查本（驻村探案）
+ * ============================================================ */
+.compasswrap { text-align: center; padding: 6px 0 2px; }
+.compass-svg { width: min(430px, 94%); height: auto; }
+.compass-svg.compact { width: min(330px, 88%); }
+.compass-svg a { cursor: pointer; }
+.compass-svg a:hover circle { stroke: var(--cinnabar); stroke-width: 1.6; }
+.conc-detail .atab td:first-child { width: 46%; color: var(--ink-2); }
+
+.casecard {
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: rgba(255, 255, 255, .5);
+  padding: 12px 14px; margin: 10px 0;
+}
+.casecard h3 { margin: 0 0 4px; }
+.caseitems { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; align-items: flex-start; }
+.caseheard {
+  border-left: 3px solid var(--green);
+  background: rgba(255, 255, 255, .55);
+  padding: 8px 12px; border-radius: 4px; width: 100%;
+  box-sizing: border-box;
+}
+.caseheard-head { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; flex-wrap: wrap; }
+.casetext { font-size: 14px; line-height: 1.7; }
+.caselock {
+  color: var(--ink-3); font-size: 13px;
+  border: 1px dashed var(--line); border-radius: 4px; padding: 6px 10px;
+}
+.cmap-mark { cursor: pointer; outline: none; }
+.cmap-mark:hover text, .cmap-mark:focus text { fill: var(--cinnabar); }
+textarea#case-text {
+  width: 100%; border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 12px; font-family: inherit; font-size: 14px; line-height: 1.8;
+  background: rgba(255, 255, 255, .6); box-sizing: border-box;
+}
+@media (max-width: 760px) {
+  .compass-svg, .compass-svg.compact { width: 100%; }
+}
+
 </style>
 </head>
 <body>
@@ -973,6 +1013,33 @@ body::after {
       { id: 'fd101', name: '槐荫"评理台"', concept: 'c09c', desc: '老槐树下的碾盘与条石就是本村的"公堂"：评理不上衙门，教化代替判决——把无讼两个字演成了日常。' },
       { id: 'fd102', name: '祠堂的"老规矩碑"', concept: 'c08a', desc: '祠堂门前碑刻族规数条，犯规者"罚戏一台、当众认错"——礼的强制不靠警察，靠脸面与仪式。' }
     ],
+    case: {
+      id: 'xs01',
+      chapter: 'c09',
+      name: '花椒药害案',
+      sub: '一架无人机、一场东南风、两家人',
+      intro: '七月里，秦守田家的花椒正灌浆，叶缘却一片片焦了。同一天上午，白战窑雇的无人机在坡上给玉米打除草剂。两家没上法院，先去了老槐树下。',
+      goal: '走访 8 处地点，听全 16 条证言；4 条关键证言齐了才能结案。',
+      concepts: ['c09c', 'c09b', 'c08a'],
+      testimony: [
+        { id: 'e01', loc: 'f102', who: '秦守田', ask: '这事怎么到了槐树下？', concepts: ['c09c'], text: '那天后晌我就去寻德昌叔。没去乡里，也没去法院——先到槐树底下说理，这是老辈传下的路数。谁家有事都这么走。' },
+        { id: 'e02', loc: 'f102', who: '王德昌', ask: '槐树底下怎么评理？', requires: ['e01'], concepts: ['c09b', 'c09c'], text: '评理不是判案。我把两家叫到碾盘边，先让守田说，再让战窑说，旁人都听着。谁对谁错，不盖章，靠众人点头。点头不算完，还得让人把话说完。' },
+        { id: 'e15', loc: 'f102', who: '秦守田', ask: '你想要个什么结果？', text: '我不是要他倾家荡产。我要的是一个说法：他当着众人认，往后按新规矩来。赔多少倒在其次，脸面上过不去，这日子才难过。' },
+        { id: 'e03', loc: 'f103', who: '秦守田', ask: '药是怎么飘过来的？', key: true, text: '那天刮东南风，我在地头就闻见药味。无人机在坡上打药，雾往低处飘，正压着我这片花椒。叶缘先焦，第二天落果。我拿日历画了圈——七月初九，上午。' },
+        { id: 'e04', loc: 'f103', who: '白战窑', ask: '你当时怎么作业的？', text: '我认。那天赶工，三块地一天打完。无人机起飞前我没看风向，只想着早点收工。可要我把一季的收成全赔上，我砸锅卖铁也不够。' },
+        { id: 'e05', loc: 'f109', who: '白战窑', ask: '作业记录上写了什么？', requires: ['e04'], key: true, text: '账本上记着：七月初九，上午九点，坡上三号地，东南风三级。下午风转了西，我还庆幸打完了。药是除草剂，不是除虫的。这几行，我赖不掉。' },
+        { id: 'e14', loc: 'f109', who: '白战窑', ask: '为什么不去法院？', text: '抬头不见低头见。真上了法院，赢了官司输了人情，往后村里谁还跟我搭手？再说请律师、跑县城，误的工比赔的钱还多。' },
+        { id: 'e06', loc: 'f105', who: '王小满', ask: '村里后来怎么处置？', key: true, concepts: ['c09b'], text: '村委和农技站都来了。取了叶样送县里，报告写的是"药害"。村里让白家出工、出苗，帮秦家补种一季荞麦和花椒苗；台账上记着工数，谁家出了几个工，清清楚楚。' },
+        { id: 'e07', loc: 'f105', who: '齐守拙', ask: '怎么断定是药害？', text: '病斑从叶缘起，成片、顺风向下重，虫害不是这个长相。我教过几年农中，这点还看得出。留样、送检，比在树下争三天都管用。' },
+        { id: 'e08', loc: 'f106', who: '秦守田', ask: '白家怎么认的错？', requires: ['e03', 'e05'], key: true, concepts: ['c08a'], text: '七月十五土地庙前，战窑当着众人给我赔了不是。老规矩说罚戏一台，如今不兴唱戏了，就改成帮工补种。他当众点了头，我这口气才顺。' },
+        { id: 'e09', loc: 'f106', who: '王德昌', ask: '庙前那场认错算什么？', concepts: ['c08a'], text: '这叫"当众"。礼的强制不在官府，在脸面——众人看着你认了，往后你做事就得有个分寸。要是背地里塞钱了事，反倒不算数。' },
+        { id: 'e10', loc: 'f101', who: '王德昌', ask: '这案子最后怎么结的？', requires: ['e02', 'e08'], concepts: ['c09b', 'c09c'], text: '没有判决书。两家在祠堂前立了张"和息字据"：白家帮工补种，秦家不再追究，字据存祠。评理评到这一步，就算结了——不是官断，是众人看着你们把话说完。' },
+        { id: 'e11', loc: 'f101', who: '齐守拙', ask: '字据有法律效力吗？', text: '严格说，那是民间和解，不是判决。可它管用：村里认，乡里也认。如今真有人去法院，村里也不拦，只是背地里要咂舌——"把脸撕到衙门口了"。' },
+        { id: 'e12', loc: 'f107', who: '齐守拙', ask: '检测报告起了什么作用？', text: '报告把"我觉得"变成"纸上写着"。新规矩要进老理儿，靠的就是这个：无人机作业要报备、要看风向、要留记录。老槐树还是那棵槐树，理的条款多了几条。' },
+        { id: 'e13', loc: 'f107', who: '王小满', ask: '村里立了什么新规矩？', text: '村规民约加了一条：无人机打药提前一天报备，作业时看风向、避开花椒地。你说这是"名"还是"实"？名目还是评理，里头的理换了新内容。' },
+        { id: 'e16', loc: 'f108', who: '王小满', ask: '以后这类事怎么办？', text: '乡里想把"无人机作业报备"推到全乡。老辈的评理还在，新的台账也进来了。你看，官道以前走骡马，现在走快递车——路还是那条路，走的东西换了。' }
+      ]
+    },
     npcs: [
       {
         id: 'n101', name: '王德昌', role: '老支书', age: 68, gender: 'm',
@@ -2233,6 +2300,180 @@ body::after {
   function 权力(v) { const f = v.features.find(x => (x.truth || []).indexOf('c08a') >= 0 || (x.truth || []).indexOf('c11a') >= 0); return f ? f.name + '：' + f.note : '—'; }
   function 交换(v) { const f = v.features.find(x => (x.truth || []).indexOf('c12c') >= 0); return f ? f.name + '：' + f.note : '—'; }
 
+  /* ---------- 概念证据图谱（题目↔概念以 feature.truth 为权威映射，不重复维护标签） ---------- */
+  function conceptSources(book, villages) {
+    const out = {};
+    ((book && book.CHAPTERS) || []).forEach(ch => (ch.concepts || []).forEach(c => {
+      out[c.id] = { cid: c.id, name: c.name, def: c.def, chapterId: ch.id, chapterNo: ch.no, chapterTitle: ch.title, features: [], rules: [], reportVillages: [], caseHits: [] };
+    }));
+    const list = (villages && villages.VILLAGES) || [];
+    list.forEach(v => {
+      (v.chapters || []).forEach(chId => {
+        const ch = (book && book.chapter) ? book.chapter(chId) : null;
+        if (!ch) return;
+        (ch.concepts || []).forEach(c => { if (out[c.id]) out[c.id].reportVillages.push(v.id); });
+      });
+      (v.features || []).forEach(f => (f.truth || []).forEach(cid => {
+        if (out[cid]) out[cid].features.push({ vId: v.id, fId: f.id, name: f.name, ask: f.ask ? f.ask.q : '' });
+      }));
+      (v.npcs || []).forEach(n => (n.rules || []).forEach(r => {
+        if (r.concept && out[r.concept]) out[r.concept].rules.push({ vId: v.id, npcId: n.id, npcName: n.name, kw: (r.kws || [])[0] || '' });
+      }));
+      if (v.case) (v.case.testimony || []).forEach(t => (t.concepts || []).forEach(cid => {
+        if (out[cid]) out[cid].caseHits.push({ vId: v.id, tId: t.id, ask: t.ask });
+      }));
+    });
+    return out;
+  }
+  function masteryOf(e) {
+    const qr = (e && e.quizRight) || 0, qw = (e && e.quizWrong) || 0;
+    const tr = (e && e.tagRight) || 0, tw = (e && e.tagWrong) || 0;
+    const h = (e && e.heard) || 0, r = (e && e.report) || 0;
+    const pos = 2 * qr + 2 * tr + 2 * Math.min(r, 2) + Math.min(h, 2);
+    const neg = 2 * qw + 2 * tw;
+    let status = 'untouched';
+    if (pos >= 4 && pos - neg >= 2) status = 'mastered';
+    else if (pos + neg > 0) status = 'fragile';
+    return { status: status, pos: pos, neg: neg, score: Math.max(0, pos - neg) };
+  }
+  // 全部从当前存档纯推导：重做答对会自动覆盖旧错，刷分无意义
+  function conceptEvidence(state, book, villages) {
+    const src = conceptSources(book, villages);
+    const ev = {};
+    Object.keys(src).forEach(cid => { ev[cid] = { cid: cid, quizRight: 0, quizWrong: 0, tagRight: 0, tagWrong: 0, heard: 0, report: 0 }; });
+    const list = (villages && villages.VILLAGES) || [];
+    list.forEach(v => {
+      const vs = (state && state.villages) ? state.villages[v.id] : null;
+      if (!vs) return;
+      (v.features || []).forEach(f => {
+        const fs = vs.features && vs.features[f.id];
+        if (!fs) return;
+        const truth = f.truth || [];
+        if (fs.seen && f.ask) truth.forEach(cid => { if (ev[cid]) ev[cid][fs.askOk === 1 ? 'quizRight' : 'quizWrong']++; });
+        (fs.myTags || []).forEach(cid => {
+          if (ev[cid]) ev[cid][truth.indexOf(cid) >= 0 ? 'tagRight' : 'tagWrong']++;
+        });
+      });
+      Object.keys(vs.talks || {}).forEach(k => (vs.talks[k].materials || []).forEach(m => (m.tags || []).forEach(cid => { if (ev[cid]) ev[cid].heard++; })));
+      if (v.case && vs.case) (v.case.testimony || []).forEach(t => {
+        if (vs.case.heard && vs.case.heard[t.id]) (t.concepts || []).forEach(cid => { if (ev[cid]) ev[cid].heard++; });
+      });
+      const sub = vs.report && vs.report.submitted;
+      if (sub && sub.text) (v.chapters || []).forEach(chId => {
+        const ch = book.chapter(chId);
+        if (!ch) return;
+        (ch.concepts || []).forEach(c => { if (ev[c.id] && String(sub.text).indexOf(c.name) >= 0) ev[c.id].report++; });
+      });
+    });
+    Object.keys(ev).forEach(cid => {
+      const m = masteryOf(ev[cid]);
+      ev[cid].status = m.status; ev[cid].pos = m.pos; ev[cid].neg = m.neg;
+    });
+    return ev;
+  }
+  function conceptSummary(state, book, villages) {
+    const ev = conceptEvidence(state, book, villages);
+    const src = conceptSources(book, villages);
+    const chapters = ((book && book.CHAPTERS) || []).map(ch => ({
+      id: ch.id, no: ch.no, title: ch.title,
+      concepts: (ch.concepts || []).map(c => ({
+        cid: c.id, name: c.name, def: c.def,
+        status: ev[c.id].status, pos: ev[c.id].pos, neg: ev[c.id].neg,
+        evidence: ev[c.id], source: src[c.id]
+      }))
+    }));
+    const counts = { mastered: 0, fragile: 0, untouched: 0 };
+    chapters.forEach(ch => ch.concepts.forEach(c => { counts[c.status]++; }));
+    return {
+      total: chapters.reduce((n, ch) => n + ch.concepts.length, 0),
+      mastered: counts.mastered, fragile: counts.fragile, untouched: counts.untouched,
+      chapters: chapters, evidence: ev, sources: src
+    };
+  }
+
+  /* ---------- 驻村探案（多地点取证 → 追问解锁 → 结案初评） ---------- */
+  function caseState(state, vId) {
+    const v = vState(state, vId);
+    if (!v.case) v.case = { heard: {}, report: { text: '', submitted: null, bestScore: 0 } };
+    if (!v.case.heard) v.case.heard = {};
+    if (!v.case.report) v.case.report = { text: '', submitted: null, bestScore: 0 };
+    if (typeof v.case.report.bestScore !== 'number') v.case.report.bestScore = 0;
+    return v.case;
+  }
+  function caseProgress(state, vId, kase) {
+    const cs = caseState(state, vId);
+    const all = (kase && kase.testimony) || [];
+    const heard = all.filter(t => cs.heard[t.id]).length;
+    const keys = all.filter(t => t.key);
+    const keyHeard = keys.filter(t => cs.heard[t.id]).length;
+    return { heard: heard, total: all.length, keyHeard: keyHeard, keyTotal: keys.length, canReport: keys.length > 0 && keyHeard >= keys.length };
+  }
+  function caseAt(state, vId, kase, locId) {
+    const cs = caseState(state, vId);
+    return ((kase && kase.testimony) || []).filter(t => t.loc === locId).map(t => ({
+      testimony: t,
+      heard: !!cs.heard[t.id],
+      locked: (t.requires || []).some(id => !cs.heard[id])
+    }));
+  }
+  function caseAsk(state, vId, kase, tId) {
+    if (!kase) return { ok: false, reason: '这个村子还没有案件。' };
+    const t = (kase.testimony || []).find(x => x.id === tId);
+    if (!t) return { ok: false, reason: '这条证言不存在。' };
+    const cs = caseState(state, vId);
+    const missing = (t.requires || []).filter(id => !cs.heard[id]);
+    if (missing.length) {
+      const names = missing.map(id => { const m = (kase.testimony || []).find(x => x.id === id); return m ? m.ask : id; });
+      return { ok: false, reason: '还问不出这句——先听：' + names.join('；'), locked: missing };
+    }
+    const already = !!cs.heard[tId];
+    if (!already) { cs.heard[tId] = new Date().toISOString(); addPoints(state, 1); log(state, 'case-hear', vId + '/' + tId); }
+    return { ok: true, text: t.text, already: already, testimony: t, progress: caseProgress(state, vId, kase) };
+  }
+  function caseGrade(text, kase, village, book) {
+    const t = String(text || '');
+    const advice = [];
+    let score = 0;
+    const parts = ['一、', '二、', '三、', '四、'];
+    const partHit = parts.filter(p => t.indexOf(p) >= 0).length;
+    score += partHit * 6; // 24
+    if (partHit < 4) advice.push('结构缺 ' + (4 - partHit) + ' 节——按「案由／双方说法／矛盾与查证／依礼评理」四节写。');
+    const len = t.replace(/\s/g, '').length;
+    if (len >= 300) score += 16; else advice.push('正文约 ' + len + ' 字，建议写到 300 字以上（还差 ' + Math.max(0, 300 - len) + ' 字）。');
+    const names = ((village && village.npcs) || []).map(n => n.name);
+    const cited = names.filter(n => t.indexOf(n) >= 0).length;
+    score += Math.min(18, cited * 6);
+    if (cited < 3) advice.push('引用村民说法不足（检出 ' + cited + ' 位）——至少引三位当事人的原话。');
+    const cn = ((kase && kase.concepts) || []).map(cid => cname(book, cid));
+    const used = cn.filter(n => t.indexOf(n) >= 0).length;
+    score += Math.min(15, used * 5);
+    if (used < 2) advice.push('核心概念只出现 ' + used + ' 个（建议 ≥2）——把「无讼」「评理」这类名字用进分析。');
+    const factGroups = [['台账', '作业记录'], ['风向', '东南风', '西风'], ['补种', '帮工'], ['认错', '当众']];
+    const factHit = factGroups.filter(g => g.some(k => t.indexOf(k) >= 0)).length;
+    score += Math.min(15, factHit * 4);
+    if (factHit < 3) advice.push('关键事实（台账／风向／补种／认错）落笔不足——结案要能对上证据。');
+    const quotes = (t.match(/「[^」]{6,}」/g) || []).length;
+    score += Math.min(12, quotes * 4);
+    if (quotes < 2) advice.push('直接引语（「」）不足 2 处——让当事人自己说话。');
+    score = clamp(Math.round(score), 0, 100);
+    return { score: score, stars: score >= 85 ? 3 : score >= 70 ? 2 : score >= 50 ? 1 : 0, advice: advice, gradedAt: new Date().toISOString() };
+  }
+  function caseSubmit(state, vId, text, kase, village, book) {
+    const prog = caseProgress(state, vId, kase);
+    if (!prog.canReport) return { ok: false, reason: '关键证言还没听全（' + prog.keyHeard + '/' + prog.keyTotal + '），先别结案。', grade: null, progress: prog };
+    const cs = caseState(state, vId);
+    const grade = caseGrade(text, kase, village, book);
+    const first = !cs.report.submitted;
+    const prevBest = cs.report.bestScore || 0;
+    cs.report.text = text;
+    cs.report.submitted = { text: text, grade: grade, at: new Date().toISOString() };
+    if (first) addPoints(state, 10);
+    if (grade.score >= 85 && grade.score > prevBest) addPoints(state, 5);
+    cs.report.bestScore = Math.max(prevBest, grade.score);
+    log(state, 'case-report', vId + '=' + grade.score);
+    return { ok: true, grade: grade, first: first, progress: prog };
+  }
+
   /* ---------- 成就与称号 ---------- */
   const ACHIEVEMENTS = [
     { id: 'a01', name: '开卷有益', desc: '读毕第一章', test: s => Object.keys(s.chapters).length >= 1 },
@@ -2252,7 +2493,12 @@ body::after {
     { id: 'a10', name: '区域比兴', desc: '完成一次双村对比', test: s => s.compareDone.length >= 1 },
     { id: 'a11', name: '空间慧眼', desc: '集齐 8 处地理"发现"', test: s => Object.keys(s.villages).reduce((n, vid) => n + Object.keys(s.villages[vid].finds || {}).length, 0) >= 8 },
     { id: 'a12', name: '名师点睛', desc: '任一报告初评达优秀（≥85）', test: s => Object.keys(s.villages).some(vid => s.villages[vid].report && s.villages[vid].report.submitted && s.villages[vid].report.submitted.grade.score >= 85) },
-    { id: 'a13', name: '熟人社会', desc: '与同一位村民深谈 8 轮以上', test: s => Object.keys(s.villages).some(vid => Object.keys(s.villages[vid].talks || {}).some(k => s.villages[vid].talks[k].turns >= 8)) }
+    { id: 'a13', name: '熟人社会', desc: '与同一位村民深谈 8 轮以上', test: s => Object.keys(s.villages).some(vid => Object.keys(s.villages[vid].talks || {}).some(k => s.villages[vid].talks[k].turns >= 8)) },
+    { id: 'a14', name: '概念成图', desc: '全书掌握 12 个以上核心概念', test: s => conceptSummary(s, root.XT_BOOK, root.XT_VILLAGES).mastered >= 12 },
+    { id: 'a15', name: '结案陈词', desc: '探案结案报告初评 ≥80 分', test: s => Object.keys(s.villages).some(vid => {
+      const vs = s.villages[vid];
+      return vs && vs.case && vs.case.report && vs.case.report.submitted && vs.case.report.submitted.grade.score >= 80;
+    }) }
   ];
   function checkAchievements(state) {
     const got = [];
@@ -2345,6 +2591,8 @@ body::after {
     analyzeVillage: analyzeVillage, discoverFind: discoverFind,
     buildReport: buildReport, gradeReport: gradeReport, submitReport: submitReport,
     compareVillages: compareVillages,
+    conceptSources: conceptSources, conceptEvidence: conceptEvidence, masteryOf: masteryOf, conceptSummary: conceptSummary,
+    caseState: caseState, caseProgress: caseProgress, caseAt: caseAt, caseAsk: caseAsk, caseGrade: caseGrade, caseSubmit: caseSubmit,
     ACHIEVEMENTS: ACHIEVEMENTS, checkAchievements: checkAchievements,
     LEVELS: LEVELS, levelOf: levelOf,
     demoClass: demoClass,
@@ -2679,9 +2927,10 @@ body::after {
       return `<a class="vilcard" style="--spine:${spine}" href="#/village/${v.id}">
         <div class="vilname"><span class="vilglyph">${VIL_GLYPHS[v.id] || ''}</span>${esc(v.name)}</div>
         <div class="viltype">${esc(v.type)} · ${esc(v.region)}</div>
-        <div class="vilprog">观察 ${obsN}/${v.features.length} · 素材 ${matN} 条${vs && vs.report && vs.report.submitted ? ' · 报告已交' : ''}</div>
+        <div class="vilprog">观察 ${obsN}/${v.features.length} · 素材 ${matN} 条${vs && vs.report && vs.report.submitted ? ' · 报告已交' : ''}${v.case ? ' · <b>有疑案</b>' : ''}</div>
       </a>`;
     }).join('');
+    const csum = E.conceptSummary(state, BOOK, VILLAGES);
     return `
     <header class="hero">
       <div class="hero-badge">整本书阅读 × 人文地理 · 跨学科探究</div>
@@ -2698,15 +2947,21 @@ body::after {
         <span class="chip big">${esc(lvl.name)}</span>
         <span class="chip ghost big">调查积分 ${state.points}</span>
         <span class="chip ghost big">读毕 ${readN}/14 章</span>
+        <span class="chip ghost big">概念掌握 ${csum.mastered}/${csum.total}</span>
         <span class="chip ghost big">成就 ${achN}/${E.ACHIEVEMENTS.length}</span>
       </div>
       <div class="hero-nav">
+        <a class="btn" href="#/compass">概念罗盘</a>
         <a class="btn" href="#/compare">区域对比</a>
         <a class="btn" href="#/ach">成就图鉴</a>
         <a class="btn ghost" href="#/teacher">教师端</a>
         <a class="btn ghost" href="#/settings">设置·考据</a>
       </div>
     </header>
+    <section class="sec"><h2>概念罗盘 · 42 个核心概念一张图</h2><p class="sec-sub">石绿＝掌握、赭金＝将破、空心＝未通。每答对一道观察题、贴对一次标注、用对一次概念，圆点就会变绿。</p>
+      <div class="compasswrap">${compassSVG(true)}</div>
+      <div class="action-row"><a class="btn" href="#/compass">打开完整罗盘与补强路线 →</a></div>
+    </section>
     <section class="sec"><h2>选章 · 开启驻村任务</h2><p class="sec-sub">从 14 章中选择主题，每章配一处对口的虚拟村落；读章、驻村、访谈、分析、成文，一条线走完。</p>
       <div class="chgrid">${chCards}</div>
     </section>
@@ -2743,6 +2998,7 @@ body::after {
     <section class="sec action-row">
       <button class="btn primary" id="mark-read" ${read ? 'disabled' : ''}>${read ? '✓ 本章已读毕' : '标记本章读毕（积分+5）'}</button>
       <a class="btn" href="#/village/${vil.id}">前往对口村落「${esc(vil.name)}」驻村 →</a>
+      ${vil.case && vil.case.chapter === c.id ? `<a class="btn primary" href="#/village/${vil.id}/case">去${esc(vil.name)}办案 · ${esc(vil.case.name)} →</a>` : ''}
     </section>`;
   }
 
@@ -2778,6 +3034,7 @@ body::after {
       <a href="#/village/${v.id}/talk">村民访谈</a>
       <a href="#/village/${v.id}/analyze">语义分析</a>
       <a href="#/village/${v.id}/report">考察报告</a>
+      ${v.case ? `<a href="#/village/${v.id}/case">调查本</a>` : ''}
     </nav>
     <section class="sec"><h2>村落平面（手绘鸟瞰）</h2>${drawMap(v, state, false)}${mapLegendHtml()}</section>
     <section class="sec"><h2>地理背景</h2><p>${esc(v.intro)}</p>
@@ -2883,7 +3140,7 @@ body::after {
   }
 
   /* ---------- 视图：访谈 ---------- */
-  function viewTalk(vId, presetNpc) {
+  function viewTalk(vId, presetNpc, presetQ) {
     const v = VILLAGES.village(vId);
     if (!v) return '<p class="empty">村落不存在。</p>';
     E.visit(state, v.id);
@@ -2900,7 +3157,7 @@ body::after {
     <div class="chatwrap">
       <div class="chatlog" id="chatlog"></div>
       <div class="chatbar">
-        <input id="chatin" type="text" placeholder="向这位村民提问…（回车发送）" maxlength="120"/>
+        <input id="chatin" type="text" placeholder="向这位村民提问…（回车发送）" maxlength="120" value="${esc(presetQ || '')}"/>
         <button class="btn primary" id="chatsend">提问</button>
       </div>
     </div>
@@ -3141,6 +3398,198 @@ body::after {
   function gradeBoxHtml(g) {
     return `<div class="gradebox"><div class="grade-score">初评 ${g.score} 分 ${'★'.repeat(g.stars)}${'☆'.repeat(3 - g.stars)}</div>
       <ul>${g.advice.map(a => '<li>' + esc(a) + '</li>').join('') || '<li>各项达标，可以提交给老师终审。</li>'}</ul></div>`;
+  }
+
+  /* ---------- 概念罗盘（14 扇区 × 3 环 = 42 概念点，纯推导着色） ---------- */
+  function statusChip(status) {
+    const map = { mastered: ['掌握', 'ok'], fragile: ['将破', ''], untouched: ['未通', 'ghost'] };
+    const m = map[status] || ['?', 'ghost'];
+    return `<span class="chip ${m[1]}">${m[0]}</span>`;
+  }
+  function compassSVG(compact) {
+    const sum = E.conceptSummary(state, BOOK, VILLAGES);
+    const C = 120, N = 14;
+    const fill = s => s === 'mastered' ? '#2f5d62' : s === 'fragile' ? '#c8a15a' : '#eef2ec';
+    const dots = [];
+    sum.chapters.forEach((ch, ci) => {
+      const ang = -Math.PI / 2 + ci * (Math.PI * 2 / N);
+      ch.concepts.forEach((c, j) => {
+        const r = 36 + j * 19;
+        const x = (C + Math.cos(ang) * r).toFixed(1), y = (C + Math.sin(ang) * r).toFixed(1);
+        dots.push(`<a href="#/compass?c=${c.cid}"><circle cx="${x}" cy="${y}" r="8" fill="${fill(c.status)}" stroke="#2b3a33" stroke-width="1"><title>${esc(ch.no + '章 · ' + c.name)}</title></circle></a>`);
+      });
+    });
+    const labels = sum.chapters.map((ch, ci) => {
+      const ang = -Math.PI / 2 + ci * (Math.PI * 2 / N);
+      const x = (C + Math.cos(ang) * 103).toFixed(1), y = (C + Math.sin(ang) * 103 + 4).toFixed(1);
+      return `<text x="${x}" y="${y}" text-anchor="middle" font-size="11" fill="#4a6157">${ch.no}</text>`;
+    }).join('');
+    const rings = [36, 55, 74].map(r => `<circle cx="${C}" cy="${C}" r="${r}" fill="none" stroke="#c3d2c6" stroke-width="1" stroke-dasharray="3 4"/>`).join('');
+    return `<svg class="compass-svg${compact ? ' compact' : ''}" viewBox="0 0 240 240" role="img" aria-label="概念罗盘：42 个核心概念掌握地图">
+      <circle cx="${C}" cy="${C}" r="114" fill="#f4f7ef" stroke="#c3d2c6"/>
+      ${rings}
+      <text x="${C}" y="${C - 4}" text-anchor="middle" font-size="26" font-weight="bold" fill="#24413d">${sum.mastered}</text>
+      <text x="${C}" y="${C + 18}" text-anchor="middle" font-size="11" fill="#7d9188">掌握 / ${sum.total}</text>
+      ${dots}
+      ${labels}
+    </svg>`;
+  }
+  function viewCompass(selCid) {
+    const sum = E.conceptSummary(state, BOOK, VILLAGES);
+    let detail = '';
+    if (selCid && sum.evidence[selCid]) {
+      const c = sum.sources[selCid], e = sum.evidence[selCid];
+      const routes = ['<a class="btn sm" href="#/book/' + c.chapterId + '">回读「' + esc(c.chapterTitle) + '」</a>'];
+      if (c.features.length) routes.push('<a class="btn sm" href="#/village/' + c.features[0].vId + '/map?f=' + c.features[0].fId + '">去观察「' + esc(c.features[0].name) + '」</a>');
+      if (c.rules.length) routes.push('<a class="btn sm" href="#/village/' + c.rules[0].vId + '/talk?npc=' + c.rules[0].npcId + '&q=' + encodeURIComponent(c.rules[0].kw) + '">去问「' + esc(c.rules[0].npcName) + '」</a>');
+      if (c.caseHits.length) routes.push('<a class="btn sm" href="#/village/' + c.caseHits[0].vId + '/case">去探案听证言</a>');
+      if (c.reportVillages.length) routes.push('<a class="btn sm" href="#/village/' + c.reportVillages[0] + '/report">写报告用上它</a>');
+      detail = `<section class="sec conc-detail"><h2>${esc(c.name)} ${statusChip(e.status)}</h2>
+        <p>${esc(c.def)}</p>
+        <table class="atab"><tr><th>证据</th><th>计数</th></tr>
+          <tr><td>观察题 答对 / 答错</td><td>${e.quizRight} / ${e.quizWrong}</td></tr>
+          <tr><td>标注 命中 / 乱标</td><td>${e.tagRight} / ${e.tagWrong}</td></tr>
+          <tr><td>访谈听到</td><td>${e.heard}</td></tr>
+          <tr><td>探案证言</td><td>${c.caseHits.length ? c.caseHits.map(h => esc(h.ask)).join('、') : '—'}</td></tr>
+          <tr><td>报告用上</td><td>${e.report} 次</td></tr>
+        </table>
+        <p class="hint">补强路线：石绿涨到 4 分且无明显错漏，即从「将破」转「掌握」。</p>
+        <div class="action-row">${routes.join('')}</div>
+      </section>`;
+    }
+    const groups = sum.chapters.map(ch => `<div class="casecard"><h3>第${ch.no}章 · ${esc(ch.title)}</h3><div class="tagrow">${ch.concepts.map(c =>
+      `<a class="chip ${c.status === 'mastered' ? 'ok' : c.status === 'untouched' ? 'ghost' : ''}" ${c.status === 'fragile' ? 'style="border-color:#b0713a;color:#b0713a"' : ''} href="#/compass?c=${c.cid}">${esc(c.name)}·${c.status === 'mastered' ? '掌握' : c.status === 'fragile' ? '将破' : '未通'}</a>`).join('')}</div></div>`).join('');
+    return `
+    <div class="crumb"><a href="#/">← 返回首页</a></div>
+    <header class="pagehead"><h1>概念罗盘</h1>
+      <p class="sec-sub">42 个核心概念一张图：石绿＝掌握、赭金＝将破、空心＝未通。点圆点看证据与补强路线。</p>
+      <div class="progress-chips">
+        <span class="chip ok">掌握 ${sum.mastered}</span>
+        <span class="chip" style="border-color:#b0713a;color:#b0713a">将破 ${sum.fragile}</span>
+        <span class="chip ghost">未通 ${sum.untouched}</span>
+      </div>
+    </header>
+    <div class="compasswrap">${compassSVG(false)}</div>
+    ${detail}
+    <section class="sec"><h2>14 章 · 42 概念清单</h2>${groups}</section>`;
+  }
+
+  /* ---------- 视图：调查本（驻村探案） ---------- */
+  function caseMapSVG(v, kase) {
+    const cs = E.caseState(state, v.id);
+    const locs = v.features.filter(f => kase.testimony.some(t => t.loc === f.id));
+    const marks = locs.map(f => {
+      const entries = E.caseAt(state, v.id, kase, f.id);
+      const heardAll = entries.every(e => e.heard);
+      const anyHeard = entries.some(e => e.heard);
+      const dot = heardAll ? '#2f5d62' : anyHeard ? '#c8a15a' : '#eef2ec';
+      return `<g class="cmap-mark" transform="translate(${f.x},${f.y})" data-loc="${f.id}" tabindex="0">
+        <circle r="4.6" fill="${dot}" stroke="#2b3a33" stroke-width=".6"/>
+        <text x="0" y="12" text-anchor="middle" font-size="3.6" fill="#24413d" style="paint-order:stroke" stroke="${v.mapTheme.ground}" stroke-width="1">${esc(f.name)}</text>
+      </g>`;
+    }).join('');
+    return `<svg class="vmap" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" role="img" aria-label="案发地点分布图">
+      <rect x="0" y="0" width="100" height="100" fill="${v.mapTheme.ground}"/>
+      ${villageDecor(v)}
+      ${marks}
+    </svg>`;
+  }
+  function viewCase(vId) {
+    const v = VILLAGES.village(vId);
+    const kase = v && v.case;
+    if (!v) return '<p class="empty">村落不存在。</p>';
+    if (!kase) return '<p class="empty">这个村子暂无案件。</p>';
+    E.visit(state, v.id); checkAch();
+    const cs = E.caseState(state, v.id);
+    const prog = E.caseProgress(state, v.id, kase);
+    const sub = cs.report.submitted;
+    const locs = v.features.filter(f => kase.testimony.some(t => t.loc === f.id));
+    const locCards = locs.map(f => {
+      const entries = E.caseAt(state, v.id, kase, f.id);
+      const items = entries.map(en => {
+        const t = en.testimony;
+        if (en.heard) return `<div class="caseheard"><div class="caseheard-head"><b>${esc(t.who)}</b><span class="chip ghost sm">${esc(t.ask)}</span></div><div class="casetext">${esc(t.text)}</div></div>`;
+        if (en.locked) return `<div class="caselock">【待解锁】这条说法要先听到别的证言——去别处走走再回来。</div>`;
+        return `<button class="btn sm case-ask" data-tid="${t.id}">问「${esc(t.who)}」：${esc(t.ask)}</button>`;
+      }).join('');
+      return `<div class="casecard" id="case-loc-${f.id}"><h3>${esc(f.name)}</h3><p class="hint">${esc(f.note)}</p><div class="caseitems">${items}</div></div>`;
+    }).join('');
+    const tabs = [
+      `<a href="#/village/${v.id}">村落档案</a>`,
+      `<a href="#/village/${v.id}/map">空间观察</a>`,
+      `<a href="#/village/${v.id}/talk">村民访谈</a>`,
+      `<a href="#/village/${v.id}/analyze">语义分析</a>`,
+      `<a href="#/village/${v.id}/report">考察报告</a>`,
+      `<a class="on" href="#/village/${v.id}/case">调查本</a>`
+    ].join('');
+    return `
+    <div class="crumb"><a href="#/village/${vId}">← ${esc(v.name)}档案</a></div>
+    <header class="pagehead"><h1>调查本 · ${esc(kase.name)} <span class="chtheme">${esc(kase.sub)}</span></h1>
+      <p class="geo-chip">${esc(v.name)} · ${esc(v.region)}</p>
+      <div class="progress-chips">
+        <span class="chip">证言 ${prog.heard}/${prog.total}</span>
+        <span class="chip">关键 ${prog.keyHeard}/${prog.keyTotal}</span>
+        <span class="chip ${prog.canReport ? 'ok' : ''}">${prog.canReport ? '可结案' : '关键证言未齐'}</span>
+        ${sub ? `<span class="chip ok">已交 · ${sub.grade.score} 分</span>` : ''}
+      </div>
+    </header>
+    <nav class="tabs">${tabs}</nav>
+    <section class="sec"><h2>案情</h2><p>${esc(kase.intro)}</p><p class="hint">${esc(kase.goal)}</p></section>
+    <section class="sec"><h2>取证地图（石绿＝听全，赭金＝听过，空心＝未去）</h2>${caseMapSVG(v, kase)}</section>
+    <section class="sec"><h2>地点与证言</h2>${locCards}</section>
+    <section class="sec"><h2>结案陈词</h2>
+      <p class="sec-sub">四节结构：案由／双方说法／矛盾与查证／依礼评理。关键证言齐了才能交。</p>
+      <textarea id="case-text" rows="14" placeholder="${prog.canReport ? '把这场评理的来龙去脉写下来……' : '关键证言未齐，先去取证……'}">${esc(cs.report.text || '')}</textarea>
+      <div class="action-row">
+        <button class="btn" id="grade-case">保存并初评</button>
+        <button class="btn primary" id="submit-case" ${prog.canReport ? '' : 'disabled'}>提交结案</button>
+      </div>
+      <div id="case-gradebox"></div>
+    </section>`;
+  }
+  function bindCase(vId) {
+    const v = VILLAGES.village(vId);
+    if (!v || !v.case) return;
+    app.querySelectorAll('.case-ask').forEach(b => b.addEventListener('click', () => {
+      const ta = document.getElementById('case-text');
+      if (ta) E.caseState(state, v.id).report.text = ta.value; // 保留未提交正文
+      const r = E.caseAsk(state, v.id, v.case, b.getAttribute('data-tid'));
+      save(); checkAch();
+      if (!r.ok) { toast(r.reason); return; }
+      toast(r.already ? '这条已经听过了' : '已记入调查本（证言 ' + r.progress.heard + '/' + r.progress.total + '）');
+      render();
+      const card = document.getElementById('case-loc-' + r.testimony.loc);
+      if (card) card.scrollIntoView({ block: 'center' });
+    }));
+    app.querySelectorAll('.cmap-mark').forEach(g => g.addEventListener('click', () => {
+      const card = document.getElementById('case-loc-' + g.getAttribute('data-loc'));
+      if (card) card.scrollIntoView({ block: 'center' });
+    }));
+    const gr = document.getElementById('grade-case');
+    if (gr) gr.addEventListener('click', () => {
+      const t = document.getElementById('case-text').value;
+      E.caseState(state, v.id).report.text = t;
+      const g = E.caseGrade(t, v.case, v, BOOK);
+      save();
+      document.getElementById('case-gradebox').innerHTML = gradeBoxHtml(g);
+    });
+    const sb = document.getElementById('submit-case');
+    if (sb) sb.addEventListener('click', () => {
+      const t = document.getElementById('case-text').value;
+      if (t.replace(/\s/g, '').length < 100) { toast('结案陈词太短，先写满 100 字'); return; }
+      const r = E.caseSubmit(state, v.id, t, v.case, v, BOOK);
+      save(); checkAch();
+      if (!r.ok) { toast(r.reason); return; }
+      document.getElementById('case-gradebox').innerHTML = gradeBoxHtml(r.grade);
+      const chips = document.querySelector('.progress-chips');
+      if (chips && !chips.querySelector('.chip.ok')) {
+        const chip = document.createElement('span');
+        chip.className = 'chip ok';
+        chip.textContent = '可结案';
+        chips.appendChild(chip);
+      }
+      toast('结案陈词已提交：初评 ' + r.grade.score + ' 分');
+    });
   }
 
   /* ---------- 视图：区域对比 ---------- */
@@ -3413,12 +3862,20 @@ body::after {
     else if (r[0] === 'village') {
       const vId = r[1];
       if (!VILLAGES.village(vId)) html = '<p class="empty">村落不存在。</p>';
-      else if (r[2] === 'map') { html = viewMap(vId); binder = () => bindMap(vId); }
-      else if (r[2] === 'talk') { html = viewTalk(vId, r.query.npc); binder = () => bindTalk(vId, r.query.npc); }
+      else if (r[2] === 'map') {
+        html = viewMap(vId);
+        binder = () => {
+          bindMap(vId);
+          if (r.query.f) openFeature(VILLAGES.village(vId), r.query.f);
+        };
+      }
+      else if (r[2] === 'talk') { html = viewTalk(vId, r.query.npc, r.query.q); binder = () => bindTalk(vId, r.query.npc); }
       else if (r[2] === 'analyze') { html = viewAnalyze(vId); binder = () => bindAnalyze(vId); }
       else if (r[2] === 'report') { html = viewReport(vId); binder = () => bindReport(vId); }
+      else if (r[2] === 'case') { html = viewCase(vId); binder = () => bindCase(vId); }
       else html = viewVillage(vId);
     }
+    else if (r[0] === 'compass') { html = viewCompass(r.query.c); }
     else if (r[0] === 'compare') { html = viewCompare(); binder = bindCompare; }
     else if (r[0] === 'ach') { html = viewAch(); }
     else if (r[0] === 'teacher') { html = viewTeacher(); binder = bindTeacher; }
